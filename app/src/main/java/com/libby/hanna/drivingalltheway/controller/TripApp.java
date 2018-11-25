@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.libby.hanna.drivingalltheway.R;
 
-public class TravelApp extends Activity {
+public class TripApp extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
