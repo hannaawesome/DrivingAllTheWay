@@ -97,7 +97,7 @@ public class Travel {
         this.emailAddress = emailAddress;
     }
     //endregion
-// bhhh
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
