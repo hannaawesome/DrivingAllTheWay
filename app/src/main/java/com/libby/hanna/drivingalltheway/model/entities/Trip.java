@@ -14,7 +14,7 @@ public class Trip {
             available, inProcess, finished
         }
 
-        ;
+
 
         private TripState state;
         private String source;
