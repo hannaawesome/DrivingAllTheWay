@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button b= (Button)findViewById(R.id.AddTravel);
+        Button b= (Button)findViewById(R.id.AddTrip);
         b.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
         {

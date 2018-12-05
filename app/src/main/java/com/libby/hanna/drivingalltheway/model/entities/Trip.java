@@ -10,6 +10,7 @@ public class Trip {
         /**
          * inner class, defines the state which the trip is in
          */
+
         public enum TripState {
             available, inProcess, finished
         }
@@ -25,7 +26,8 @@ public class Trip {
         private PhoneNumberUtils phoneNumber;
         private ContactsContract.CommonDataKinds.Email emailAddress;
 
-        public Trip(TripState state, String source, String destination, Time start, Time finish, String name, PhoneNumberUtils phoneNumber, ContactsContract.CommonDataKinds.Email emailAddress) {
+        public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
+                    PhoneNumberUtils phoneNumber, ContactsContract.CommonDataKinds.Email emailAddress) {
             this.state = state;
             this.source = source;
             this.destination = destination;

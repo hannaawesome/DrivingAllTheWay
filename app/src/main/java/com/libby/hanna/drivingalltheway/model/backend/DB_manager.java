@@ -1,4 +1,8 @@
 package com.libby.hanna.drivingalltheway.model.backend;
 
-public interface DB_manager {
+import android.content.ContentValues;
+
+public interface DB_manager
+{
+    boolean addTrip(ContentValues Trip);
 }
