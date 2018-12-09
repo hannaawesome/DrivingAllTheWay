@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Driving All The Way</string>
+    <string name="PhoneText">Phone:</string>
+    <string name="When">When?</string>
+    <string name="From">From:</string>
+    <string name="To">To:</string>
+    <string name="PassDitsText">Passenger&apos;s Details:</string>
+    <string name="NameText">Name:</string>
+    <string name="EmailText">Email:</string>
+    <string name="Status">Status:</string>
+    <string-array name="StatusSpinner">
+        <item>available</item>
+        <item>inProcess</item>
+        <item>finished</item>
+    </string-array>
+    <string name="DoneButton">Done!</string>
+</resources>

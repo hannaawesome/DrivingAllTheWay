@@ -1,6 +1,7 @@
 package com.libby.hanna.drivingalltheway.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,12 +20,12 @@ public class MainActivity extends AppCompatActivity {
         Button b= (Button)findViewById(R.id.AddTrip);
         b.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
-        {
-            Toast.makeText(getApplicationContext(), "wow, it's working!", Toast.LENGTH_LONG).show();
-        }
+            {
+                Intent intent=new Intent(getApplicationContext(), TripApp.class);
+                startActivity(intent);
+            }
         });
 
     }
-
 
 }

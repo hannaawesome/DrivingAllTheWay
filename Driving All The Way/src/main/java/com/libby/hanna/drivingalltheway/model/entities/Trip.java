@@ -16,6 +16,7 @@ public class Trip {
         }
 
 
+        //region Fields
 
         private TripState state;
         private String source;
@@ -23,11 +24,13 @@ public class Trip {
         private Time start;
         private Time finish;
         private String name;
-        private PhoneNumberUtils phoneNumber;
-        private ContactsContract.CommonDataKinds.Email emailAddress;
+        private String phoneNumber;
+        private String emailAddress;
+    //endregion
 
+        //region Constructors
         public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
-                    PhoneNumberUtils phoneNumber, ContactsContract.CommonDataKinds.Email emailAddress) {
+                    String phoneNumber, String emailAddress) {
             this.state = state;
             this.source = source;
             this.destination = destination;
@@ -37,6 +40,24 @@ public class Trip {
             this.phoneNumber = phoneNumber;
             this.emailAddress = emailAddress;
         }
+        public Trip(){}
+
+    /**
+     * copy constructor
+     * @param t
+     */
+        public Trip(Trip t)
+        {
+            this.state = t.state;
+            this.source = t.source;
+            this.destination = t.destination;
+            this.start = t.start;
+            this.finish = t.finish;
+            this.name = t.name;
+            this.phoneNumber = t.phoneNumber;
+            this.emailAddress = t.emailAddress;
+        }
+        //endregion
 
         //region Getter and Setter
         public TripState getState() {
@@ -87,24 +108,24 @@ public class Trip {
             this.name = name;
         }
 
-        public PhoneNumberUtils getPhoneNumber() {
+        public String getPhoneNumber() {
             return phoneNumber;
         }
 
-        public void setPhoneNumber(PhoneNumberUtils phoneNumber) {
+        public void setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
         }
 
-        public ContactsContract.CommonDataKinds.Email getEmailAddress() {
+        public String getEmailAddress() {
             return emailAddress;
         }
 
-        public void setEmailAddress(ContactsContract.CommonDataKinds.Email emailAddress) {
+        public void setEmailAddress(String emailAddress) {
             this.emailAddress = emailAddress;
         }
         //endregion
 
-
+        //region operations
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -112,14 +133,13 @@ public class Trip {
             Trip trip = (Trip) o;
             return state == trip.state &&
                     source.equals(trip.source) &&
-                    source.equals(trip.destination) &&
-                    source.equals(trip.start) &&
-                    source.equals(trip.finish) &&
-                    source.equals(trip.name) &&
-                    source.equals(trip.phoneNumber) &&
-                    source.equals(trip.emailAddress);
+                    destination.equals(trip.destination) &&
+                    start.equals(trip.start) &&
+                    finish.equals(trip.finish) &&
+                    name.equals(trip.name) &&
+                    phoneNumber.equals(trip.phoneNumber) &&
+                    emailAddress.equals(trip.emailAddress);
         }
-
 
         @Override
         public String toString() {
@@ -134,6 +154,6 @@ public class Trip {
                     ", emailAddress=" + emailAddress +
                     '}';
         }
-
+        //endregion
 
 }

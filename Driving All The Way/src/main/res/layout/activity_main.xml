@@ -13,4 +13,5 @@
         android:text="Add Trip"
         tools:layout_editor_absoluteX="34dp"
         tools:layout_editor_absoluteY="30dp" />
+
 </LinearLayout>
