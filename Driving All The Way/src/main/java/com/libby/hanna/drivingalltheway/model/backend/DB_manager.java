@@ -4,5 +4,5 @@ import android.content.ContentValues;
 
 public interface DB_manager
 {
-    boolean addTrip(ContentValues Trip);
+    boolean addTrip(final ContentValues Trip );
 }

@@ -7,7 +7,6 @@ import com.libby.hanna.drivingalltheway.model.entities.Trip.TripState;
 
 import java.sql.Time;
 
-
 public class TripConst {
     public static final String STATE = "state";
     public static final String SOURCE = "source";
@@ -33,7 +32,7 @@ public class TripConst {
     }
 
     public static Trip ContentValuesTOTrip(ContentValues cv) {
-        Trip t=new Trip();
+        Trip t = new Trip();
         t.setState(TripState.valueOf(cv.getAsString(STATE)));
         t.setSource(cv.getAsString(SOURCE));
         t.setDestination(cv.getAsString(DESTINATION));

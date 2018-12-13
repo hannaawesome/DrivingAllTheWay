@@ -2,6 +2,8 @@ package com.libby.hanna.drivingalltheway.controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1c2833")));
         Button b= (Button)findViewById(R.id.AddTrip);
         b.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
