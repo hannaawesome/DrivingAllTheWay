@@ -24,11 +24,11 @@
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@android:color/black"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:typeface="normal"
             app:fontFamily="casual"
-            tools:text="Plan a Ride" />
+            tools:text="Plan a Ride by clicking here:" />
 
         <LinearLayout
             android:layout_width="fill_parent"
