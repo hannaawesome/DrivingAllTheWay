@@ -6,6 +6,7 @@ import com.libby.hanna.drivingalltheway.model.entities.Trip;
 import com.libby.hanna.drivingalltheway.model.entities.Trip.TripState;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 
 public class TripConst {
     public static final String STATE = "state";
@@ -32,15 +33,24 @@ public class TripConst {
     }
 
     public static Trip ContentValuesTOTrip(ContentValues cv) {
+        try{
         Trip t = new Trip();
         t.setState(TripState.valueOf(cv.getAsString(STATE)));
         t.setSource(cv.getAsString(SOURCE));
         t.setDestination(cv.getAsString(DESTINATION));
-        t.setStart(Time.valueOf(cv.getAsString(START)));
-        t.setFinish(Time.valueOf(cv.getAsString(FINISH)));
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+        java.util.Date d1 = (java.util.Date) format.parse(cv.getAsString(START));
+        t.setStart(new Time(d1.getTime()));
+        d1 = (java.util.Date) format.parse(cv.getAsString(FINISH));
+        t.setFinish(new Time(d1.getTime()));
         t.setName(cv.getAsString(NAME));
         t.setPhoneNumber(cv.getAsString(PHONENUMBER));
         t.setEmailAddress(cv.getAsString(EMAILADDRESS));
         return t;
+        }
+        catch(Exception ex)
+        {
+            return  null;
+        }
     }
 }

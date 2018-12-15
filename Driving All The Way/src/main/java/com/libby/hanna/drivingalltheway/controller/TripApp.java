@@ -1,7 +1,6 @@
 package com.libby.hanna.drivingalltheway.controller;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,10 +17,9 @@ import com.libby.hanna.drivingalltheway.model.backend.*;
 import com.libby.hanna.drivingalltheway.model.entities.Trip;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 
 import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
-import static com.libby.hanna.drivingalltheway.model.backend.TripConst.TripToContentValues;
-
 public class TripApp extends Activity {
 //maybe add an option of now button
 
@@ -44,18 +42,20 @@ public class TripApp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
         done = (Button) findViewById(R.id.DoneButton);
-        //status.setAdapter(new SpinnerAdapter(this));
+        status = (Spinner) findViewById(R.id.StatusSpinner);
+        status.setAdapter(new SpinnerAdapter(this));
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 findViews();
                 if (validations()) {
                     t = getTrip();
-                    ContentValues cv = TripToContentValues(t);
                     try {
-                        if (be.addTrip(cv)) {
+                        if (be.addTrip(t)) {
                             Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
                             clearAllPage();
                         }
+                        else
+                            Toast.makeText(getBaseContext(), "Could not add the data", Toast.LENGTH_LONG).show();
                     } catch (Exception exception) {
                         Toast.makeText(getBaseContext(), "must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -153,8 +153,18 @@ public class TripApp extends Activity {
         temp.setEmailAddress(email.getText().toString());
         temp.setSource(from.getText().toString());
         temp.setDestination(to.getText().toString());
-        temp.setStart(Time.valueOf(when.getText().toString()));
-        temp.setState((Trip.TripState) status.getSelectedItem());
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+            java.util.Date d1 = (java.util.Date) format.parse(when.getText().toString());
+            temp.setStart(new Time(d1.getTime()));
+                int selectedItemOfMySpinner = status.getSelectedItemPosition();
+            if (selectedItemOfMySpinner!=0)
+                temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
+            else
+                temp.setState(Trip.TripState.available);
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(), "Must be something wrong with the data you entered", Toast.LENGTH_LONG).show();
+        }
         return temp;
     }
 
