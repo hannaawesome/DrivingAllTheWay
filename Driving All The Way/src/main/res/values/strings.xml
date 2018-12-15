@@ -16,4 +16,6 @@
         <item>finished</item>
     </string-array>
     <string name="DoneButton">Done!</string>
+    <string name="plan_a_ride_txt">TextView</string>
+    <string name="credits"><![CDATA[©L&H]]></string>
 </resources>

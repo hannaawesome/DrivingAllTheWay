@@ -2,16 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/backgroundLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
     tools:context=".controller.MainActivity">
 
-    <Button
-        android:id="@+id/AddTrip"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Add Trip"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="30dp" />
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/plan_a_ride_txt"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:typeface="normal"
+            app:fontFamily="casual"
+            tools:text="Plan a Ride" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="top|center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/AddTrip"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:background="@mipmap/add_ride_icon"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/yellow"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                android:typeface="serif"
+                tools:layout_editor_absoluteX="34dp"
+                tools:layout_editor_absoluteY="30dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/credits"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:fontFamily="sans-serif-smallcaps" />
+
+    </LinearLayout>
 
 </LinearLayout>
