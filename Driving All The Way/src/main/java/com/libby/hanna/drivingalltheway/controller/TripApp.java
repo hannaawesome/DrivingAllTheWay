@@ -44,7 +44,7 @@ public class TripApp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
         done = (Button) findViewById(R.id.DoneButton);
-        status.setAdapter(new SpinnerAdapter(this));
+        //status.setAdapter(new SpinnerAdapter(this));
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 findViews();

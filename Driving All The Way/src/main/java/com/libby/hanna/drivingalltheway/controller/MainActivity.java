@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1c2833")));
         Button b= (Button)findViewById(R.id.AddTrip);
         b.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
