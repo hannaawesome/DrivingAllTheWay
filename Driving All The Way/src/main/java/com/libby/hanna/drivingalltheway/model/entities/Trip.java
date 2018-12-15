@@ -1,11 +1,14 @@
 package com.libby.hanna.drivingalltheway.model.entities;
 
+import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 
 import com.google.firebase.database.Exclude;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Trip {
 
@@ -18,7 +21,6 @@ public class Trip {
 
 
     //region Fields
-    private static Long countId = new Long(0);
     private Long _id;
     private TripState state;
     private String source;
@@ -33,8 +35,9 @@ public class Trip {
     //region Constructors
     public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress) {
-        this._id = new Long(countId);
-        countId=new Long(countId.intValue()+1);
+        Date date = new Date();
+        this._id = (long)(date.getYear()+date.getMonth() + date.getDay() +
+                date.getHours() + date.getMinutes() + date.getSeconds());
         this.state = state;
         this.source = source;
         this.destination = destination;
@@ -46,8 +49,10 @@ public class Trip {
     }
 
     public Trip() {
-        this._id = countId;
-        countId++;
+        Date date = new Date();
+        this._id = (long)(date.getYear()+date.getMonth() + date.getDay() +
+                date.getHours() + date.getMinutes() + date.getSeconds());
+
     }
 
     /**
@@ -70,14 +75,9 @@ public class Trip {
 
     //region Getter and Setter
     @Exclude
-    public Long get_id() {
+    public Long get_id() { 
         return _id;
     }
-    @Exclude
-    public static Long getCountId() {
-        return countId;
-    }
-
     public TripState getState() {
         return state;
     }
@@ -101,7 +101,7 @@ public class Trip {
     public void setDestination(String destination) {
         this.destination = destination;
     }
-
+@Exclude
     public Time getStart() {
         return start;
     }
@@ -109,8 +109,10 @@ public class Trip {
     public void setStart(Time start) {
         this.start = start;
     }
-
+@Exclude
     public Time getFinish() {
+        if (finish==null)
+            return start;
         return finish;
     }
 

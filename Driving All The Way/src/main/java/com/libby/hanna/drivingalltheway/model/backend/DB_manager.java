@@ -1,8 +1,8 @@
 package com.libby.hanna.drivingalltheway.model.backend;
 
-import android.content.ContentValues;
+import com.libby.hanna.drivingalltheway.model.entities.Trip;
 
 public interface DB_manager
 {
-    boolean addTrip(final ContentValues Trip );
+    boolean addTrip(final Trip t );
 }

@@ -1,6 +1,6 @@
 package com.libby.hanna.drivingalltheway.model.backend;
 
-import android.content.ContentValues;
+
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -13,19 +13,25 @@ import com.libby.hanna.drivingalltheway.model.entities.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.libby.hanna.drivingalltheway.model.backend.TripConst.ContentValuesTOTrip;
-
 public class Firebase_DBManager implements DB_manager {
 
+    static DatabaseReference TripRef;
 
+    static {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        TripRef = database.getReference("trips");
+    }
     @Override
-    public boolean addTrip(ContentValues trip) {
+    public boolean addTrip(Trip trip) {
         try {
-            addStudentToFirebase(ContentValuesTOTrip(trip), new Firebase_DBManager.Action<Long>() {
+            String key = trip.get_id().toString();
+            TripRef.child(key).setValue(trip);
+            TripRef.child(key).child("start").setValue(trip.getStart().toString());
+            TripRef.child(key).child("finish").setValue(trip.getFinish().toString());
+
+           /* addTripToFirebase(trip, new Firebase_DBManager.Action<Long>() {
                 @Override
                 public void onSuccess(Long obj) {
-                  //  Toast.makeText(getBaseContext(), "insert id " + obj, Toast.LENGTH_LONG).show();
-
                 }
 
                 @Override
@@ -37,7 +43,7 @@ public class Firebase_DBManager implements DB_manager {
                 public void onProgress(String status, double percent) {
 
                 }
-            });
+            });*/
             return true;
         } catch (Exception e)
         {
@@ -45,35 +51,20 @@ public class Firebase_DBManager implements DB_manager {
           //  Toast.makeText(getBaseContext(), "Error ", Toast.LENGTH_LONG).show();
         }
     }
-    /**
-     * gives details on success and failure and progress of an action T
-     *
-     * @param <T>
-     */
+    /*
     public interface Action<T> {
         void onSuccess(T obj);
 
         void onFailure(Exception exception);
 
         void onProgress(String status, double percent);
-    }
+    }*/
 
-    /*public interface NotifyDataChange<T> {
-        void OnDataChanged(T obj);
-        void onFailure(Exception exception);*/
-    static DatabaseReference TripRef;
-    static List<Trip> tripList;
 
-    static {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        TripRef = database.getReference("trips");
-        tripList = new ArrayList<>();
-
-    }
-
-    private static void addStudentToFirebase(final Trip t, final Action<Long> action) {
+   /* private static void addTripToFirebase(final Trip t, final Action<Long> action) {
         String key = t.get_id().toString();
-        TripRef.child(key).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
+        TripRef.child(key).setValue(t)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 action.onSuccess(t.get_id());
@@ -86,40 +77,8 @@ public class Firebase_DBManager implements DB_manager {
                 action.onProgress("error upload trip data", 100);
             }
         });
-    }
+        TripRef.child(key).child("start").setValue(t.getStart().toString());
+        TripRef.child(key).child("finish").setValue(t.getFinish().toString());
+    }*/
 }
-/*
-    public static void addSTrip(final Trip student, final Action<Long> action) {
-        //if (student.getImageLocalUri() != null) {
-                 StorageReference imagesRef = FirebaseStorage.getInstance().getReference();
-                    imagesRef = imagesRef.child("images").child(System.currentTimeMillis()
-
-             + ".jpg");          imagesRef.putFile(student.getImageLocalUri())
-               .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                           @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                          action.onProgress("upload student data", 90);
-             Get a URL to the uploaded content
-              Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                  student.setImageFirebaseUrl(downloadUrl.toString());
-
-                      addStudentToFirebase(student, action);
-                             }                 })
-              .addOnFailureListener(new OnFailureListener() {
-                      @Override
-             public void onFailure(@NonNull Exception exception) {
-                              action.onFailure(exception);
-                  action.onProgress("error upload student image", 100);
-                      }       }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                       @Override
-                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                           double uploadBytes = taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount();
-                           double progress = (90.0 * uploadBytes);
-                           action.onProgress("upload image", progress)
-                       });
-                    }
-                      else
-                          action.onFailure(new Exception("select image first"));
-
-}*/
 
