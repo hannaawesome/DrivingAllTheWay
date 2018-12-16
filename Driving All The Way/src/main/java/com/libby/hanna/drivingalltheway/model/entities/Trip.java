@@ -105,7 +105,6 @@ public class Trip {
         this.state = state;
     }
 
-    @Exclude
     public String getSource() {
         return source;
     }
@@ -114,7 +113,6 @@ public class Trip {
         this.source = source;
     }
 
-    @Exclude
     public String getDestination() {
         return destination;
     }

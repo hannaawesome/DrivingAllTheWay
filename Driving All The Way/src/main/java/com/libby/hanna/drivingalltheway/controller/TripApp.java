@@ -226,6 +226,9 @@ public class TripApp extends Activity {
             Toast.makeText(getApplicationContext(), "The time you entered is invalid", Toast.LENGTH_LONG).show();
             return false;
         }
+
+        if(fromStringToLocation(strFrom)==null||fromStringToLocation(strTo)==null)
+            return false;
         //endregion
 
         return true;
@@ -253,8 +256,6 @@ public class TripApp extends Activity {
         temp.setName(name.getText().toString());
         temp.setPhoneNumber(phone.getText().toString());
         temp.setEmailAddress(email.getText().toString());
-        //temp.setSource(fromStringToLocation(from.getText().toString()));
-       // temp.setDestination(fromStringToLocation(to.getText().toString()));
         temp.setSource(from.getText().toString());
         temp.setDestination(to.getText().toString());
         try {
@@ -303,7 +304,6 @@ public class TripApp extends Activity {
     }
 
     private String fromLocationToString(Location location) {
-
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
         try {
@@ -320,5 +320,18 @@ public class TripApp extends Activity {
         }
         return "IOException ...";
     }
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 5) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
+            } else {
+                Toast.makeText(this, "Until you grant the permission, we canot display the location", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
 }
