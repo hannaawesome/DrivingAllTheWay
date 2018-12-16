@@ -17,6 +17,7 @@
     <color name="iconLightYellow">#F9D500</color>
     <color name="iconMudYellow">#A07E1D</color>
     <color name="iconPurpleBrown">#9C7972</color>
+    <color name="transparent">#00ffffff</color>
     //endregion
 
     <color name="green">#FF99CC00</color>

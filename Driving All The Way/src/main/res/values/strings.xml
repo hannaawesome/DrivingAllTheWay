@@ -3,7 +3,8 @@
     <string name="addRide">Plan a Ride by clicking here:</string>
     <string name="PhoneText">Phone:</string>
     <string name="When">When?</string>
-    <string name="WhenEnter">15:30</string>
+    <string name="WhenHours">15</string>
+    <string name="WhenMins">30</string>
     <string name="From">From:</string>
     <string name="To">To:</string>
     <string name="PassDitsText">Passenger\'s Details:</string>
