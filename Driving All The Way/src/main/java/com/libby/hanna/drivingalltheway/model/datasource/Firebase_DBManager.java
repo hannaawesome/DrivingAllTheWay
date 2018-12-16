@@ -64,7 +64,7 @@ public class Firebase_DBManager implements DB_manager {
                 action.onFailure(e);
             }
         });
-        TripRef.child(key).child("from").setValue(trip.getSource().getLatitude()+','+trip.getSource().getLongitude()).addOnSuccessListener(new OnSuccessListener<Void>() {
+        /*TripRef.child(key).child("from").setValue(trip.getSource().getLatitude()+','+trip.getSource().getLongitude()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 action.onSuccess(trip.get_id());
@@ -85,7 +85,9 @@ public class Firebase_DBManager implements DB_manager {
             public void onFailure(@NonNull Exception e) {
                 action.onFailure(e);
             }
-        });
+        });*/
+        TripRef.child(key).child("from").setValue(trip.getSource());
+        TripRef.child(key).child("to").setValue(trip.getDestination());
         //endregion
     }
 }

@@ -35,8 +35,8 @@ public class Trip {
      */
     private Long _id;
     private TripState state;
-    private Location source;
-    private Location destination;
+    private String source;
+    private String destination;
     private Time start;
     /**
      * does not define by the passenger, if not defined, equals the start time
@@ -48,7 +48,7 @@ public class Trip {
     //endregion
 
     //region Constructors
-    public Trip(TripState state, Location source, Location destination, Time start, Time finish, String name,
+    public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress) {
         Date date = new Date();
         this._id = (long) (date.getYear() + date.getMonth() + date.getDay() +
@@ -106,20 +106,20 @@ public class Trip {
     }
 
     @Exclude
-    public Location getSource() {
+    public String getSource() {
         return source;
     }
 
-    public void setSource(Location source) {
+    public void setSource(String source) {
         this.source = source;
     }
 
     @Exclude
-    public Location getDestination() {
+    public String getDestination() {
         return destination;
     }
 
-    public void setDestination(Location destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 

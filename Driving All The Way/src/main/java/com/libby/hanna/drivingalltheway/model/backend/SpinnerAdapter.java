@@ -19,16 +19,25 @@ import java.util.ArrayList;
 public class SpinnerAdapter extends BaseAdapter {
 
         ArrayList<Integer> colors;
+        ArrayList<String> text;
         Context context;
 
         public SpinnerAdapter(Context context)
         {
             this.context=context;
             colors=new ArrayList<Integer>();
+            text=new ArrayList<String>();
+            String list[]=context.getResources().getStringArray(R.array.StatusSpinner);
             int retrieve []=context.getResources().getIntArray(R.array.androidcolors);
             for(int re:retrieve)
             {
                 colors.add(re);
+
+            }
+            for(String t:list)
+            {
+                text.add(t);
+
             }
         }
         @Override
@@ -39,7 +48,7 @@ public class SpinnerAdapter extends BaseAdapter {
         @Override
         public Object getItem(int arg0)
         {
-            return colors.get(arg0);
+            return text.get(arg0);
         }
         @Override
         public long getItemId(int arg0)
@@ -54,12 +63,11 @@ public class SpinnerAdapter extends BaseAdapter {
         public View getView(int pos, View view, ViewGroup parent)
         {
             LayoutInflater inflater=LayoutInflater.from(context);
-            view=inflater.inflate(android.R.layout.simple_spinner_dropdown_item, null);
+            view=inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent,false);
             TextView txv=(TextView)view.findViewById(android.R.id.text1);
             txv.setBackgroundColor(colors.get(pos));
             txv.setTextSize(20f);
-            String retrieve[]=context.getResources().getStringArray(R.array.StatusSpinner);
-            txv.setText(retrieve[pos]);
+            txv.setText(text.get(pos));
             return view;
         }
 
