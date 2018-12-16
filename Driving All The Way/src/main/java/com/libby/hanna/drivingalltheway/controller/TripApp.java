@@ -63,8 +63,8 @@ public class TripApp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
         done = (Button) findViewById(R.id.DoneButton);
-here=(Button) findViewById(R.id.DoneButton);
-nowTime=(Button) findViewById(R.id.DoneButton);
+        here=(Button) findViewById(R.id.DoneButton);
+        nowTime=(Button) findViewById(R.id.DoneButton);
         status = (Spinner) findViewById(R.id.StatusSpinner);
         status.setAdapter(new SpinnerAdapter(this));
         done.setOnClickListener(new View.OnClickListener() {
