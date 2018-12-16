@@ -13,7 +13,7 @@ public interface DB_manager
 
     /**
      * @param <T>
-     *   interface in order to provide data on success or failure of T
+     *   Interface in order to provide data on success or failure of T
      */
     public interface Action<T> {
         void onSuccess(T obj);

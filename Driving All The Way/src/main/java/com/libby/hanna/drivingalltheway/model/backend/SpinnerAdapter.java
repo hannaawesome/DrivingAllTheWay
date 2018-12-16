@@ -1,3 +1,7 @@
+/*
+Hanna Weissberg 318796398
+Libby Olidort 209274612
+*/
 package com.libby.hanna.drivingalltheway.model.backend;
 
 import android.content.Context;
@@ -6,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.libby.hanna.drivingalltheway.R;
-
 import java.util.ArrayList;
 
+/**
+ * Spinner adapter with colored items
+ */
 public class SpinnerAdapter extends BaseAdapter {
 
         ArrayList<Integer> colors;
@@ -41,6 +46,10 @@ public class SpinnerAdapter extends BaseAdapter {
         {
             return arg0;
         }
+
+    /**
+     * defines the actual look
+     */
         @Override
         public View getView(int pos, View view, ViewGroup parent)
         {
