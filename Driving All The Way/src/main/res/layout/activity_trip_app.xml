@@ -73,7 +73,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top"
-                android:src="@mipmap/thickrightarrow"
+                android:src="@mipmap/arrowIcon"
                 android:contentDescription="TODO" />
 
             <LinearLayout

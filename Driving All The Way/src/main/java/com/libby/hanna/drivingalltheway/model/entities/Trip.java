@@ -1,13 +1,8 @@
 package com.libby.hanna.drivingalltheway.model.entities;
 
-import android.content.SharedPreferences;
-import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
-
 import com.google.firebase.database.Exclude;
 
 import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Trip {
