@@ -107,7 +107,7 @@ public class TripApp extends Activity {
         here.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //gets the current location and put it in the from
-                    getLocation();
+                getLocation();
             }
         });
         done.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +167,8 @@ public class TripApp extends Activity {
         //region getStrings
         String strEmail = email.getText().toString();
         String strPhone = phone.getText().toString();
-        String strTime = when1.getText().toString() + ':' + when2.getText().toString();
+        String strTime;
+        strTime = when1.getText().toString() + ":" + when2.getText().toString();
         String strFrom = from.getText().toString();
         String strName = name.getText().toString();
         String strTo = to.getText().toString();
@@ -215,12 +216,12 @@ public class TripApp extends Activity {
             return false;
         }
         //check if time is valid
-        if (!strTime.matches("(?:[0-1][0-9]|2[0-4]):[0-5]\\d")) {
+        if (!strTime.matches("(?:[0-1][0-9]|2[0-4])|0:[0-5]\\d")) {
             Toast.makeText(getApplicationContext(), "The time you entered is invalid", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(fromStringToLocation(strFrom)==null||fromStringToLocation(strTo)==null)
+        if (fromStringToLocation(strFrom) == null || fromStringToLocation(strTo) == null)
             return false;
         //endregion
 
