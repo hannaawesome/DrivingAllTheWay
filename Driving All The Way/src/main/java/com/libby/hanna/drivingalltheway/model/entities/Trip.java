@@ -86,7 +86,7 @@ public class Trip {
     public void setState(TripState state) {
         this.state = state;
     }
-
+    @Exclude
     public Location getSource() {
         return source;
     }
@@ -94,7 +94,7 @@ public class Trip {
     public void setSource(Location source) {
         this.source = source;
     }
-
+    @Exclude
     public Location getDestination() {
         return destination;
     }
