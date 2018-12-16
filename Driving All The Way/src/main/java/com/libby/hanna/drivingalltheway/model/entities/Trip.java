@@ -1,8 +1,14 @@
 package com.libby.hanna.drivingalltheway.model.entities;
 
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
+
 import com.google.firebase.database.Exclude;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Trip {
@@ -18,8 +24,8 @@ public class Trip {
     //region Fields
     private Long _id;
     private TripState state;
-    private String source;
-    private String destination;
+    private Location source;
+    private Location destination;
     private Time start;
     private Time finish;
     private String name;
@@ -28,7 +34,7 @@ public class Trip {
     //endregion
 
     //region Constructors
-    public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
+    public Trip(TripState state, Location source, Location destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress) {
         Date date = new Date();
         this._id = (long)(date.getYear()+date.getMonth() + date.getDay() +
@@ -81,19 +87,19 @@ public class Trip {
         this.state = state;
     }
 
-    public String getSource() {
+    public Location getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(Location source) {
         this.source = source;
     }
 
-    public String getDestination() {
+    public Location getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Location destination) {
         this.destination = destination;
     }
 @Exclude

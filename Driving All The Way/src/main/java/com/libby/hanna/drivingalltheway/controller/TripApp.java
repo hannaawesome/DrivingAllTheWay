@@ -18,8 +18,10 @@ import com.libby.hanna.drivingalltheway.model.entities.Trip;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
+
 public class TripApp extends Activity {
 //maybe add an option of now button
 
@@ -49,16 +51,21 @@ public class TripApp extends Activity {
                 findViews();
                 if (validations()) {
                     t = getTrip();
-                    try {
-                        if (be.addTrip(t)) {
-                            Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
-                            clearAllPage();
-                        }
-                        else
-                            Toast.makeText(getBaseContext(), "Could not add the data", Toast.LENGTH_LONG).show();
-                    } catch (Exception exception) {
-                        Toast.makeText(getBaseContext(), "must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                        be.addTrip(t,new DB_manager.Action<Long>() {
+                            @Override
+                            public void onSuccess(Long obj) {
+                                Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
+                                clearAllPage();
+                            }
+                            @Override
+                            public void onFailure(Exception exception) {
+                                Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            @Override
+                            public void onProgress(String status, double percent) {
+
+                            }
+                        });
 
                 }
             }
@@ -151,24 +158,48 @@ public class TripApp extends Activity {
         temp.setName(name.getText().toString());
         temp.setPhoneNumber(phone.getText().toString());
         temp.setEmailAddress(email.getText().toString());
-        temp.setSource(from.getText().toString());
-        temp.setDestination(to.getText().toString());
+        temp.setSource(fromStringToLocation(from.getText().toString()));
+        temp.setDestination(fromStringToLocation(to.getText().toString()));
         try {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
             java.util.Date d1 = (java.util.Date) format.parse(when.getText().toString());
             temp.setStart(new Time(d1.getTime()));
-                int selectedItemOfMySpinner = status.getSelectedItemPosition();
-            if (selectedItemOfMySpinner!=0)
-                temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
-            else
-                temp.setState(Trip.TripState.available);
         } catch (Exception ex) {
-            Toast.makeText(getApplicationContext(), "Must be something wrong with the data you entered", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Must be something wrong with the time you entered", Toast.LENGTH_LONG).show();
         }
+        int selectedItemOfMySpinner = status.getSelectedItemPosition();
+        if (selectedItemOfMySpinner != 0)
+            temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
+        else
+            temp.setState(Trip.TripState.available);
+
         return temp;
     }
 
     private boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private Location fromStringToLocation(String str) {
+        Geocoder gc = new Geocoder(this);
+        try {
+            if (gc.isPresent()) {
+                List<Address> list = gc.getFromLocationName("155 Park Theater, Palo Alto, CA", 1);
+                Address address = list.get(0);
+                double lat = address.getLatitude();
+                double lng = address.getLongitude();
+
+                Location locationA = new Location(str);
+
+                locationA.setLatitude(lat);
+                locationA.setLongitude(lng);
+                return locationA;
+            }
+            return null;
+        } catch (Exception exception) {
+            Toast.makeText(getBaseContext(), "must be something wrong with the location you entered\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
     }
 }

@@ -8,7 +8,7 @@ import com.libby.hanna.drivingalltheway.model.entities.Trip.TripState;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 
-public class TripConst {
+/*public class TripConst {
     public static final String STATE = "state";
     public static final String SOURCE = "source";
     public static final String DESTINATION = "destination";
@@ -54,3 +54,4 @@ public class TripConst {
         }
     }
 }
+*/

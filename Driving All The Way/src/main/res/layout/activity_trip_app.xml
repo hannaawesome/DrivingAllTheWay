@@ -83,7 +83,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top"
-                android:src="@mipmap/arrowIcon"
+                android:src="@mipmap/arrowicon"
                 android:contentDescription="TODO" />
 
             <LinearLayout
@@ -130,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                app:srcCompat="@mipmap/infoIcon" />
+                app:srcCompat="@mipmap/infoicon" />
 
             <TextView
                 android:id="@+id/PassDitsText"
