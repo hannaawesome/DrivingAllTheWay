@@ -4,18 +4,22 @@ Libby Olidort 209274612
 */
 package com.libby.hanna.drivingalltheway.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,6 +36,15 @@ import java.util.Locale;
 
 import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
 
+import android.annotation.SuppressLint;
+
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.ui.PlacePicker;
+
+
 /**
  * The activity where the data is written in and gets added to the database
  */
@@ -40,8 +53,8 @@ public class TripApp extends Activity {
     //region Views
     private Spinner status;
     private Button done;
-    private Button nowTime;
-    private Button here;
+    private ImageButton nowTime;
+    private ImageButton here;
     private EditText email;
     private EditText phone;
     private EditText name;
@@ -64,74 +77,82 @@ public class TripApp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
         done = (Button) findViewById(R.id.DoneButton);
-        //here = (Button) findViewById(R.id.DoneButton);
-        //nowTime = (Button) findViewById(R.id.DoneButton);
+        here = (ImageButton) findViewById(R.id.imageButton3);
+        nowTime = (ImageButton) findViewById(R.id.imageButton_nowTime);
         status = (Spinner) findViewById(R.id.StatusSpinner);
         status.setAdapter(new SpinnerAdapter(this));
-        done.setOnClickListener(new View.OnClickListener() {
+        findViews();
+        //Location
+        locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                from.setText(fromLocationToString(location));
+                // Remove the listener you previously added
+                locationManager.removeUpdates(locationListener);
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        nowTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (v == nowTime) {
-                    //gets the current time and put it in the when
-                    Date d = new Date();
-                    when1.setText(d.getHours());
-                    when2.setText(d.getMinutes());
-                } else
-                {
-                    if (v == here) {
-                        //gets the current location and put it in the from
-                        locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
-                        locationListener = new LocationListener() {
-                            public void onLocationChanged(Location location) {
-                                from.setText(fromLocationToString(location));
-                                // Remove the listener you previously added
-                                //locationManager.removeUpdates(locationListener);
-                            }
 
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-                            }
+                //gets the current time and put it in the when
+                Date d = new Date();
+                when1.setText(String.valueOf(d.getHours()));
+                when2.setText(String.valueOf(d.getMinutes()));
 
-                            public void onProviderEnabled(String provider) {
-                            }
-
-                            public void onProviderDisabled(String provider) {
-                            }
-                        };
-                            /*private void getLocation () {
-
-                                //     Check the SDK version and whether the permission is already granted or not.
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
-
-                                } else {
-                                    // Android version is lesser than 6.0 or the permission is already granted.
-                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                                }
-                        };*/
-                    } else {
-                        if (v == done) {
-                            findViews();
-                            if (validations()) {
-                                t = getTrip();
-                                be.addTrip(t, new DB_manager.Action<Long>() {
-                                    @Override
-                                    public void onSuccess(Long obj) {
-                                        Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
-                                        clearAllPage();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception exception) {
-                                        Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            }
-
-                        }
-                    }
-                }
             }
         });
+        here.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //gets the current location and put it in the from
+                    getLocation();
+            }
+        });
+        done.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (validations()) {
+                    t = getTrip();
+                    be.addTrip(t, new DB_manager.Action<Long>() {
+                        @Override
+                        public void onSuccess(Long obj) {
+                            Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
+                            clearAllPage();
+                        }
+
+                        @Override
+                        public void onFailure(Exception exception) {
+                            Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+
+
+            }
+        });
+    }
+
+    private void getLocation() {
+        try {
+            //     Check the SDK version and whether the permission is already granted or not.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
+            else {
+                // Android version is lesser than 6.0 or the permission is already granted.
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(getBaseContext(), "must be something wrong \n" + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void findViews() {
@@ -145,6 +166,9 @@ public class TripApp extends Activity {
         status = (Spinner) findViewById(R.id.StatusSpinner);
     }
 
+    /**
+     * checks if the entered data is valid
+     */
     private boolean validations() {
         boolean check = true;
         //region getStrings
@@ -207,6 +231,9 @@ public class TripApp extends Activity {
         return true;
     }
 
+    /**
+     * Reset the entering data page
+     */
     private void clearAllPage() {
         email.getText().clear();
         phone.getText().clear();
@@ -218,13 +245,18 @@ public class TripApp extends Activity {
         status.setSelection(0);
     }
 
+    /**
+     * @return The Trip data entered by the user
+     */
     private Trip getTrip() {
         Trip temp = new Trip();
         temp.setName(name.getText().toString());
         temp.setPhoneNumber(phone.getText().toString());
         temp.setEmailAddress(email.getText().toString());
-        temp.setSource(fromStringToLocation(from.getText().toString()));
-        temp.setDestination(fromStringToLocation(to.getText().toString()));
+        //temp.setSource(fromStringToLocation(from.getText().toString()));
+       // temp.setDestination(fromStringToLocation(to.getText().toString()));
+        temp.setSource(from.getText().toString());
+        temp.setDestination(to.getText().toString());
         try {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
             java.util.Date d1 = (java.util.Date) format.parse(when1.getText().toString() + ':' + when2.getText().toString());
@@ -233,14 +265,18 @@ public class TripApp extends Activity {
             Toast.makeText(getBaseContext(), "Must be something wrong with the time you entered", Toast.LENGTH_LONG).show();
         }
         int selectedItemOfMySpinner = status.getSelectedItemPosition();
-        if (selectedItemOfMySpinner != 0)
+        if (selectedItemOfMySpinner != 0) {
+            String hu = status.getSelectedItem().toString();
             temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
-        else
+        } else
             temp.setState(Trip.TripState.available);
 
         return temp;
     }
 
+    /**
+     * checks if the email entered is valid
+     */
     private boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -266,7 +302,7 @@ public class TripApp extends Activity {
         }
     }
 
-    public String fromLocationToString(Location location) {
+    private String fromLocationToString(Location location) {
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
