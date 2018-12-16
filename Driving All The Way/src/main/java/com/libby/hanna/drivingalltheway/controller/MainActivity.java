@@ -1,3 +1,7 @@
+/*
+Hanna Weissberg 318796398
+Libby Olidort 209274612
+*/
 package com.libby.hanna.drivingalltheway.controller;
 
 import android.content.Context;
@@ -12,8 +16,11 @@ import android.widget.Toast;
 
 import com.libby.hanna.drivingalltheway.R;
 
+/**
+ * The main of this application
+ * it is only used as a home page to the adding of the data
+ */
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
 
@@ -23,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-                Intent intent=new Intent(getApplicationContext(), TripApp.class);
+                Intent intent=new Intent(getBaseContext(), TripApp.class);
                 startActivity(intent);
             }
         });

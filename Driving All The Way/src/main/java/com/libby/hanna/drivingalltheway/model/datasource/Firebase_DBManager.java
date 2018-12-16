@@ -1,13 +1,16 @@
+/*
+Hanna Weissberg 318796398
+Libby Olidort 209274612
+*/
+
 package com.libby.hanna.drivingalltheway.model.datasource;
 import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.libby.hanna.drivingalltheway.controller.TripApp;
 import com.libby.hanna.drivingalltheway.model.backend.DB_manager;
 import com.libby.hanna.drivingalltheway.model.entities.*;
-
 
 public class Firebase_DBManager implements DB_manager {
 

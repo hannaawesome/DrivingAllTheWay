@@ -1,3 +1,7 @@
+/*
+Hanna Weissberg 318796398
+Libby Olidort 209274612
+*/
 package com.libby.hanna.drivingalltheway.model.entities;
 
 import android.content.SharedPreferences;
@@ -11,6 +15,9 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * The entity Trip (aka drive, travel etc.)
+ */
 public class Trip {
 
     /**
@@ -22,11 +29,18 @@ public class Trip {
 
 
     //region Fields
+
+    /**
+     * cannot be changed by the user, it is defined serially by summing the date and time
+     */
     private Long _id;
     private TripState state;
     private Location source;
     private Location destination;
     private Time start;
+    /**
+     * does not define by the passenger, if not defined, equals the start time
+     */
     private Time finish;
     private String name;
     private String phoneNumber;
@@ -37,7 +51,7 @@ public class Trip {
     public Trip(TripState state, Location source, Location destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress) {
         Date date = new Date();
-        this._id = (long)(date.getYear()+date.getMonth() + date.getDay() +
+        this._id = (long) (date.getYear() + date.getMonth() + date.getDay() +
                 date.getHours() + date.getMinutes() + date.getSeconds());
         this.state = state;
         this.source = source;
@@ -49,11 +63,13 @@ public class Trip {
         this.emailAddress = emailAddress;
     }
 
+    /**
+     * default constructor, mostly used in this project
+     */
     public Trip() {
         Date date = new Date();
-        this._id = (long)(date.getYear()+date.getMonth() + date.getDay() +
+        this._id = (long) (date.getYear() + date.getMonth() + date.getDay() +
                 date.getHours() + date.getMinutes() + date.getSeconds());
-
     }
 
     /**
@@ -75,10 +91,12 @@ public class Trip {
     //endregion
 
     //region Getter and Setter
+    //all of the exclude annotations are for the firebase- to not add these fields automatically
     @Exclude
-    public Long get_id() { 
+    public Long get_id() {
         return _id;
     }
+
     public TripState getState() {
         return state;
     }
@@ -86,6 +104,7 @@ public class Trip {
     public void setState(TripState state) {
         this.state = state;
     }
+
     @Exclude
     public Location getSource() {
         return source;
@@ -94,6 +113,7 @@ public class Trip {
     public void setSource(Location source) {
         this.source = source;
     }
+
     @Exclude
     public Location getDestination() {
         return destination;
@@ -102,7 +122,8 @@ public class Trip {
     public void setDestination(Location destination) {
         this.destination = destination;
     }
-@Exclude
+
+    @Exclude
     public Time getStart() {
         return start;
     }
@@ -110,9 +131,10 @@ public class Trip {
     public void setStart(Time start) {
         this.start = start;
     }
-@Exclude
+
+    @Exclude
     public Time getFinish() {
-        if (finish==null)
+        if (finish == null)
             return start;
         return finish;
     }
@@ -152,7 +174,7 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return _id==trip._id&&state == trip.state &&
+        return _id == trip._id && state == trip.state &&
                 source.equals(trip.source) &&
                 destination.equals(trip.destination) &&
                 start.equals(trip.start) &&
@@ -164,7 +186,7 @@ public class Trip {
 
     @Override
     public String toString() {
-        return "Trip{" +"id="+-_id+
+        return "Trip{" + "id=" + -_id +
                 ", state=" + state +
                 ", source='" + source + '\'' +
                 ", destination='" + destination + '\'' +
