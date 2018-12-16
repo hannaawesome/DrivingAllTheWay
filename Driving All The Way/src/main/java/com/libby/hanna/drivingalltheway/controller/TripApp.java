@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,7 +34,8 @@ public class TripApp extends Activity {
     private EditText name;
     private EditText from;
     private EditText to;
-    private EditText when;
+    private EditText when1;
+    private EditText when2;
     private Trip t;
     //endregion
 
@@ -61,10 +63,6 @@ public class TripApp extends Activity {
                             public void onFailure(Exception exception) {
                                 Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                             }
-                            @Override
-                            public void onProgress(String status, double percent) {
-
-                            }
                         });
 
                 }
@@ -78,7 +76,8 @@ public class TripApp extends Activity {
         to = (EditText) findViewById(R.id.ToEnter);
         email = (EditText) findViewById(R.id.EmailEnter);
         phone = (EditText) findViewById(R.id.PhoneEnter);
-        when = (EditText) findViewById(R.id.TimeEnter);
+        when1 = (EditText) findViewById(R.id.TimeEnter1);
+        when2 = (EditText) findViewById(R.id.TimeEnter2);
         status = (Spinner) findViewById(R.id.StatusSpinner);
     }
 
@@ -87,7 +86,7 @@ public class TripApp extends Activity {
         //region getStrings
         String strEmail = email.getText().toString();
         String strPhone = phone.getText().toString();
-        String strTime = when.getText().toString();
+        String strTime = when1.getText().toString()+':'+when2.getText().toString();
         String strFrom = from.getText().toString();
         String strName = name.getText().toString();
         String strTo = to.getText().toString();
@@ -111,7 +110,8 @@ public class TripApp extends Activity {
             check = false;
         }
         if (TextUtils.isEmpty(strTime)) {
-            when.setError("Time must be entered");
+            when1.setError("Time must be entered");
+            when2.setError("Time must be entered");
             check = false;
         }
         if (TextUtils.isEmpty(strTo)) {
@@ -146,7 +146,8 @@ public class TripApp extends Activity {
     private void clearAllPage() {
         email.getText().clear();
         phone.getText().clear();
-        when.getText().clear();
+        when1.getText().clear();
+        when2.getText().clear();
         to.getText().clear();
         from.getText().clear();
         name.getText().clear();
@@ -162,7 +163,7 @@ public class TripApp extends Activity {
         temp.setDestination(fromStringToLocation(to.getText().toString()));
         try {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
-            java.util.Date d1 = (java.util.Date) format.parse(when.getText().toString());
+            java.util.Date d1 = (java.util.Date) format.parse(when1.getText().toString()+':'+when2.getText().toString());
             temp.setStart(new Time(d1.getTime()));
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), "Must be something wrong with the time you entered", Toast.LENGTH_LONG).show();

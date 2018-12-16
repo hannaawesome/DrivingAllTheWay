@@ -8,9 +8,7 @@ public interface DB_manager
         void onSuccess(T obj);
 
         void onFailure(Exception exception);
-
-        void onProgress(String status, double percent);
-    }
+        }
     void addTrip(final Trip t ,final Action<Long> action);
 
 }

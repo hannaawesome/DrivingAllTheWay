@@ -25,13 +25,11 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onSuccess(Void aVoid) {
                     action.onSuccess(trip.get_id());
-                    action.onProgress("upload trip data", 100);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     action.onFailure(e);
-                    action.onProgress("error upload student data", 100);
                 }
             });
 
