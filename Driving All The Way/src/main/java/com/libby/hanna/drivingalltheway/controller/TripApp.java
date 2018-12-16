@@ -4,22 +4,18 @@ Libby Olidort 209274612
 */
 package com.libby.hanna.drivingalltheway.controller;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -83,7 +79,6 @@ nowTime=(Button) findViewById(R.id.DoneButton);
                                 Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
                                 clearAllPage();
                             }
-
                             @Override
                             public void onFailure(Exception exception) {
                                 Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
