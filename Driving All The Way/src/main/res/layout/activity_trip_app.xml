@@ -13,7 +13,7 @@
     <LinearLayout
         android:id="@+id/FirstLayout"
         android:layout_width="match_parent"
-        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_height="50dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -58,9 +58,9 @@
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:background="@color/transparent"
-                android:cropToPadding="false"
+                android:contentDescription="@string/When"
                 android:scaleType="fitCenter"
-                app:srcCompat="@mipmap/now_time_icon" />
+                android:src="@mipmap/now_time_icon" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -83,7 +83,7 @@
                     android:id="@+id/TimeEnter1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight=".25"
+                    android:layout_weight="1"
                     android:ems="1"
                     android:gravity="right|center|end"
                     android:hint="@string/WhenHours"
@@ -149,7 +149,7 @@
                     android:layout_weight="1"
                     android:background="@color/transparent"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@mipmap/location_icon" />
+                    android:src="@mipmap/location_icon" />
             </LinearLayout>
 
         </LinearLayout>
@@ -157,13 +157,13 @@
         <LinearLayout
             android:id="@+id/AddressLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/FromLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -180,12 +180,14 @@
 
                 <EditText
                     android:id="@+id/FromEnter"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:textSize="14sp" />
+                    android:textColor="@color/iconVeryDarkGrey"
+                    android:textSize="14sp"
+                    app:fontFamily="serif"/>
             </LinearLayout>
 
             <ImageView
@@ -198,7 +200,7 @@
 
             <LinearLayout
                 android:id="@+id/ToLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -214,12 +216,14 @@
 
                 <EditText
                     android:id="@+id/ToEnter"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:textSize="14sp" />
+                    android:textColor="@color/iconVeryDarkGrey"
+                    android:textSize="14sp"
+                    app:fontFamily="serif"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -243,7 +247,7 @@
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:layout_weight="1"
-                app:srcCompat="@mipmap/infoicon" />
+                android:src="@mipmap/infoicon" />
 
             <TextView
                 android:id="@+id/PassDitsText"
@@ -279,8 +283,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:ems="10"
-                app:fontFamily="serif"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="@color/iconVeryDarkGrey"
+                android:textSize="14sp"
+                app:fontFamily="serif" />
         </LinearLayout>
 
         <LinearLayout
@@ -314,6 +320,7 @@
                     android:textColorHint="@color/iconDarkGrey"
                     android:inputType="textEmailAddress"
                     app:fontFamily="serif"
+                    android:textColor="@color/iconVeryDarkGrey"
                     android:textSize="14dp" />
             </LinearLayout>
 
@@ -338,8 +345,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:ems="10"
-                    app:fontFamily="serif"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:textColor="@color/iconVeryDarkGrey"
+                    android:textSize="14sp"
+                    app:fontFamily="serif" />
             </LinearLayout>
 
         </LinearLayout>
