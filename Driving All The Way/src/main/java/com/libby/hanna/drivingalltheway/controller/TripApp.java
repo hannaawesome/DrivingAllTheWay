@@ -52,7 +52,7 @@ public class TripApp extends Activity {
 
     //region Views
     private Spinner status;
-    private Button done;
+    private ImageButton done;
     private ImageButton nowTime;
     private ImageButton here;
     private EditText email;
@@ -76,7 +76,7 @@ public class TripApp extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
-        done = (Button) findViewById(R.id.DoneButton);
+        done = (ImageButton) findViewById(R.id.DoneButton);
         here = (ImageButton) findViewById(R.id.imageButton3);
         nowTime = (ImageButton) findViewById(R.id.imageButton_nowTime);
         status = (Spinner) findViewById(R.id.StatusSpinner);
