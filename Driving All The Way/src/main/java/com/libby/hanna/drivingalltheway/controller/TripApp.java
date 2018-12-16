@@ -5,6 +5,7 @@ Libby Olidort 209274612
 package com.libby.hanna.drivingalltheway.controller;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,14 +36,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
-
-import android.annotation.SuppressLint;
-
-
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.ui.PlacePicker;
 
 
 /**
@@ -320,6 +313,7 @@ public class TripApp extends Activity {
         }
         return "IOException ...";
     }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -329,7 +323,7 @@ public class TripApp extends Activity {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
             } else {
-                Toast.makeText(this, "Until you grant the permission, we canot display the location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Until you grant the permission, we cannot display the location", Toast.LENGTH_SHORT).show();
             }
         }
 
