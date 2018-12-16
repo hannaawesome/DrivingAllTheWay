@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.libby.hanna.drivingalltheway.controller.TripApp;
 import com.libby.hanna.drivingalltheway.model.backend.DB_manager;
 import com.libby.hanna.drivingalltheway.model.entities.*;
 
@@ -35,7 +36,8 @@ public class Firebase_DBManager implements DB_manager {
 
         TripRef.child(key).child("start").setValue(trip.getStart().toString());
         TripRef.child(key).child("finish").setValue(trip.getFinish().toString());
-        //location
+        TripRef.child(key).child("from").setValue(trip.getSource().getLatitude()+','+trip.getSource().getLongitude());
+        TripRef.child(key).child("to").setValue(trip.getDestination().getLatitude()+','+trip.getSource().getLongitude());
     }
 }
 
