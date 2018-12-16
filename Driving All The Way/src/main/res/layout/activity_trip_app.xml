@@ -16,12 +16,13 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <Button
+        <ImageButton
             android:id="@+id/DoneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_gravity="start"
-            android:text="@string/DoneButton" />
+            android:background="@mipmap/taxi_stop_icon"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/When"
@@ -34,30 +35,49 @@
             android:textSize="18sp"
             app:fontFamily="serif" />
 
-        <EditText
-            android:id="@+id/TimeEnter"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:ems="10"
-            android:hint="@string/WhenEnter"
-            android:textColorHint="@color/iconDarkGrey"
-            android:inputType="time"
-            android:selectAllOnFocus="false"
-            android:singleLine="false"
-            android:textColor="@color/colorPrimaryDark" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="left"
+                app:srcCompat="@mipmap/time_icon" />
+
+            <EditText
+                android:id="@+id/TimeEnter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:ems="10"
+                android:hint="@string/WhenEnter"
+                android:inputType="time"
+                android:selectAllOnFocus="false"
+                android:singleLine="false"
+                android:textColor="@color/iconVeryDarkGrey"
+                android:textColorHint="@color/iconDarkGrey" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/AddressLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
+            android:gravity="center_vertical|center_horizontal|center"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/FromLayout"
-                android:layout_width="160dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
                 android:orientation="vertical">
 
                 <TextView
@@ -69,7 +89,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
-                    app:fontFamily="serif"/>
+                    app:fontFamily="serif" />
 
 
                 <EditText
@@ -86,13 +106,15 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top"
-                android:src="@mipmap/arrowIcon"
-                android:contentDescription="TODO" />
+                android:contentDescription="TODO"
+                android:src="@mipmap/arrow_icon" />
 
             <LinearLayout
                 android:id="@+id/ToLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="left"
                 android:orientation="vertical">
 
                 <TextView
@@ -104,7 +126,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
-                    app:fontFamily="serif"/>
+                    app:fontFamily="serif" />
 
                 <EditText
                     android:id="@+id/ToEnter"
@@ -153,8 +175,9 @@
 
         <LinearLayout
             android:id="@+id/NameLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:orientation="horizontal">
 
             <TextView
@@ -166,7 +189,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="12sp"
-                app:fontFamily="serif"/>
+                app:fontFamily="serif" />
 
             <EditText
                 android:id="@+id/NameEnter"
@@ -181,6 +204,7 @@
             android:id="@+id/EmailAndPhoneLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
@@ -192,7 +216,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="12sp"
-                app:fontFamily="serif"/>
+                app:fontFamily="serif" />
 
             <EditText
                 android:id="@+id/EmailEnter"

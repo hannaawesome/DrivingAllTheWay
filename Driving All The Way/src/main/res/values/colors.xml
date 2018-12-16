@@ -21,6 +21,7 @@
 
     <color name="green">#FF99CC00</color>
     <color name="yellow">#ffff00</color>
+    <color name="niceYellow">#c7aa00</color>
     <color name="red">#FFFF4444</color>
     <integer-array name="androidcolors">
         <item>@color/green</item>
