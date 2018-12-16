@@ -32,8 +32,10 @@ import java.util.Locale;
 
 import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
 
+/**
+ * The activity where the data is written in and gets added to the database
+ */
 public class TripApp extends Activity {
-//maybe add an option of now button
 
     //region Views
     private Spinner status;
@@ -48,12 +50,11 @@ public class TripApp extends Activity {
     private EditText when1;
     private EditText when2;
     private Trip t;
+
     // Acquire a reference to the system Location Manager
-   private LocationManager locationManager;
-
-
+    private LocationManager locationManager;
     // Define a listener that responds to location updates
-   private LocationListener locationListener;
+    private LocationListener locationListener;
     //endregion
 
     DB_manager be = DBManagerFactory.GetFactory();
@@ -63,53 +64,38 @@ public class TripApp extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
         done = (Button) findViewById(R.id.DoneButton);
-here=(Button) findViewById(R.id.DoneButton);
-nowTime=(Button) findViewById(R.id.DoneButton);
+        //here = (Button) findViewById(R.id.DoneButton);
+        //nowTime = (Button) findViewById(R.id.DoneButton);
         status = (Spinner) findViewById(R.id.StatusSpinner);
         status.setAdapter(new SpinnerAdapter(this));
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (v == done) {
-                    findViews();
-                    if (validations()) {
-                        t = getTrip();
-                        be.addTrip(t, new DB_manager.Action<Long>() {
-                            @Override
-                            public void onSuccess(Long obj) {
-                                Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
-                                clearAllPage();
+                if (v == nowTime) {
+                    //gets the current time and put it in the when
+                    Date d = new Date();
+                    when1.setText(d.getHours());
+                    when2.setText(d.getMinutes());
+                } else
+                {
+                    if (v == here) {
+                        //gets the current location and put it in the from
+                        locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
+                        locationListener = new LocationListener() {
+                            public void onLocationChanged(Location location) {
+                                from.setText(fromLocationToString(location));
+                                // Remove the listener you previously added
+                                //locationManager.removeUpdates(locationListener);
                             }
-                            @Override
-                            public void onFailure(Exception exception) {
-                                Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
                             }
-                        });
 
-                    }
-                } else {
-                    if (v == nowTime) {
-                        Date d=new Date();
-                        when1.setText(d.getHours());
-                        when2.setText(d.getMinutes());
-                    } else {
-                        if (v == here) {
-                            locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
-                            locationListener = new LocationListener() {
-                                public void onLocationChanged(Location location) {
-                                    from.setText(fromLocationToString(location));
-                                    // Remove the listener you previously added
-                                    //locationManager.removeUpdates(locationListener);
-                                }
+                            public void onProviderEnabled(String provider) {
+                            }
 
-                                public void onStatusChanged(String provider, int status, Bundle extras) {
-                                }
-
-                                public void onProviderEnabled(String provider) {
-                                }
-
-                                public void onProviderDisabled(String provider) {
-                                }
-                            };
+                            public void onProviderDisabled(String provider) {
+                            }
+                        };
                             /*private void getLocation () {
 
                                 //     Check the SDK version and whether the permission is already granted or not.
@@ -121,12 +107,32 @@ nowTime=(Button) findViewById(R.id.DoneButton);
                                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                                 }
                         };*/
+                    } else {
+                        if (v == done) {
+                            findViews();
+                            if (validations()) {
+                                t = getTrip();
+                                be.addTrip(t, new DB_manager.Action<Long>() {
+                                    @Override
+                                    public void onSuccess(Long obj) {
+                                        Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
+                                        clearAllPage();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception exception) {
+                                        Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            }
+
+                        }
                     }
                 }
             }
-        }
-    });
-}
+        });
+    }
 
     private void findViews() {
         name = (EditText) findViewById(R.id.NameEnter);
@@ -240,7 +246,6 @@ nowTime=(Button) findViewById(R.id.DoneButton);
     }
 
 
-
     private Location fromStringToLocation(String str) {
         Geocoder gc = new Geocoder(this);
         try {
@@ -249,7 +254,7 @@ nowTime=(Button) findViewById(R.id.DoneButton);
                 Address address = list.get(0);
                 double lat = address.getLatitude();
                 double lng = address.getLongitude();
-                Location location= new Location(str);
+                Location location = new Location(str);
                 location.setLatitude(lat);
                 location.setLongitude(lng);
                 return location;
@@ -260,6 +265,7 @@ nowTime=(Button) findViewById(R.id.DoneButton);
             return null;
         }
     }
+
     public String fromLocationToString(Location location) {
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -273,8 +279,7 @@ nowTime=(Button) findViewById(R.id.DoneButton);
                 return stateName + "\n" + cityName + "\n" + countryName;
             }
             return "no place: \n (" + location.getLongitude() + " , " + location.getLatitude() + ")";
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return "IOException ...";
