@@ -96,12 +96,10 @@ public class TripApp extends Activity {
 
         nowTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 //gets the current time and put it in the when
                 Date d = new Date();
                 when1.setText(String.valueOf(d.getHours()));
                 when2.setText(String.valueOf(d.getMinutes()));
-
             }
         });
         here.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +119,7 @@ public class TripApp extends Activity {
                             Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
                             clearAllPage();
                         }
+
                         @Override
                         public void onFailure(Exception exception) {
                             Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -228,7 +227,6 @@ public class TripApp extends Activity {
             return false;
         }
         //endregion
-
         return true;
     }
 
@@ -243,7 +241,7 @@ public class TripApp extends Activity {
         to.getText().clear();
         from.getText().clear();
         name.getText().clear();
-        status.setSelection(0);
+        //status.setSelection(0); irrelevant in this app
     }
 
     /**
@@ -264,11 +262,12 @@ public class TripApp extends Activity {
             Toast.makeText(getBaseContext(), "Must be something wrong with the time you entered", Toast.LENGTH_LONG).show();
         }
         int selectedItemOfMySpinner = status.getSelectedItemPosition();
-        if (selectedItemOfMySpinner != 0) {
+        //irrelevant in this app
+        /*if (selectedItemOfMySpinner != 0) {
             String hu = status.getSelectedItem().toString();
             temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
-        } else
-            temp.setState(Trip.TripState.available);
+        } else*/
+        temp.setState(Trip.TripState.available);
 
         return temp;
     }
@@ -279,7 +278,6 @@ public class TripApp extends Activity {
     private boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
 
     private Location fromStringToLocation(String str) {
         Geocoder gc = new Geocoder(this);
