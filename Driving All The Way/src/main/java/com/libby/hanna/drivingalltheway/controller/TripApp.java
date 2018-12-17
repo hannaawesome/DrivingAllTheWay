@@ -319,7 +319,7 @@ public class TripApp extends Activity {
         }
         return "IOException ...";
     }
-
+/*
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -333,5 +333,5 @@ public class TripApp extends Activity {
             }
         }
 
-    }
+    }*/
 }
