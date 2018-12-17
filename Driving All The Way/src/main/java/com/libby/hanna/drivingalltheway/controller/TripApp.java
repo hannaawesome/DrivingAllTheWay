@@ -5,7 +5,6 @@ Libby Olidort 209274612
 package com.libby.hanna.drivingalltheway.controller;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -74,6 +73,7 @@ public class TripApp extends Activity {
         nowTime = (ImageButton) findViewById(R.id.imageButton_nowTime);
         status = (Spinner) findViewById(R.id.StatusSpinner);
         status.setAdapter(new SpinnerAdapter(this));
+        status.setEnabled(false);
         findViews();
         //Location
         locationManager = (LocationManager) getBaseContext().getSystemService(Context.LOCATION_SERVICE);
@@ -121,7 +121,6 @@ public class TripApp extends Activity {
                             Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
                             clearAllPage();
                         }
-
                         @Override
                         public void onFailure(Exception exception) {
                             Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -129,8 +128,6 @@ public class TripApp extends Activity {
                     });
 
                 }
-
-
             }
         });
     }
@@ -222,8 +219,14 @@ public class TripApp extends Activity {
             return false;
         }
 
-        if (fromStringToLocation(strFrom) == null || fromStringToLocation(strTo) == null)
+        if (fromStringToLocation(strFrom) == null) {
+            to.setError("Your source location is not right");
             return false;
+        }
+        if (fromStringToLocation(strTo) == null) {
+            to.setError("Your destination is not right");
+            return false;
+        }
         //endregion
 
         return true;
@@ -282,7 +285,7 @@ public class TripApp extends Activity {
         Geocoder gc = new Geocoder(this);
         try {
             if (gc.isPresent()) {
-                List<Address> list = gc.getFromLocationName("155 Park Theater, Palo Alto, CA", 1);
+                List<Address> list = gc.getFromLocationName(str, 1);
                 Address address = list.get(0);
                 double lat = address.getLatitude();
                 double lng = address.getLongitude();
@@ -307,6 +310,8 @@ public class TripApp extends Activity {
                 String cityName = addresses.get(0).getAddressLine(0);
                 String stateName = addresses.get(0).getAddressLine(1);
                 String countryName = addresses.get(0).getAddressLine(2);
+                if (cityName == null)
+                    return stateName + "\n" + countryName;
                 if (countryName == null)
                     return stateName + "\n" + cityName;
                 if (stateName == null)
@@ -319,19 +324,4 @@ public class TripApp extends Activity {
         }
         return "IOException ...";
     }
-/*
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 5) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-            } else {
-                Toast.makeText(this, "Until you grant the permission, we cannot display the location", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }*/
 }
