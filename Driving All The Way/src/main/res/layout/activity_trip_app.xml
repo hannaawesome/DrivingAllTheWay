@@ -99,7 +99,7 @@
                     android:layout_width="7dp"
                     android:layout_height="match_parent"
 
-                    app:srcCompat="@mipmap/colon_icon" />
+                    android:src="@mipmap/colon_icon" />
 
                 <EditText
                     android:id="@+id/TimeEnter2"
