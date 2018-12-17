@@ -107,6 +107,7 @@ public class TripApp extends Activity {
         here.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //gets the current location and put it in the from
+                Toast.makeText(getBaseContext(), "searching for your location", Toast.LENGTH_LONG).show();
                 getLocation();
             }
         });
@@ -216,7 +217,7 @@ public class TripApp extends Activity {
             return false;
         }
         //check if time is valid
-        if (!strTime.matches("(?:[0-1][0-9]|2[0-4])|0:[0-5]\\d")) {
+        if (!strTime.matches("(?:[0-1][0-9]|2[0-4]):[0-5]\\d")) {
             Toast.makeText(getApplicationContext(), "The time you entered is invalid", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -306,6 +307,10 @@ public class TripApp extends Activity {
                 String cityName = addresses.get(0).getAddressLine(0);
                 String stateName = addresses.get(0).getAddressLine(1);
                 String countryName = addresses.get(0).getAddressLine(2);
+                if (countryName == null)
+                    return stateName + "\n" + cityName;
+                if (stateName == null)
+                    return cityName + "\n" + countryName;
                 return stateName + "\n" + cityName + "\n" + countryName;
             }
             return "no place: \n (" + location.getLongitude() + " , " + location.getLatitude() + ")";
