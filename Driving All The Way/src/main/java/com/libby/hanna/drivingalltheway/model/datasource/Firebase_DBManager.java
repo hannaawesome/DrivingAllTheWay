@@ -27,9 +27,9 @@ public class Firebase_DBManager implements DB_manager {
      * implementation of the function addTrip
      */
     @Override
-    public void addTrip(final Trip trip, final Action<Long> action) {
+    public void addTrip(final Trip trip, final Action<String> action) {
 
-            String key = trip.get_id().toString();//setting key
+            String key = trip.get_id();//setting key
             TripRef.child(key).setValue(trip).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

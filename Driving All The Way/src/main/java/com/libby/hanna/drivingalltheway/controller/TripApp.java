@@ -113,14 +113,13 @@ public class TripApp extends Activity {
             public void onClick(View v) {
                 if (validations()) {
                     t = getTrip();
-                    be.addTrip(t, new DB_manager.Action<Long>() {
+                    be.addTrip(t, new DB_manager.Action<String>() {
                         @Override
-                        public void onSuccess(Long obj) {
+                        public void onSuccess(String obj) {
                             Toast.makeText(getBaseContext(), "Added Successfully!", Toast.LENGTH_LONG).show();
                             clearAllPage();
                         }
 
-                        @Override
                         public void onFailure(Exception exception) {
                             Toast.makeText(getBaseContext(), "Could not add the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                         }

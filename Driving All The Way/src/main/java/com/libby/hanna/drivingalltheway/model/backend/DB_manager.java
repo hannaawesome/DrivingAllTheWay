@@ -25,6 +25,6 @@ public interface DB_manager
      * @param t
      * @param action
      */
-    void addTrip(final Trip t ,final Action<Long> action);
+    void addTrip(final Trip t ,final Action<String> action);
 
 }

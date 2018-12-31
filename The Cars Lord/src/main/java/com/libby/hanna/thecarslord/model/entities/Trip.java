@@ -2,17 +2,11 @@
 Hanna Weissberg 318796398
 Libby Olidort 209274612
 */
-package com.libby.hanna.drivingalltheway.model.entities;
+package com.libby.hanna.thecarslord.model.entities;
 
-import android.content.SharedPreferences;
-import android.location.Location;
-import android.provider.ContactsContract;
-import android.telephony.PhoneNumberUtils;
-
-import com.google.firebase.database.Exclude;
+//import com.google.firebase.database.Exclude;
 
 import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -94,11 +88,11 @@ public class Trip {
 
     //region Getter and Setter
     //all of the exclude annotations are for the firebase- to not add these fields automatically
-    @Exclude
+   // @Exclude
     public String get_id() {
         return _id;
     }
-
+    
     public String getDriver() {
         return driver;
     }
@@ -131,7 +125,7 @@ public class Trip {
         this.destination = destination;
     }
 
-    @Exclude
+   // @Exclude
     public Time getStart() {
         return start;
     }
@@ -140,7 +134,7 @@ public class Trip {
         this.start = start;
     }
 
-    @Exclude
+  //  @Exclude
     public Time getFinish() {
         if (finish == null)
             return start;
