@@ -1,5 +1,8 @@
 package com.libby.hanna.thecarslord.model.entities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.util.Objects;
 
 public class Driver {

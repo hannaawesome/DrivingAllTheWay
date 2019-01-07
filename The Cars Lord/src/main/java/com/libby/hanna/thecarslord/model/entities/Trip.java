@@ -4,9 +4,15 @@ Libby Olidort 209274612
 */
 package com.libby.hanna.thecarslord.model.entities;
 
-//import com.google.firebase.database.Exclude;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
+
+import com.google.firebase.database.Exclude;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -39,12 +45,12 @@ public class Trip {
     private String name;
     private String phoneNumber;
     private String emailAddress;
-    private String driver;
+    private Long driver;
     //endregion
 
     //region Constructors
     public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
-                String phoneNumber, String emailAddress) {
+                String phoneNumber, String emailAddress, Long driver) {
         Date date = new Date();
         this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
                 String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
@@ -56,6 +62,7 @@ public class Trip {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
+        this.driver = driver;
 
     }
 
@@ -64,7 +71,7 @@ public class Trip {
      */
     public Trip() {
         Date date = new Date();
-        this._id =  (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
+        this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
                 String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
     }
 
@@ -83,21 +90,22 @@ public class Trip {
         this.name = t.name;
         this.phoneNumber = t.phoneNumber;
         this.emailAddress = t.emailAddress;
+        this.driver = t.driver;
     }
     //endregion
 
     //region Getter and Setter
     //all of the exclude annotations are for the firebase- to not add these fields automatically
-   // @Exclude
+    @Exclude
     public String get_id() {
         return _id;
     }
-    
-    public String getDriver() {
+
+    public Long getDriver() {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(Long driver) {
         this.driver = driver;
     }
 
@@ -125,7 +133,7 @@ public class Trip {
         this.destination = destination;
     }
 
-   // @Exclude
+    @Exclude
     public Time getStart() {
         return start;
     }
@@ -134,7 +142,7 @@ public class Trip {
         this.start = start;
     }
 
-  //  @Exclude
+    @Exclude
     public Time getFinish() {
         if (finish == null)
             return start;
@@ -183,7 +191,7 @@ public class Trip {
                 finish.equals(trip.finish) &&
                 name.equals(trip.name) &&
                 phoneNumber.equals(trip.phoneNumber) &&
-                emailAddress.equals(trip.emailAddress);
+                emailAddress.equals(trip.emailAddress) && driver.equals(trip.driver);
     }
 
     @Override
@@ -196,7 +204,7 @@ public class Trip {
                 ", finish=" + finish +
                 ", name='" + name + '\'' +
                 ", phoneNumber=" + phoneNumber +
-                ", emailAddress=" + emailAddress +
+                ", emailAddress=" + emailAddress + ", driver=" + driver +
                 '}';
     }
     //endregion

@@ -45,12 +45,12 @@ public class Trip {
     private String name;
     private String phoneNumber;
     private String emailAddress;
-    private String driver;
+    private Long driver;
     //endregion
 
     //region Constructors
     public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
-                String phoneNumber, String emailAddress) {
+                String phoneNumber, String emailAddress, Long driver) {
         Date date = new Date();
         this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
                 String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
@@ -62,6 +62,7 @@ public class Trip {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.emailAddress = emailAddress;
+        this.driver = driver;
 
     }
 
@@ -70,7 +71,7 @@ public class Trip {
      */
     public Trip() {
         Date date = new Date();
-        this._id =  (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
+        this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
                 String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
     }
 
@@ -89,6 +90,7 @@ public class Trip {
         this.name = t.name;
         this.phoneNumber = t.phoneNumber;
         this.emailAddress = t.emailAddress;
+        this.driver = t.driver;
     }
     //endregion
 
@@ -99,11 +101,11 @@ public class Trip {
         return _id;
     }
 
-    public String getDriver() {
+    public Long getDriver() {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(Long driver) {
         this.driver = driver;
     }
 
@@ -189,7 +191,7 @@ public class Trip {
                 finish.equals(trip.finish) &&
                 name.equals(trip.name) &&
                 phoneNumber.equals(trip.phoneNumber) &&
-                emailAddress.equals(trip.emailAddress);
+                emailAddress.equals(trip.emailAddress) && driver.equals(trip.driver);
     }
 
     @Override
@@ -202,7 +204,7 @@ public class Trip {
                 ", finish=" + finish +
                 ", name='" + name + '\'' +
                 ", phoneNumber=" + phoneNumber +
-                ", emailAddress=" + emailAddress +
+                ", emailAddress=" + emailAddress + ", driver=" + driver +
                 '}';
     }
     //endregion

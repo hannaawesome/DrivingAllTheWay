@@ -2,6 +2,7 @@ package com.libby.hanna.thecarslord.model.backend;
 
 import com.libby.hanna.thecarslord.model.entities.*;
 
+import java.sql.Time;
 import java.util.List;
 
 public interface DB_manager {
@@ -28,13 +29,13 @@ public interface DB_manager {
 
     List<Trip> getFinishedTrips();
 
-    List<Trip> getSpecificDriverTrips();
+    List<Trip> getSpecificDriverTrips(Long _id);
 
-    List<Trip> getNotHandeledTripsInCity();
+    List<Trip> getNotHandeledTripsInCity(String city);
 
-    List<Trip> getNotHandeledTripsInDistance();
+    List<Trip> getNotHandeledTripsInDistance(double distance);
 
-    List<Trip> getTripsByTime();
+    List<Trip> getTripsByTime(Time t);
 
     List<Trip> getTripsByPrice();
 }
