@@ -1,17 +1,13 @@
 <resources>
     <string name="app_name">The Cars Lord</string>
     <string name="title_activity_login">Sign in</string>
-
+    <!-- Strings related to register -->
+    <string name="hint_id">Id</string>
+    <string name="hint_Fname">First Name</string>
+    <string name="hint_Lname">Last Name</string>
+    <string name="sign_up_button">Sign up</string>
     <!-- Strings related to login -->
-    <string name="prompt_username">UserName</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="sign_up">Sign up</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="hint_username">Email Address</string>
+    <string name="hint_password">Password</string>
+    <string name="title_activity_login2">Sign in</string>
 </resources>
