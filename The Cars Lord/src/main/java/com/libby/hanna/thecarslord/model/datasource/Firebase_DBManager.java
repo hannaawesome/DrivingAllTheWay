@@ -30,35 +30,10 @@ public class Firebase_DBManager implements DB_manager {
         driverList = new ArrayList<Driver>();//change to query
         TripRef = database.getReference("trips");
         tripList = new ArrayList<Trip>();
-
-
-        /*DriversRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                // statusText.setText(value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // statusText.setText("Failed to read value.");
-            }
-        });
-        TripRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for( DataSnapshot d:dataSnapshot.getChildren())
-                   tripList.add(d.getValue(Trip.class));
-                // statusText.setText(value);
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // statusText.setText("Failed to read value.");
-            }
-        });*/
     }
-       public static ChildEventListener driverRefChildEventListener;
+    public static ChildEventListener driverRefChildEventListener;
     public static ChildEventListener tripRefChildEventListener;
+
     @Override
     public void addDriver(final Driver dr, final Action<Long> action) {
         String key = dr.get_id().toString();//setting key
@@ -120,7 +95,7 @@ public class Firebase_DBManager implements DB_manager {
         List<Trip> notHandeledTrips=getNotHandeledTrips();
         List<Trip> trips=new ArrayList<>();
         for (Trip i : notHandeledTrips) {
-            if(i.getDestination().equals(city))//no accurate
+            if(i.getDestination().equals(city))//not accurate
                 trips.add(i);
         }
         return trips;
@@ -204,8 +179,6 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
-                   // String id = dataSnapshot.getKey();
-                    //student.setId(Long.parseLong(id));
                     tripList.add(t);
                     notifyDataChange.OnDataChanged(tripList);
                 }
