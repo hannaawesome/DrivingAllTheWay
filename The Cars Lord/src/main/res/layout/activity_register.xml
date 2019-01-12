@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme.Dark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +22,7 @@
             android:layout_height="72dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:src="@mipmap/app_logo"/>
+            android:src="@mipmap/app_logo" />
 
         <!-- ID label -->
         <android.support.design.widget.TextInputLayout
@@ -125,8 +128,8 @@
                 android:id="@+id/editTextPasswordR"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password" />
+                android:hint="Password"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <!--  Authentication Password Label -->
@@ -142,8 +145,8 @@
                 android:id="@+id/editTextPasswordRVerify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Verify Password" />
+                android:hint="Verify Password"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
@@ -163,6 +166,7 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:text="@string/already_a_member_login"
+
             android:textSize="16sp" />
 
     </LinearLayout>

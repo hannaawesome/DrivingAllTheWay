@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         name = (EditText) findViewById(R.id.editTextUserName);
         password = (EditText) findViewById(R.id.editTextUserPassword);
-        //remember = (CheckBox) findViewById(R.id.saveLoginCheckBox);
+        remember = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         userAuth = FirebaseAuth.getInstance();
         register = (AppCompatButton) findViewById(R.id.register);

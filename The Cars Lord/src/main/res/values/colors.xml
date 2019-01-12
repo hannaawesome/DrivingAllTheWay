@@ -15,7 +15,6 @@
     <color name="iron">#CCCCCC</color>
     <color name="white">#FFFFFF</color>
 
-
         <color name="colorPrimary">#ffffff</color>
         <color name="colorPrimaryDark">#000000</color>
         <color name="colorAccent">@color/iconLightYellow</color>
