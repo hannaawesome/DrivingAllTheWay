@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
         be = DBManagerFactory.GetFactory();
         findViews();
         userAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = userAuth.getCurrentUser();
         setupFloatingLabelError();
         validations();
         d = getDriver();
@@ -63,23 +63,19 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Long obj) {
                                 Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                 startActivity(intent);
 
                             }
-
                             @Override
                             public void onFailure(Exception exception) {
                                 Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
-
-
                     }
                 }
             }
         });
-
     }
 
     private boolean saveSharedPrefences() {
@@ -88,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userName", email.getText().toString());
             editor.putString("userPassward", password.getText().toString());
-            //editor.putBoolean("SavePass",true); to load automatically
+            editor.putBoolean("SavePass",false);
             editor.commit();
             return true;
         } catch (Exception ex) {
@@ -98,7 +94,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerToFireBase(String email, String password) {
-
         userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -223,13 +218,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+                                          int after) { }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
     }
 
@@ -244,15 +236,23 @@ public class RegisterActivity extends AppCompatActivity {
         temp.setLastName(lastName.getText().toString());
         temp.setCreditCardNumber(creditCardNumber.getText().toString());
         temp.set_id(Long.getLong(_id.getText().toString()));
-
-        //int selectedItemOfMySpinner = status.getSelectedItemPosition();
-        //irrelevant in this app
-        /*if (selectedItemOfMySpinner != 0) {
-            String hu = status.getSelectedItem().toString();
-            temp.setState(Trip.TripState.valueOf(status.getSelectedItem().toString()));
-        } else*/
-        //temp.setState(Trip.TripState.available);
-
         return temp;
+    }
+
+    private void sendEmailVerification() {
+        // Send verification email
+        final FirebaseUser user = userAuth.getCurrentUser();
+        user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                } else {
+                    //Log.e(TAG, "sendEmailVerification", task.getException());
+                    Toast.makeText(RegisterActivity.this, "Failed to send verification email.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

@@ -110,7 +110,7 @@ public class Firebase_DBManager implements DB_manager {
     public List<Trip> getTripsByTime(Time t) {
         List<Trip> trips=new ArrayList<>();
         for (Trip i : tripList) {
-            if(i.getStart()== t)
+            if(i.getStart().equals(t))
                 trips.add(i);
         }
         return trips;
@@ -131,8 +131,6 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Driver d = dataSnapshot.getValue(Driver.class);
-                    //String id = dataSnapshot.getKey();
-                    //student.setId(Long.parseLong(id));
                     driverList.add(d);
                     notifyDataChange.OnDataChanged(driverList);
                 }

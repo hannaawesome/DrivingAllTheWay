@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.libby.hanna.thecarslord.R;
 import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
 import com.libby.hanna.thecarslord.model.backend.DB_manager;
@@ -19,14 +21,19 @@ import com.libby.hanna.thecarslord.model.entities.Trip;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-private TextView done;
-private DB_manager be;
+    private TextView done;
+    private DB_manager be;
+    private FirebaseAuth userAuth;
+    private FirebaseUser currentUser;
+    private Driver driver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         be = DBManagerFactory.GetFactory();
-
+        be = DBManagerFactory.GetFactory();
+        userAuth = FirebaseAuth.getInstance();
+        currentUser = userAuth.getCurrentUser();
         done = (TextView) findViewById(R.id.something);
         Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
             @Override
@@ -36,7 +43,7 @@ private DB_manager be;
                     studentsRecycleView.setAdapter(new StudentsRecycleViewAdapter());
                 } else studentsRecycleView.getAdapter().notifyDataSetChanged();*/
                 List<Trip> d = be.getTripsByPrice();
-                if (d != null||d.size()!=0)
+                if (d != null || d.size() != 0)
                     done.setText(d.get(0).getEmailAddress());
             }
 
@@ -46,8 +53,15 @@ private DB_manager be;
             }
         });
     }
-   protected void onDestroy() {
+/*private void loadDataOnCurrentDriver(){
+        String id=currentUser.getUid();
+}*/
+    protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
         super.onDestroy();
+    }
+
+    private void signOut() {
+        userAuth.signOut();
     }
 }
