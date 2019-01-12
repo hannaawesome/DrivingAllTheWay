@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText phoneNumber;
     private EditText creditCardNumber;
     private boolean check;
-    private Button register;
+    private AppCompatButton register;
     private DB_manager be;
     private Driver d;
 
@@ -117,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
         _id = (EditText) findViewById(R.id.editTextId);
         phoneNumber = (EditText) findViewById(R.id.editTextPhone);
         creditCardNumber = (EditText) findViewById(R.id.editTextCreditCard);
-        register = (Button) findViewById(R.id.done);
+        register = (AppCompatButton) findViewById(R.id.done);
     }
 
     /**
