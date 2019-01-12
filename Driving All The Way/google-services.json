@@ -31,6 +31,74 @@
           }
         },
         {
+          "client_id": "824612215803-jo56f1qfitnudns58dh149phg7unclke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.libby.hanna.drivingalltheway",
+            "certificate_hash": "b4de88841f00ff3488bde2cad8154f56b5215e45"
+          }
+        },
+        {
+          "client_id": "824612215803-6btnmlagi5hiepbt4bn8m4t69mb5d10d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpFvKaVdH5dWTnvYEQ5F-T1yMx6h_8XZA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824612215803-6btnmlagi5hiepbt4bn8m4t69mb5d10d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824612215803:android:5ba4421e73056b11",
+        "android_client_info": {
+          "package_name": "com.libby.hanna.thecarslord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824612215803-ef27fmuo6kgt1c6tdf3ujc1ko40hqugj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.libby.hanna.thecarslord",
+            "certificate_hash": "8861704d28963de81998272baf33162c057c1d27"
+          }
+        },
+        {
+          "client_id": "824612215803-onfc6uupm4jr74n4h9tldu63l36coebh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.libby.hanna.thecarslord",
+            "certificate_hash": "dab462461d1daddb2e9e484a0c1d33393e6a2aa9"
+          }
+        },
+        {
+          "client_id": "824612215803-ei3tn3nc7t794j91ivoa7afseurvahff.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.libby.hanna.thecarslord",
+            "certificate_hash": "b4de88841f00ff3488bde2cad8154f56b5215e45"
+          }
+        },
+        {
           "client_id": "824612215803-6btnmlagi5hiepbt4bn8m4t69mb5d10d.apps.googleusercontent.com",
           "client_type": 3
         }
