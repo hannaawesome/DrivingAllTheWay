@@ -12,4 +12,7 @@
     <string name="title_activity_login2">Sign in</string>
     <string name="create_account">Create Account</string>
     <string name="already_a_member_login">Already a member? Login</string>
+    <string name="phone_number">Phone number</string>
+    <string name="credit_card_number">Credit card number</string>
+    <string name="todo">TODO</string>
 </resources>
