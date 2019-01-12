@@ -34,7 +34,6 @@ import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView done;
     private DB_manager be;
     private FirebaseAuth userAuth;
     private FirebaseUser currentUser;
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         be = DBManagerFactory.GetFactory();
         userAuth = FirebaseAuth.getInstance();
         currentUser = userAuth.getCurrentUser();
-        done = (TextView) findViewById(R.id.something);
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
             @Override
@@ -59,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
                     students = obj;
                     studentsRecycleView.setAdapter(new StudentsRecycleViewAdapter());
                 } else studentsRecycleView.getAdapter().notifyDataSetChanged();*/
-                List<Trip> d = be.getTripsByPrice();
+               /* List<Trip> d = be.getTripsByPrice();
                 if (d != null || d.size() != 0)
-                    done.setText(d.get(0).getEmailAddress());
+                    done.setText(d.get(0).getEmailAddress());*/
             }
 
             @Override

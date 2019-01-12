@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private FirebaseAuth userAuth;
     FirebaseUser currentUser;
-    private Button register;
+    private AppCompatButton register;
     private CheckBox remember;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -39,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         //remember = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         userAuth = FirebaseAuth.getInstance();
-        register = (Button) findViewById(R.id.register);
+        register = (AppCompatButton) findViewById(R.id.register);
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), RegisterActivity.class);
