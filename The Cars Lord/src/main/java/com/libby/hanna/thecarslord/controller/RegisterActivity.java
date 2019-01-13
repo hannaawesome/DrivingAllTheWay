@@ -53,26 +53,28 @@ public class RegisterActivity extends AppCompatActivity {
         findViews();
         userAuth = FirebaseAuth.getInstance();
         setupFloatingLabelError();
-        validations();
-        d = getDriver();
+
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (saveSharedPrefences()) {
-                    registerToFireBase(email.getText().toString(), password.getText().toString());
-                    if (check) {
-                        be.addDriver(d, new DB_manager.Action<Long>() {
-                            @Override
-                            public void onSuccess(Long obj) {
-                                Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
+                if (validations()) {
+                    d = getDriver();
+                    if (saveSharedPrefences()) {
+                        registerToFireBase(email.getText().toString(), password.getText().toString());
+                        if (check) {
+                            be.addDriver(d, new DB_manager.Action<Long>() {
+                                @Override
+                                public void onSuccess(Long obj) {
+                                    Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                    startActivity(intent);
+                                }
 
-                            }
-                            @Override
-                            public void onFailure(Exception exception) {
-                                Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Exception exception) {
+                                    Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -85,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userName", email.getText().toString());
             editor.putString("userPassward", password.getText().toString());
-            editor.putBoolean("SavePass",false);
+            editor.putBoolean("SavePass", false);
             editor.commit();
             return true;
         } catch (Exception ex) {
@@ -204,7 +206,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupFloatingLabelError() {
-        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.user_password_text_input_layout);
+        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.Password_text_input_layout);
         floatingUsernameLabel.getEditText().addTextChangedListener(new TextWatcher() {
             // ...
             @Override
@@ -219,10 +221,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) { }
+                                          int after) {
+            }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 

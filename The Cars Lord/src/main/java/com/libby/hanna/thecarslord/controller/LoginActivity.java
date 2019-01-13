@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.libby.hanna.thecarslord.R;
 import com.libby.hanna.thecarslord.model.entities.Driver;
-
+//how to check if not there or if there
 public class LoginActivity extends Activity {
     private EditText name;
     private EditText password;
@@ -49,8 +49,9 @@ public class LoginActivity extends Activity {
         password = (EditText) findViewById(R.id.editTextUserPassword);
         remember = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        // userAuth = FirebaseAuth.getInstance();
-        loadSharedPreferences();
+         userAuth = FirebaseAuth.getInstance();
+        if(!loadSharedPreferences())
+            Toast.makeText(this, "unable to load previous data", Toast.LENGTH_SHORT).show();
         log = (AppCompatButton) findViewById(R.id.login);
         log.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -94,19 +95,20 @@ public class LoginActivity extends Activity {
         return check;
     }
     private boolean loadSharedPreferences() {
-        if (sharedPreferences.contains("SavePass"))
+        if (sharedPreferences.contains("SavePass")) {
             if (!sharedPreferences.getBoolean("SavePass", false))
                 return true;
             else
                 remember.setChecked(true);
-        if (sharedPreferences.contains("userName"))
-            name.setText(sharedPreferences.getString("userName", null));
-        else
-            return false;
-        if (sharedPreferences.contains("userPassword"))
-            password.setText(sharedPreferences.getString("userPassword", null));
-        else
-            return false;
+            if (sharedPreferences.contains("userName"))
+                name.setText(sharedPreferences.getString("userName", null));
+            else
+                return false;
+           /* if (sharedPreferences.contains("userPassword"))
+                password.setText(sharedPreferences.getString("userPassword", null));
+            else
+                return false;*/ //not safe
+        }
         return true;
     }
     private void saveSharedPrefences() {
@@ -115,7 +117,7 @@ public class LoginActivity extends Activity {
                 editor = sharedPreferences.edit();
                 editor.putBoolean("SavePass", true);
                 editor.putString("userName", name.getText().toString());
-                editor.putString("userPassward", password.getText().toString());
+                editor.putString("userPassword", password.getText().toString());
                 editor.commit();
             } catch (Exception ex) {
                 Toast.makeText(this, "failed to save Preferences", Toast.LENGTH_SHORT).show();
@@ -125,7 +127,6 @@ public class LoginActivity extends Activity {
             editor.commit();
         }
     }
-
     private void logIn(String email, String password) {
         userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
