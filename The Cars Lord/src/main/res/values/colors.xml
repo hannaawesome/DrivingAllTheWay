@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#E43F3F</color>
-    <color name="primary_dark">#E12929</color>
-    <color name="primary_darker">#CC1D1D</color>
+    <!--color name="primary">#E43F3F</color-->
+    <!--color name="primary_dark">#E12929</color-->
+    <!--color name="primary_darker">#CC1D1D</color-->
     <color name="accent">#FFFFFF</color>
 
     <color name="black">#000000</color>
@@ -20,9 +20,9 @@
         <color name="colorAccent">@color/iconLightYellow</color>
 
         //region iconsColours
-        <color name="iconLightBlue">#32BACE</color>
-        <color name="iconBlue">#297B87</color>
-        <color name="iconDarkAquamarine">#059097</color>
+        <color name="primary">#32BACE</color>
+        <color name="primary_darker">#297B87</color>
+        <color name="primary_dark">#059097</color>
         <color name="iconAquamarine">#52C4A4</color>
         <color name="iconVeryDarkGrey">#3D3E4D</color>
         <color name="iconDarkGrey">#525564</color>

@@ -1,67 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/backgroundLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient"
-    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
     tools:context=".controller.MainActivity">
 
     <LinearLayout
+        android:id="@+id/backgroundLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingTop="56dp"
+        android:paddingRight="24dp">
 
         <TextView
             android:id="@+id/addRidetextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/addRide"
-            android:textAllCaps="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/iconVeryDarkGrey"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="normal"
-            app:fontFamily="casual" />
-
-        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="top|center"
-            android:orientation="horizontal">
+            android:padding="24dp"
+            android:gravity="center"
+            android:text="@string/addRide"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-            <Button
-                android:id="@+id/AddTrip"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:background="@mipmap/add_ride_icon"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/yellow"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                android:typeface="serif"
-                tools:layout_editor_absoluteX="34dp"
-                tools:layout_editor_absoluteY="30dp" />
-        </LinearLayout>
+
+        <Button
+            android:id="@+id/AddTrip"
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@mipmap/rideapp_icon"
+            android:textAllCaps="false" />
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/credits"
-            android:textColor="@color/iconDarkGrey"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            app:fontFamily="sans-serif-smallcaps" />
+            android:textSize="16dp"
+            android:gravity="center"
+            android:padding="24dp" />
+
 
     </LinearLayout>
 
-</LinearLayout>
+
+</ScrollView>
+
+<!--tools:layout_editor_absoluteX="34dp"
+            tools:layout_editor_absoluteY="30dp" -->

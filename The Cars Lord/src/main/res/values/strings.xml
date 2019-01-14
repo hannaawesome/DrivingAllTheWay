@@ -15,4 +15,5 @@
     <string name="phone_number">Phone number</string>
     <string name="credit_card_number">Credit card number</string>
     <string name="todo">TODO</string>
+    <string name="no_account_yet_create_one_here">No account yet? Create one here</string>
 </resources>
