@@ -2,6 +2,7 @@ package com.libby.hanna.thecarslord.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -9,12 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText _id;
     private EditText phoneNumber;
     private EditText creditCardNumber;
-    private boolean check;
+    private TextView login;
     private AppCompatButton register;
     private DB_manager be;
     private Driver d;
@@ -60,26 +67,45 @@ public class RegisterActivity extends AppCompatActivity {
                     d = getDriver();
                     if (saveSharedPrefences()) {
                         registerToFireBase(email.getText().toString(), password.getText().toString());
-                        if (check) {
-                            be.addDriver(d, new DB_manager.Action<Long>() {
-                                @Override
-                                public void onSuccess(Long obj) {
-                                    Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                    startActivity(intent);
-                                }
+                        be.addDriver(d, new DB_manager.Action<Long>() {
+                            @Override
+                            public void onSuccess(Long obj) {
+                                Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
 
-                                @Override
-                                public void onFailure(Exception exception) {
-                                    Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
+                            @Override
+                            public void onFailure(Exception exception) {
+                                Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 }
             }
         });
+        //region toLogin
+        SpannableString ss = new SpannableString("Already a member? Login");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                startActivity(new Intent(getBaseContext(), LoginActivity.class));
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+        ss.setSpan(clickableSpan, 18, 23, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        login = (TextView) findViewById(R.id.link_login);
+        login.setText(ss);
+        login.setMovementMethod(LinkMovementMethod.getInstance());
+        login.setHighlightColor(Color.TRANSPARENT);
+        //endregion
     }
+
 
     private boolean saveSharedPrefences() {
         try {
@@ -101,18 +127,16 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {                         // Sign in success, update UI with the signed-in user's information
-                    FirebaseUser user = userAuth.getCurrentUser();
-                    check = true;
+                    //curr = userAuth.getCurrentUser();
                 } else {                         // If sign in fails, display a message to the user.
                     Toast.makeText(getBaseContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    check = false;
                 }
             }
         });
     }
 
     private void findViews() {
-        email = (EditText) findViewById(R.id.editTextUserName);
+        email = (EditText) findViewById(R.id.editTextEmail);
         password = (EditText) findViewById(R.id.editTextPasswordR);
         verifyPassword = (EditText) findViewById(R.id.editTextPasswordRVerify);
         lastName = (EditText) findViewById(R.id.editTextLastName);
@@ -121,6 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNumber = (EditText) findViewById(R.id.editTextPhone);
         creditCardNumber = (EditText) findViewById(R.id.editTextCreditCard);
         register = (AppCompatButton) findViewById(R.id.done);
+
     }
 
     /**
@@ -131,7 +156,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean validations() {
-        View focusView = null;
         boolean check = true;
         //region getStrings
         String strEmail = email.getText().toString();
@@ -186,19 +210,16 @@ public class RegisterActivity extends AppCompatActivity {
         //check if email is valid
         if (!isEmailValid(strEmail)) {
             Toast.makeText(getApplicationContext(), "Your email is invalid!", Toast.LENGTH_LONG).show();
-            focusView = email;
             return false;
         }
         //check if phone number is valid
         if (!isGlobalPhoneNumber(strPhone)) {
             Toast.makeText(getApplicationContext(), "Your phone number is invalid!", Toast.LENGTH_LONG).show();
-            focusView = phoneNumber;
             return false;
         }
 
         if (!password.getText().toString().equals(verifyPassword.getText().toString())) {
             verifyPassword.setError("password does not match");
-            focusView = verifyPassword;
             return false;
         }
         //endregion
@@ -211,7 +232,7 @@ public class RegisterActivity extends AppCompatActivity {
             // ...
             @Override
             public void onTextChanged(CharSequence text, int start, int count, int after) {
-                if (text.length() > 0 && text.length() <= 4) {
+                if (text.length() > 0 && text.length() <= 8) {
                     floatingUsernameLabel.setError("Password too short");
                     floatingUsernameLabel.setErrorEnabled(true);
                 } else {
@@ -223,7 +244,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -231,7 +251,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * @return The Trip data entered by the user
+     * @return The Driver data entered by the user
      */
     private Driver getDriver() {
         Driver temp = new Driver();
@@ -240,7 +260,7 @@ public class RegisterActivity extends AppCompatActivity {
         temp.setEmailAddress(email.getText().toString());
         temp.setLastName(lastName.getText().toString());
         temp.setCreditCardNumber(creditCardNumber.getText().toString());
-        temp.set_id(Long.getLong(_id.getText().toString()));
+        temp.set_id(Long.valueOf(_id.getText().toString()));
         return temp;
     }
 
