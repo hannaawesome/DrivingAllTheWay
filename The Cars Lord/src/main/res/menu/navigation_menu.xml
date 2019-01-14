@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/allTrips"
-    android:title="@string/sign_up_button"/>
-    <item android:id="@+id/thisTrips"
-        android:title="@string/sign_up_button"/>
+
+    <item android:id="@+id/tripsOnWait"
+        android:icon="@drawable/ic_menu"
+        android:title="All Available Trips"/>
+    <item android:id="@+id/myTips"
+        android:icon="@drawable/ic_menu"
+        android:title="My Trips"/>
     <item android:id="@+id/exit"
-        android:title="@string/sign_up_button"/>
+        android:icon="@drawable/ic_menu"
+        android:title="Sign out"/>
+
 </menu>
