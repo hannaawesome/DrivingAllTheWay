@@ -39,14 +39,15 @@ public class FirstFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_first, container, false);
         filter = (Spinner) view.findViewById(R.id.filter1);
 //filter.getSelectedItem();
-        tripsRecycleView = view.findViewById(R.id.firstButton);
+        tripsRecycleView = view.findViewById(R.id.firstRecycleView);
         tripsRecycleView.setHasFixedSize(true);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
             @Override
             public void OnDataChanged(List<Trip> obj) {
                 if (tripsRecycleView.getAdapter() == null) {
-                    availTripList = be.getNotHandeledTrips();
+                    int t=0;
+                    availTripList = be.getNotHandeledTripsInDistance(t,getActivity().getBaseContext());
                     tripsRecycleView.setAdapter(new TripsRecyclerViewAdapter());
                 } else tripsRecycleView.getAdapter().notifyDataSetChanged();
             }

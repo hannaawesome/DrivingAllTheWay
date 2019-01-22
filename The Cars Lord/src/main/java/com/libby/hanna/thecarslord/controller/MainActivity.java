@@ -4,6 +4,10 @@ package com.libby.hanna.thecarslord.controller;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -46,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         be = DBManagerFactory.GetFactory();
         userAuth = FirebaseAuth.getInstance();
         currentUser = userAuth.getCurrentUser();
-
+currentUser.getEmail();
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
 

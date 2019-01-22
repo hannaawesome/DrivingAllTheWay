@@ -1,5 +1,7 @@
 package com.libby.hanna.thecarslord.model.backend;
 
+import android.content.Context;
+
 import com.libby.hanna.thecarslord.model.entities.*;
 
 import java.sql.Time;
@@ -31,11 +33,11 @@ public interface DB_manager {
 
     List<Trip> getSpecificDriverTrips(Long _id);
 
-    List<Trip> getNotHandeledTripsInCity(String city);
+    List<Trip> getNotHandeledTripsInCity(String city,Context c);
 
-    List<Trip> getNotHandeledTripsInDistance(double distance);
+    List<Trip> getNotHandeledTripsInDistance(int distance,Context c);
 
     List<Trip> getTripsByTime(Time t);
 
-    List<Trip> getTripsByPrice();
+    List<Trip> getTripsByPrice(double price,Context c);
 }
