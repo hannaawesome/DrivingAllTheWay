@@ -10,15 +10,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.libby.hanna.thecarslord.R;
+import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
 import com.libby.hanna.thecarslord.model.backend.DB_manager;
 import com.libby.hanna.thecarslord.model.datasource.Firebase_DBManager;
 import com.libby.hanna.thecarslord.model.entities.Driver;
+import com.libby.hanna.thecarslord.model.entities.Trip;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,12 +38,16 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private Driver driver;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        be = DBManagerFactory.GetFactory();
+        userAuth = FirebaseAuth.getInstance();
+        currentUser = userAuth.getCurrentUser();
 
-        dl = (DrawerLayout)findViewById(R.id.activity_main);
+        dl = (DrawerLayout) findViewById(R.id.activity_main);
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
 
         dl.addDrawerListener(t);
@@ -43,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        nv = (NavigationView)findViewById(R.id.nv);
+        nv = (NavigationView) findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -70,16 +82,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(t.onOptionsItemSelected(item))
+
+        @Override
+        public boolean onOptionsItemSelected (MenuItem item){
+
+        if (t.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadFragment(Fragment fragment) {
+        private void loadFragment (Fragment fragment){
         dl.closeDrawer(nv);
         // create a FragmentManager
         FragmentManager fm = getFragmentManager();
@@ -90,15 +104,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit(); // save the changes
     }
 
-    protected void onDestroy() {
+        protected void onDestroy () {
         Firebase_DBManager.stopNotifyToTripList();
         super.onDestroy();
     }
 
-    private void signOut() {
+        private void signOut () {
         userAuth.signOut();
     }
-}
+    }
 
 
 

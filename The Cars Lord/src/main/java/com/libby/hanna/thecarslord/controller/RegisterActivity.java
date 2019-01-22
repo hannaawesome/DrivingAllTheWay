@@ -67,19 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                     d = getDriver();
                     if (saveSharedPrefences()) {
                         registerToFireBase(email.getText().toString(), password.getText().toString());
-                        be.addDriver(d, new DB_manager.Action<Long>() {
-                            @Override
-                            public void onSuccess(Long obj) {
-                                Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
-                            }
 
-                            @Override
-                            public void onFailure(Exception exception) {
-                                Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
                     }
                 }
             }
@@ -127,7 +115,19 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {                         // Sign in success, update UI with the signed-in user's information
-                    //curr = userAuth.getCurrentUser();
+                    be.addDriver(d, new DB_manager.Action<Long>() {
+                        @Override
+                        public void onSuccess(Long obj) {
+                            Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();;
+                        }
+                        @Override
+                        public void onFailure(Exception exception) {
+                            Toast.makeText(getBaseContext(), "Could not add your data to the system, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {                         // If sign in fails, display a message to the user.
                     Toast.makeText(getBaseContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
@@ -209,12 +209,12 @@ public class RegisterActivity extends AppCompatActivity {
         //region validation
         //check if email is valid
         if (!isEmailValid(strEmail)) {
-            Toast.makeText(getApplicationContext(), "Your email is invalid!", Toast.LENGTH_LONG).show();
+            email.setError("Your email is invalid!");
             return false;
         }
         //check if phone number is valid
         if (!isGlobalPhoneNumber(strPhone)) {
-            Toast.makeText(getApplicationContext(), "Your phone number is invalid!", Toast.LENGTH_LONG).show();
+            phoneNumber.setError("Your phone number is invalid!");
             return false;
         }
 
@@ -239,7 +239,6 @@ public class RegisterActivity extends AppCompatActivity {
                     floatingUsernameLabel.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {

@@ -118,10 +118,7 @@ public class LoginActivity extends Activity {
                 name.setText(sharedPreferences.getString("userName", null));
             else
                 return false;
-           /* if (sharedPreferences.contains("userPassword"))
-                password.setText(sharedPreferences.getString("userPassword", null));
-            else
-                return false;*/ //not safe
+           //it is not safe to upload the password
         }
         return true;
     }
@@ -152,6 +149,7 @@ public class LoginActivity extends Activity {
                     currentUser = userAuth.getCurrentUser();
                     Intent i = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(i);
+                    finish();
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(getBaseContext(), "Email or Password are incorrect", Toast.LENGTH_SHORT).show();
