@@ -1,9 +1,16 @@
 package com.libby.hanna.thecarslord.model.datasource;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -32,6 +39,11 @@ public class Firebase_DBManager implements DB_manager {
     static DatabaseReference TripRef;
     static List<Driver> driverList;
     static List<Trip> tripList;
+    static Location thisLocation;
+    // Acquire a reference to the system Location Manager
+    private LocationManager locationManager;
+    // Define a listener that responds to location updates
+    private LocationListener locationListener;
 
     static {
 
@@ -127,15 +139,51 @@ public class Firebase_DBManager implements DB_manager {
     }
 
     @Override
-    public List<Trip> getNotHandeledTripsInDistance(int distance, Context c) {
+    public List<Trip> getNotHandeledTripsInDistance(int distance, Activity a) {
+        getLocation(a);
         List<Trip> notHandeledTrips = getNotHandeledTrips();
         List<Trip> trips = new ArrayList<>();
         for (Trip i : notHandeledTrips) {
-            if (Math.round(fromStringToLocation(c, i.getSource()).distanceTo(fromStringToLocation(c, i.getDestination())) / 1000) == distance)
+            if (Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000) == distance)
                 trips.add(i);
         }
+
+        //Location
+        locationManager = (LocationManager) a.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                thisLocation = location;
+                // Remove the listener you previously added
+                locationManager.removeUpdates(locationListener);
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
         return trips;
     }
+        private void getLocation (Activity a){
+            try {
+                //     Check the SDK version and whether the permission is already granted or not.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
+                else {
+                    // Android version is lesser than 6.0 or the permission is already granted.
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
+            } catch (Exception ex) {
+                Toast.makeText(a, "must be something wrong with getting your location\n" + ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+
 
     @Override
     public List<Trip> getTripsByTime(Time t) {

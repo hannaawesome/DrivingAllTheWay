@@ -1,5 +1,6 @@
 package com.libby.hanna.thecarslord.model.backend;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.libby.hanna.thecarslord.model.entities.*;
@@ -35,7 +36,7 @@ public interface DB_manager {
 
     List<Trip> getNotHandeledTripsInCity(String city,Context c);
 
-    List<Trip> getNotHandeledTripsInDistance(int distance,Context c);
+    List<Trip> getNotHandeledTripsInDistance(int distance,Activity c);
 
     List<Trip> getTripsByTime(Time t);
 

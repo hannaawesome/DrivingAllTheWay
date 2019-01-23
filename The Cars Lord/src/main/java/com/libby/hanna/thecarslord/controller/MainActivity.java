@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
     private DB_manager be;
     private FirebaseAuth userAuth;
     private FirebaseUser currentUser;
+    private List<Trip> tripList;
+    private List<Driver> driverList;
+    /**
+     * for the second fregment
+     */
     private Driver driver;
 
 
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         be = DBManagerFactory.GetFactory();
         userAuth = FirebaseAuth.getInstance();
         currentUser = userAuth.getCurrentUser();
-currentUser.getEmail();
+        currentUser.getEmail();
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
 
@@ -82,14 +87,33 @@ currentUser.getEmail();
 
             }
         });
+        Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
+            @Override
+            public void OnDataChanged(List<Trip> obj) {
+                tripList = obj;
+            }
 
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(getBaseContext(), "error to get trips list\n" + exception.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+        Firebase_DBManager.NotifyToDriversList(new Firebase_DBManager.NotifyDataChange<List<Driver>>() {
+            @Override
+            public void OnDataChanged(List<Driver> obj) {
+                driverList = obj;
+            }
 
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
-
-        @Override
-        public boolean onOptionsItemSelected (MenuItem item){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
         if (t.onOptionsItemSelected(item))
             return true;
@@ -97,7 +121,7 @@ currentUser.getEmail();
         return super.onOptionsItemSelected(item);
     }
 
-        private void loadFragment (Fragment fragment){
+    private void loadFragment(Fragment fragment) {
         dl.closeDrawer(nv);
         // create a FragmentManager
         FragmentManager fm = getFragmentManager();
@@ -108,15 +132,23 @@ currentUser.getEmail();
         fragmentTransaction.commit(); // save the changes
     }
 
-        protected void onDestroy () {
+    private void loadDataOnCurrentDriver() {
+        String email = currentUser.getEmail();
+        for (Driver i : driverList)
+            if (email.equals(i.getEmailAddress()))
+                driver = i;
+    }
+
+    protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
+        Firebase_DBManager.stopNotifyToDriversList();
         super.onDestroy();
     }
 
-        private void signOut () {
+    private void signOut() {
         userAuth.signOut();
     }
-    }
+}
 
 
 
@@ -246,8 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*private void loadDataOnCurrentDriver(){
-        String id=currentUser.getUid();
+    /*
 }*/
 /*
 
