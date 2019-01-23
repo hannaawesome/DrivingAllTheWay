@@ -40,5 +40,5 @@ public interface DB_manager {
 
     List<Trip> getTripsByTime(Time t);
 
-    List<Trip> getTripsByPrice(double price,Context c);
+    List<Trip> getTripsByPrice(double price,List<Trip> t,Context c);
 }

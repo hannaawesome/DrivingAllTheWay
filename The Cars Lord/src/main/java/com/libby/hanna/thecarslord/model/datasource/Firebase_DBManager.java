@@ -57,6 +57,7 @@ public class Firebase_DBManager implements DB_manager {
     public static ChildEventListener driverRefChildEventListener;
     public static ChildEventListener tripRefChildEventListener;
 
+    //region backend implementation
     @Override
     public void addDriver(final Driver dr, final Action<Long> action) {
         String key = dr.get_id().toString();//setting key
@@ -113,42 +114,59 @@ public class Firebase_DBManager implements DB_manager {
         return trips;
     }
 
+    /**
+     * @param city the function find the location of the city because it
+     *             may be entered in another language or does not exist
+     * @param c    context for the geocoder and the toast
+     * @return all the trips that are available and their destination is in the city
+     */
     @Override
     public List<Trip> getNotHandeledTripsInCity(String city, Context c) {
         List<Trip> notHandeledTrips = getNotHandeledTrips();
         List<Trip> trips = new ArrayList<>();
         Geocoder geocoder = new Geocoder(c, Locale.getDefault());
         List<Address> addresses = null;
-        Location l;
+        List<Address> myCityAddresses = null;
+        Location l, myCity;
         for (Trip i : notHandeledTrips) {
             l = fromStringToLocation(c, i.getDestination());
+            myCity = fromStringToLocation(c, city);
             try {
                 addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+                myCityAddresses = geocoder.getFromLocation(myCity.getLatitude(), myCity.getLongitude(), 1);
                 if (addresses.size() > 0) {
                     {
                         String cityName = addresses.get(0).getAddressLine(0);
-                        if (cityName.equals(city))
+                        String otherCityName = myCityAddresses.get(0).getAddressLine(0);
+                        if (cityName.equals(otherCityName))
                             trips.add(i);
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(c, "failed to get location", Toast.LENGTH_SHORT).show();
             }
         }
         return trips;
     }
 
+    /**
+     * @param distance in kilometers
+     * @param a        it is activity and not context because in order to get your
+     *                 location the activity is needed
+     * @return all the trips that are available and the distance from source to the driver is distance
+     */
     @Override
     public List<Trip> getNotHandeledTripsInDistance(int distance, Activity a) {
-        getLocation(a);
+        getLocation(a);//i wanna do it in asynctask
         List<Trip> notHandeledTrips = getNotHandeledTrips();
         List<Trip> trips = new ArrayList<>();
         for (Trip i : notHandeledTrips) {
-            if (Math.round(fromStringToLocation(a, i.getDestination()).distanceTo(thisLocation) / 1000) == distance)
+            if (Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000) == distance)
                 trips.add(i);
         }
 
-        //Location
+        //get driver's location
         locationManager = (LocationManager) a.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -168,21 +186,20 @@ public class Firebase_DBManager implements DB_manager {
         };
         return trips;
     }
-        private void getLocation (Activity a){
-            try {
-                //     Check the SDK version and whether the permission is already granted or not.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                    a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
-                else {
-                    // Android version is lesser than 6.0 or the permission is already granted.
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                }
-            } catch (Exception ex) {
-                Toast.makeText(a, "must be something wrong with getting your location\n" + ex.getMessage(), Toast.LENGTH_LONG).show();
+
+    private void getLocation(Activity a) {
+        try {
+            //     Check the SDK version and whether the permission is already granted or not.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
+            else {
+                // Android version is lesser than 6.0 or the permission is already granted.
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             }
+        } catch (Exception ex) {
+            Toast.makeText(a, "must be something wrong with getting your location\n" + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-
+    }
 
 
     @Override
@@ -216,16 +233,28 @@ public class Firebase_DBManager implements DB_manager {
         }
     }
 
+    /**
+     * @param price the filter for trip price
+     * @param t     the first filtered list (if all the trips, then it will be null)
+     * @param c     for the function fromStringToLocation
+     * @return all the trips from t (or from all the trips) that the trip's price will be price
+     */
     @Override
-    public List<Trip> getTripsByPrice(double price, Context c) {
+    public List<Trip> getTripsByPrice(double price, List<Trip> t, Context c) {
+        if (t == null)
+            t = tripList;
         List<Trip> trips = new ArrayList<>();
-        for (Trip i : tripList) {
+        for (Trip i : t) {
+            //2 dollars per km, the distance needs to be round or it will never be equal
             if (Math.round(fromStringToLocation(c, i.getSource()).distanceTo(fromStringToLocation(c, i.getDestination())) / 1000) * 2 == price)
                 trips.add(i);
         }
         return trips;
     }
 
+    //endregion
+
+    //region notify driver list
     public static void NotifyToDriversList(final NotifyDataChange<List<Driver>> notifyDataChange) {
         if (notifyDataChange != null) {
             if (driverRefChildEventListener != null) {
@@ -274,8 +303,9 @@ public class Firebase_DBManager implements DB_manager {
             driverRefChildEventListener = null;
         }
     }
+//endregion
 
-    //region Trip
+    //region notify trip list
     public static void NotifyToTripList(final NotifyDataChange<List<Trip>> notifyDataChange) {
         if (notifyDataChange != null) {
             if (tripRefChildEventListener != null) {

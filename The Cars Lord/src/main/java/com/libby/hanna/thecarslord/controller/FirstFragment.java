@@ -50,8 +50,6 @@ public class FirstFragment extends Fragment {
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_first, container, false);
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter1);
-        //filterFirstChoice.setSelection(0);
-        filterText = (EditText) view.findViewById(R.id.filterEditText);
         changeFilter = (Button) view.findViewById(R.id.filterButton);
         tripsRecycleView = view.findViewById(R.id.firstRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
@@ -88,25 +86,31 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-                    case Dialog.BUTTON_NEGATIVE:
+                    case Dialog.BUTTON_POSITIVE:
                         adapter.getFilter().filter(filterText.getText().toString());
                         break;
-                    case Dialog.BUTTON_POSITIVE:
+                    case Dialog.BUTTON_NEGATIVE:
+                        dialog.cancel();
                         break;
                 }
             }
         };
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity().getBaseContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("Filter");
         if (filterFirstChoice.getSelectedItem().toString().equals("by city"))
             alertDialogBuilder.setMessage("Enter City:");
         else
             alertDialogBuilder.setMessage("Enter Distance in kilometers:");
-        alertDialogBuilder.setView(filterText);
+        // Get the layout inflater
+        LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
+// Inflate and set the layout for the dialog
+// Pass null as the parent view because its going in the dialog layout
+        View dialogView=inflater.inflate(R.layout.filter_dialog_layout, null);
+        alertDialogBuilder.setView(dialogView.findViewById(R.id.dialog_leyout));
+        filterText = (EditText) dialogView.findViewById(R.id.filterEditText);
         alertDialogBuilder.setPositiveButton("Ok", onClickListener);
         alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        alertDialogBuilder.show();
 
     }
 
