@@ -27,4 +27,5 @@
         <item>by distance</item>
     </string-array>
     <string name="expand_button_text">Expand</string>
+    <string name="change_filter_text">Change Filter</string>
 </resources>

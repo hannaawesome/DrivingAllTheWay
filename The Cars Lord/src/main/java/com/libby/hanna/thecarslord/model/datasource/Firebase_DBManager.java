@@ -144,7 +144,7 @@ public class Firebase_DBManager implements DB_manager {
         List<Trip> notHandeledTrips = getNotHandeledTrips();
         List<Trip> trips = new ArrayList<>();
         for (Trip i : notHandeledTrips) {
-            if (Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000) == distance)
+            if (Math.round(fromStringToLocation(a, i.getDestination()).distanceTo(thisLocation) / 1000) == distance)
                 trips.add(i);
         }
 

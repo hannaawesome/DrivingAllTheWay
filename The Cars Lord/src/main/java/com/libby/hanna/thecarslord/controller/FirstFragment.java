@@ -21,6 +21,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.libby.hanna.thecarslord.R;
@@ -35,14 +36,13 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 public class FirstFragment extends Fragment {
     View view;
-    //expandablelist will be used when only sees the name and full details opens
-    //once you click on someone, layout with details opens
     private RecyclerView tripsRecycleView;
     private List<Trip> availTripList;
     private Spinner filterFirstChoice;
     private DB_manager be;
-private EditText filterText;
-private ATripAdapter adapter;
+    private EditText filterText;
+    private ATripAdapter adapter;
+    private Button changeFilter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,28 +50,37 @@ private ATripAdapter adapter;
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_first, container, false);
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter1);
-        filterFirstChoice.setSelection(0);
-        filterText=(EditText)view.findViewById(R.id.filterEditText);
+        //filterFirstChoice.setSelection(0);
+        filterText = (EditText) view.findViewById(R.id.filterEditText);
+        changeFilter = (Button) view.findViewById(R.id.filterButton);
         tripsRecycleView = view.findViewById(R.id.firstRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         filterFirstChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView parent, View v, int position, long id) {
-                if (!filterFirstChoice.getSelectedItem().toString().equals("all"))
+                if (!filterFirstChoice.getSelectedItem().toString().equals("all")) {
                     FilterDialog();
+                    changeFilter.setEnabled(true);
+                } else
+                    changeFilter.setEnabled(false);
             }
 
             public void onNothingSelected(AdapterView arg0) {
+                filterFirstChoice.setSelection(0);
             }
         });
-
+        changeFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FilterDialog();
+            }
+        });
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
-            adapter=new ATripAdapter(tripsRecycleView, availTripList, (String) filterFirstChoice.getSelectedItem(), getActivity());
+            adapter = new ATripAdapter(tripsRecycleView, availTripList, (String) filterFirstChoice.getSelectedItem(), getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
 
         return view;
-
     }
 
     private void FilterDialog() {
@@ -89,7 +98,7 @@ private ATripAdapter adapter;
         };
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity().getBaseContext());
         alertDialogBuilder.setTitle("Filter");
-        if (filterFirstChoice.getSelectedItem().toString().equals("city"))
+        if (filterFirstChoice.getSelectedItem().toString().equals("by city"))
             alertDialogBuilder.setMessage("Enter City:");
         else
             alertDialogBuilder.setMessage("Enter Distance in kilometers:");
@@ -110,6 +119,7 @@ private ATripAdapter adapter;
         private List<Trip> filteredTripList;
         private Filter tripFilter;
         private int selectedItem = UNSELECTED;
+        private String strFilterText;
         String choice;
         Activity a;
 
@@ -121,18 +131,13 @@ private ATripAdapter adapter;
             this.filteredTripList = tripList;
             be = DBManagerFactory.GetFactory();
             this.a = c;
-
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView;
-            if (choice.equals("all") || choice == null)
-                itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.trip_view_holder, parent, false);
-            else
-                itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.trip_filter_view_holder, parent, false);
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.trip_view_holder, parent, false);
             return new ViewHolder(itemView);
         }
 
@@ -149,15 +154,17 @@ private ATripAdapter adapter;
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
             private ExpandableLayout expandableLayout;
             private Button expandButton;
+            private TextView destination;
+            private TextView theFilter;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-
+                destination = (TextView) itemView.findViewById(R.id.destinationTextView);
+                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
                 expandableLayout = itemView.findViewById(R.id.expandable_layout);
                 expandableLayout.setInterpolator(new OvershootInterpolator());
                 expandableLayout.setOnExpansionUpdateListener(this);
                 expandButton = itemView.findViewById(R.id.expand_button);
-
                 expandButton.setOnClickListener(this);
             }
 
@@ -166,6 +173,12 @@ private ATripAdapter adapter;
                 boolean isSelected = position == selectedItem;
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
+                Trip t = tripList.get(position);
+                destination.setText(t.getDestination());
+                if (choice.equals("all") || choice == null)
+                    theFilter.setText(t.getSource());
+                else
+                    theFilter.setText(strFilterText);
             }
 
             @Override
@@ -205,6 +218,7 @@ private ATripAdapter adapter;
         private class TripFilter extends Filter {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                strFilterText = constraint.toString();
                 FilterResults results = new FilterResults();
                 // We implement here the filter logic
                 if (constraint == null || constraint.length() == 0 || choice.equals("all")) {
@@ -214,7 +228,7 @@ private ATripAdapter adapter;
                 }
                 // We perform filtering operation
                 else {
-                    if (choice.equals("city")) {
+                    if (choice.equals("by city")) {
                         List<Trip> cTrip = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
                         results.values = cTrip;
                         results.count = cTrip.size();
