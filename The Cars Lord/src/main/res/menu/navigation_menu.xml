@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item android:id="@+id/tripsOnWait"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_local_taxi_black_24dp"
         android:title="All Available Trips"/>
     <item android:id="@+id/myTips"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_person_pin"
         android:title="My Trips"/>
     <item android:id="@+id/exit"
-        android:icon="@drawable/ic_menu"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Sign out"/>
 
 </menu>
