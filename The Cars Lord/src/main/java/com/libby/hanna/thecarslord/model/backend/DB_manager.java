@@ -41,4 +41,6 @@ public interface DB_manager {
     List<Trip> getTripsByTime(Time t);
 
     List<Trip> getTripsByPrice(double price,List<Trip> t,Context c);
+    void changeNow(Trip t, Driver d, final Trip.TripState status,final Action<Void> action);
+    void changeFinish(Trip t, final Trip.TripState status, final Time fTime,final Action<Void> action);
 }

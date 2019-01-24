@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -114,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (t.onOptionsItemSelected(item))
             return true;
 
@@ -132,16 +132,29 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit(); // save the changes
     }
 
-    private void loadDataOnCurrentDriver() {
+    public Driver loadDataOnCurrentDriver() {
         String email = currentUser.getEmail();
-        for (Driver i : driverList)
-            if (email.equals(i.getEmailAddress()))
-                driver = i;
+        Driver d = null;
+        try {
+            for (Driver i : driverList)
+                if (email.equals(i.getEmailAddress()))
+                    d = i;
+                else
+                    throw new Exception("ERROR");
+
+            return d;
+        } catch (Exception ex) {
+            Toast.makeText(getBaseContext(), ex.toString(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
     }
 
     protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
         Firebase_DBManager.stopNotifyToDriversList();
+        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+        startActivity(intent);
         super.onDestroy();
     }
 

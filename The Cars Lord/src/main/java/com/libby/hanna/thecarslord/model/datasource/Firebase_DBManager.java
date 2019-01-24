@@ -129,7 +129,7 @@ public class Firebase_DBManager implements DB_manager {
         List<Address> myCityAddresses = null;
         Location l, myCity;
         for (Trip i : notHandeledTrips) {
-            l = fromStringToLocation(c, i.getDestination());
+            l = fromStringToLocation(c, i.getSource());
             myCity = fromStringToLocation(c, city);
             try {
                 addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
@@ -356,4 +356,35 @@ public class Firebase_DBManager implements DB_manager {
         }
     }
     //endregion
+
+    public void changeNow(Trip t, Driver d, final Trip.TripState status,final Action<Void> action) {
+        t.setDriver(d.get_id());
+        t.setState(status);
+        TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                action.onSuccess(aVoid);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
+    }
+    public void changeFinish(Trip t, final Trip.TripState status, final Time fTime,final Action<Void> action) {
+        t.setState(status);
+        t.setFinish(fTime);
+        TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void v) {
+                action.onSuccess(v);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
+    }
 }

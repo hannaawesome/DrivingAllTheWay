@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +33,11 @@ import com.libby.hanna.thecarslord.R;
 import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
 import com.libby.hanna.thecarslord.model.backend.DB_manager;
 import com.libby.hanna.thecarslord.model.datasource.Firebase_DBManager;
+import com.libby.hanna.thecarslord.model.entities.Driver;
 import com.libby.hanna.thecarslord.model.entities.Trip;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -43,6 +51,7 @@ public class FirstFragment extends Fragment {
     private EditText filterText;
     private ATripAdapter adapter;
     private Button changeFilter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +87,7 @@ public class FirstFragment extends Fragment {
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
 
+
         return view;
     }
 
@@ -86,10 +96,10 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-                    case Dialog.BUTTON_POSITIVE:
+                    case AlertDialog.BUTTON_POSITIVE:
                         adapter.getFilter().filter(filterText.getText().toString());
                         break;
-                    case Dialog.BUTTON_NEGATIVE:
+                    case AlertDialog.BUTTON_NEGATIVE:
                         dialog.cancel();
                         break;
                 }
@@ -103,11 +113,15 @@ public class FirstFragment extends Fragment {
             alertDialogBuilder.setMessage("Enter Distance in kilometers:");
         // Get the layout inflater
         LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
-// Inflate and set the layout for the dialog
-// Pass null as the parent view because its going in the dialog layout
-        View dialogView=inflater.inflate(R.layout.filter_dialog_layout, null);
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        View dialogView = inflater.inflate(R.layout.filter_dialog_layout, null);
         alertDialogBuilder.setView(dialogView.findViewById(R.id.dialog_leyout));
         filterText = (EditText) dialogView.findViewById(R.id.filterEditText);
+        if (filterFirstChoice.getSelectedItem().toString().equals("by city"))
+            filterText.setHint("e.g. Jerusalem");
+        else
+            filterText.setHint("e.g. 10");
         alertDialogBuilder.setPositiveButton("Ok", onClickListener);
         alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
         alertDialogBuilder.show();
@@ -126,15 +140,19 @@ public class FirstFragment extends Fragment {
         private String strFilterText;
         String choice;
         Activity a;
+        private Button smsConfirm;
+        private Button emailConfirm;
+        private Button phoneConfirm;
+        Driver theDriver;
 
         public ATripAdapter(RecyclerView recyclerView, List<Trip> t, String choice, Activity c) {
-
             this.recyclerView = recyclerView;
             this.choice = choice;
             this.tripList = t;
             this.filteredTripList = tripList;
             be = DBManagerFactory.GetFactory();
             this.a = c;
+            theDriver =
         }
 
         @Override
@@ -160,16 +178,45 @@ public class FirstFragment extends Fragment {
             private Button expandButton;
             private TextView destination;
             private TextView theFilter;
+            private TextView email;
+            private TextView phone;
+            private TextView name;
+            private TextView from;
+            private TextView to;
+            private TextView start;
+            private TextView finish;
+            private TextView status;
+            private Button driveNow;
+            private Button finishTrip;
+            Trip theTrip;
+
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                destination = (TextView) itemView.findViewById(R.id.destinationTextView);
-                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
-                expandableLayout = itemView.findViewById(R.id.expandable_layout);
+                getViews(itemView);
                 expandableLayout.setInterpolator(new OvershootInterpolator());
                 expandableLayout.setOnExpansionUpdateListener(this);
-                expandButton = itemView.findViewById(R.id.expand_button);
                 expandButton.setOnClickListener(this);
+                driveNow.setOnClickListener(this);
+                finishTrip.setOnClickListener(this);
+
+            }
+
+            public void getViews(View itemView) {
+                destination = (TextView) itemView.findViewById(R.id.destinationTextView);
+                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
+                name = (TextView) itemView.findViewById(R.id.NameEnter);
+                from = (TextView) itemView.findViewById(R.id.FromEnter);
+                to = (TextView) itemView.findViewById(R.id.ToEnter);
+                email = (TextView) itemView.findViewById(R.id.EmailEnter);
+                phone = (TextView) itemView.findViewById(R.id.PhoneEnter);
+                start = (TextView) itemView.findViewById(R.id.TimeEnter1);
+                finish = (TextView) itemView.findViewById(R.id.TimeEnter2);
+                status = (TextView) itemView.findViewById(R.id.StatusSpinner);
+                driveNow = (Button) itemView.findViewById(R.id.StatusSpinner);
+                finishTrip = (Button) itemView.findViewById(R.id.StatusSpinner);
+                expandableLayout = itemView.findViewById(R.id.expandable_layout);
+                expandButton = itemView.findViewById(R.id.expand_button);
             }
 
             public void bind() {
@@ -177,30 +224,55 @@ public class FirstFragment extends Fragment {
                 boolean isSelected = position == selectedItem;
                 expandButton.setSelected(isSelected);
                 expandableLayout.setExpanded(isSelected, false);
-                Trip t = tripList.get(position);
-                destination.setText(t.getDestination());
+                theTrip = tripList.get(position);
+                destination.setText(theTrip.getDestination());
                 if (choice.equals("all") || choice == null)
-                    theFilter.setText(t.getSource());
+                    theFilter.setText(theTrip.getSource());
                 else
                     theFilter.setText(strFilterText);
             }
 
             @Override
             public void onClick(View view) {
-                ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
-                if (holder != null) {
-                    holder.expandButton.setSelected(false);
-                    holder.expandableLayout.collapse();
+                switch (view.getId()) {
+                    case R.id.expand_button:
+                        ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
+                        if (holder != null) {
+                            holder.expandButton.setSelected(false);
+                            holder.expandableLayout.collapse();
+                        }
+                        int position = getAdapterPosition();
+                        if (position == selectedItem) {
+                            selectedItem = UNSELECTED;
+                        } else {
+                            expandButton.setSelected(true);
+                            expandableLayout.expand();
+                            selectedItem = position;
+                        }
+                        break;
+                    case R.id.now:
+                        confirmDialog();
+                    Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.finish:
+                        Date d = new Date();
+                        Time time = new Time(d.getTime());
+                        be.changeFinish(theTrip, Trip.TripState.finished, time, new DB_manager.Action<Void>() {
+                            @Override
+                            public void onSuccess(Void d) {
+                                Toast.makeText(a.getBaseContext(), "The trip has been finished successfully!", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailure(Exception exception) {
+                                Toast.makeText(a.getBaseContext(), "Could not update the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        break;
+                    default:
+                        break;
                 }
 
-                int position = getAdapterPosition();
-                if (position == selectedItem) {
-                    selectedItem = UNSELECTED;
-                } else {
-                    expandButton.setSelected(true);
-                    expandableLayout.expand();
-                    selectedItem = position;
-                }
             }
 
             @Override
@@ -209,6 +281,101 @@ public class FirstFragment extends Fragment {
                 if (state == ExpandableLayout.State.EXPANDING) {
                     recyclerView.smoothScrollToPosition(getAdapterPosition());
                 }
+            }
+
+            private void confirmDialog() {
+                AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case AlertDialog.BUTTON_NEGATIVE:
+                                dialog.cancel();
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(a);
+                alertDialogBuilder.setTitle("Confirm by:");
+                // Get the layout inflater
+                LayoutInflater inflater = LayoutInflater.from(a.getBaseContext());
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+                View dialogView = inflater.inflate(R.layout.confirm, null);
+                alertDialogBuilder.setView(dialogView.findViewById(R.id.confirm_leyout));
+                smsConfirm = dialogView.findViewById(R.id.sms);
+                phoneConfirm = dialogView.findViewById(R.id.phone);
+                emailConfirm = dialogView.findViewById(R.id.email);
+                alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
+                alertDialogBuilder.show();
+
+
+                smsConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(theTrip.getPhoneNumber(), null, "A driver is ready for your trip!", null, null);
+                            changeNow();
+                        } catch (Exception ex) {
+                            Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+                phoneConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            dialContactPhone(theTrip.getPhoneNumber());
+                            changeNow();
+                        } catch (Exception ex) {
+                            Toast.makeText(a.getBaseContext(), "Could not make a call, must be something wrong", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+                emailConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try { //send email
+                            changeNow();
+                        } catch (Exception ex) {
+                            Toast.makeText(a.getBaseContext(), "Could not send email, must be something wrong", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+            }
+
+            private void dialContactPhone(final String phoneNumber) {
+                a.getBaseContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
+            }
+
+            private void changeNow() {
+                be.changeNow(theTrip, theDriver, Trip.TripState.inProcess, new DB_manager.Action<Void>() {
+                    @Override
+                    public void onSuccess(Void d) {
+                        Toast.makeText(a.getBaseContext(), "The trip is now in process!", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        Toast.makeText(a.getBaseContext(), "Could not update the data, must be something wrong \n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            private void sendEmail(final String theEmail, final String driverName){
+                new AsyncTask<Void, Void, String>() {
+                    @Override
+                    protected String doInBackground(Void... params) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                "mailto", theEmail, null));
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
+                        intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
+                        a.getBaseContext().startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                        return null;
+                    }
+                }.execute()
             }
         }
 
@@ -253,6 +420,7 @@ public class FirstFragment extends Fragment {
                 notifyDataSetChanged();
             }
         }
+
     }
 /*
 
