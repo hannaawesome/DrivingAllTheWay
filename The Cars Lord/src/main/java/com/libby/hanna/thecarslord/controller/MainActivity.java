@@ -39,24 +39,16 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     private DB_manager be;
-    private FirebaseAuth userAuth;
-    private FirebaseUser currentUser;
     private List<Trip> tripList;
     private List<Driver> driverList;
-    /**
-     * for the second fregment
-     */
-    private Driver driver;
-
+    private FirebaseAuth userAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         be = DBManagerFactory.GetFactory();
-        userAuth = FirebaseAuth.getInstance();
-        currentUser = userAuth.getCurrentUser();
-        currentUser.getEmail();
+
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
 
@@ -132,23 +124,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit(); // save the changes
     }
 
-    public Driver loadDataOnCurrentDriver() {
-        String email = currentUser.getEmail();
-        Driver d = null;
-        try {
-            for (Driver i : driverList)
-                if (email.equals(i.getEmailAddress()))
-                    d = i;
-                else
-                    throw new Exception("ERROR");
 
-            return d;
-        } catch (Exception ex) {
-            Toast.makeText(getBaseContext(), ex.toString(), Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-    }
 
     protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
@@ -160,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut() {
         userAuth.signOut();
+
     }
 }
 

@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +42,8 @@ public class Firebase_DBManager implements DB_manager {
     static List<Driver> driverList;
     static List<Trip> tripList;
     static Location thisLocation;
+    private FirebaseAuth userAuth;
+    private FirebaseUser currentUser;
     // Acquire a reference to the system Location Manager
     private LocationManager locationManager;
     // Define a listener that responds to location updates
@@ -52,6 +56,7 @@ public class Firebase_DBManager implements DB_manager {
         driverList = new ArrayList<Driver>();//change to query
         TripRef = database.getReference("trips");
         tripList = new ArrayList<Trip>();
+
     }
 
     public static ChildEventListener driverRefChildEventListener;
@@ -386,5 +391,24 @@ public class Firebase_DBManager implements DB_manager {
                 action.onFailure(e);
             }
         });
+    }
+    public Driver loadDataOnCurrentDriver(Context c) {
+        userAuth = FirebaseAuth.getInstance();
+        currentUser = userAuth.getCurrentUser();
+        String email = currentUser.getEmail();
+        Driver d = null;
+        try {
+            for (Driver i : driverList)
+                if (email.equals(i.getEmailAddress()))
+                    d = i;
+                else
+                    throw new Exception("ERROR");
+
+            return d;
+        } catch (Exception ex) {
+            Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
     }
 }
