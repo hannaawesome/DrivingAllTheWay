@@ -129,14 +129,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
         Firebase_DBManager.stopNotifyToDriversList();
-        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-        startActivity(intent);
         super.onDestroy();
     }
 
     private void signOut() {
         userAuth.signOut();
-
     }
 }
 

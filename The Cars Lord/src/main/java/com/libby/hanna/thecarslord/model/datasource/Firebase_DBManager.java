@@ -406,7 +406,7 @@ public class Firebase_DBManager implements DB_manager {
 
             return d;
         } catch (Exception ex) {
-            Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(c,"what?"+ ex.toString(), Toast.LENGTH_LONG).show();
             return null;
         }
 

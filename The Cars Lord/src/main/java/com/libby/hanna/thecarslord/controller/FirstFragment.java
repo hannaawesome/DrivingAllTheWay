@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 
 import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -85,14 +84,13 @@ public class FirstFragment extends Fragment {
         });
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
-            registeredDriver=be.loadDataOnCurrentDriver(getActivity().getBaseContext());
-            adapter = new ATripAdapter(tripsRecycleView, availTripList,registeredDriver, (String) filterFirstChoice.getSelectedItem(), getActivity());
+            registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
+            adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, (String) filterFirstChoice.getSelectedItem(), getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
-
-
         return view;
     }
+
     private void FilterDialog() {
         AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -147,14 +145,14 @@ public class FirstFragment extends Fragment {
         private AppCompatButton phoneConfirm;
         Driver theDriver;
 
-        public ATripAdapter(RecyclerView recyclerView, List<Trip> t,Driver d ,String choice, Activity c) {
+        public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, String choice, Activity c) {
             this.recyclerView = recyclerView;
             this.choice = choice;
             this.tripList = t;
             this.filteredTripList = tripList;
             be = DBManagerFactory.GetFactory();
             this.a = c;
-            theDriver =d;
+            theDriver = d;
         }
 
         @Override
@@ -236,8 +234,12 @@ public class FirstFragment extends Fragment {
                 to.setText(theTrip.getDestination());
                 email.setText(theTrip.getEmailAddress());
                 phone.setText(theTrip.getPhoneNumber());
-                start.setText(String.format("%d:%d", theTrip.getStart().getHours(), theTrip.getStart().getMinutes()));
-                finish.setText(String.format("%d:%d", theTrip.getFinish().getHours(), theTrip.getFinish().getMinutes()));
+                //start.setText(theTrip.getStart().getHours() + ":" + theTrip.getStart().getMinutes());
+                start.setText("hi");
+                if (theTrip.getState().equals(Trip.TripState.finished))
+                    finish.setText(String.format("%d:%d", theTrip.getFinish().getHours(), theTrip.getFinish().getMinutes()));
+                else
+                    finish.setText(R.string.finishTime);
                 status.setText(theTrip.getState().toString());
             }
 
@@ -261,7 +263,7 @@ public class FirstFragment extends Fragment {
                         break;
                     case R.id.confirmButton:
                         confirmDialog();
-                    Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
+                        Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.doneButton:
                         Date d = new Date();
@@ -345,7 +347,7 @@ public class FirstFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         try {
-                            sendEmail(theTrip.getEmailAddress(),theDriver.getEmailAddress());
+                            sendEmail(theTrip.getEmailAddress(), theDriver.getEmailAddress());
                             changeNow();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not send email, must be something wrong", Toast.LENGTH_LONG).show();
@@ -373,7 +375,8 @@ public class FirstFragment extends Fragment {
                 tripList.remove(getAdapterPosition());
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
-            private void sendEmail(final String theEmail, final String driverName){
+
+            private void sendEmail(final String theEmail, final String driverName) {
                 new AsyncTask<Void, Void, String>() {
                     @Override
                     protected String doInBackground(Void... params) {

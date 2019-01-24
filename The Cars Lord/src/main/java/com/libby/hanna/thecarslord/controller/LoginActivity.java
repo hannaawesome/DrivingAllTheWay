@@ -149,7 +149,6 @@ public class LoginActivity extends Activity {
                     currentUser = userAuth.getCurrentUser();
                     Intent i = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(i);
-                    finish();
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(getBaseContext(), "Email or Password are incorrect", Toast.LENGTH_SHORT).show();
