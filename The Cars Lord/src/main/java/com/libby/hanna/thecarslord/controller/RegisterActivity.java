@@ -121,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getBaseContext(), MainActivity.class);
                             startActivity(intent);
-                            finish();;
+                            finish();
                         }
                         @Override
                         public void onFailure(Exception exception) {
