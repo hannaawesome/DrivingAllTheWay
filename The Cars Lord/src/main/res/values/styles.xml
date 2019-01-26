@@ -22,7 +22,6 @@
     </style>
 
 
-
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -38,10 +37,13 @@
         <item name="colorButtonNormal">@color/primary_darker</item>
     </style>
 
-    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="colorAccent">@color/white</item>
-        <item name="android:textColorPrimary">@color/iron</item>
-        <item name="android:background">@color/primary</item>
+    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Light">
+
+        <item name="colorPrimary">@color/iron</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+        <item name="colorAccent">@color/iron</item>
+
     </style>
+
 
 </resources>

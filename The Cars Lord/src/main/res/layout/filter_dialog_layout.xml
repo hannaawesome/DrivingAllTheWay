@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/dialog_leyout"
+    android:theme="@style/AppTheme.Dialog"
     >
 
     <EditText
