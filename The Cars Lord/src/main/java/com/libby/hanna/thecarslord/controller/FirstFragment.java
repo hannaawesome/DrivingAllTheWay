@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
@@ -148,6 +149,10 @@ public class FirstFragment extends Fragment {
         private AppCompatButton emailConfirm;
         private AppCompatButton phoneConfirm;
         Driver theDriver;
+        private TextView destination;
+        private TextView theFilter;
+        private ArrayList<Integer> counter;
+
 
         public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Spinner sChoice, Activity c) {
             this.recyclerView = recyclerView;
@@ -158,18 +163,50 @@ public class FirstFragment extends Fragment {
             be = DBManagerFactory.GetFactory();
             this.a = c;
             theDriver = d;
+            counter = new ArrayList<Integer>();
+            for (int i = 0; i < tripList.size(); i++)
+                counter.add(0);
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView;
-            itemView = LayoutInflater.from(parent.getContext())
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.trip_title_cards, parent, false);
+            destination = (TextView) itemView.findViewById(R.id.destinationTextView);
+            theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
+            View innerView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.trip_view_holder, parent, false);
-            return new ViewHolder(itemView);
+            return new ViewHolder(innerView);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            destination.setText(tripList.get(position).getDestination());
+            choice = sChoice.getSelectedItem().toString();
+            if (choice.equals("all") || choice == null)
+                theFilter.setText(tripList.get(position).getSource());
+            else
+                theFilter.setText(strFilterText);
+
+            //InnerRecyclerViewAdapter itemInnerRecyclerView = new InnerRecyclerViewAdapter(itemNameList.get(position));
+
+
+            // holder.cardRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+
+
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (counter.get(position) % 2 == 0) {
+                        holder.innerView.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.innerView.setVisibility(View.GONE);
+                    }
+                    counter.set(position, counter.get(position) + 1);
+                }
+            });
+            //holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
             holder.bind();
         }
 
@@ -178,11 +215,10 @@ public class FirstFragment extends Fragment {
             return tripList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
-            private ExpandableLayout expandableLayout;
-            private AppCompatButton expandButton;
-            private TextView destination;
-            private TextView theFilter;
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            //private ExpandableLayout expandableLayout;
+            //private AppCompatButton expandButton;
+
             private TextView email;
             private TextView phone;
             private TextView name;
@@ -193,21 +229,22 @@ public class FirstFragment extends Fragment {
             private AppCompatButton driveNow;
             private AppCompatButton finishTrip;
             Trip theTrip;
-
+            CardView cardView;
+            View innerView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                getViews(itemView);
-                expandableLayout.setInterpolator(new OvershootInterpolator());
-                expandableLayout.setOnExpansionUpdateListener(this);
-                expandButton.setOnClickListener(this);
+                innerView=itemView;
+                getViews(innerView);
+                //expandableLayout.setInterpolator(new OvershootInterpolator());
+                //expandableLayout.setOnExpansionUpdateListener(this);
+                //expandButton.setOnClickListener(this);
                 driveNow.setOnClickListener(this);
                 finishTrip.setOnClickListener(this);
+                cardView = innerView.findViewById(R.id.cardView);
             }
 
             public void getViews(View itemView) {
-                destination = (TextView) itemView.findViewById(R.id.destinationTextView);
-                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
                 name = (TextView) itemView.findViewById(R.id.passengerNameTextView);
                 from = (TextView) itemView.findViewById(R.id.sourceExTextView);
                 to = (TextView) itemView.findViewById(R.id.destinationExTextView);
@@ -217,22 +254,16 @@ public class FirstFragment extends Fragment {
                 finish = (TextView) itemView.findViewById(R.id.endTimeTextView);
                 driveNow = (AppCompatButton) itemView.findViewById(R.id.confirmButton);
                 finishTrip = (AppCompatButton) itemView.findViewById(R.id.doneButton);
-                expandableLayout = itemView.findViewById(R.id.expandable_layout);
-                expandButton = itemView.findViewById(R.id.expand_button);
+                //expandableLayout = itemView.findViewById(R.id.expandable_layout);
+                //expandButton = itemView.findViewById(R.id.expand_button);
             }
 
             public void bind() {
                 int position = getAdapterPosition();
-                boolean isSelected = position == selectedItem;
-                expandButton.setSelected(isSelected);
-                expandableLayout.setExpanded(isSelected, false);
+                //boolean isSelected = position == selectedItem;
+                //expandButton.setSelected(isSelected);
+                //expandableLayout.setExpanded(isSelected, false);
                 theTrip = tripList.get(position);
-                destination.setText(theTrip.getDestination());
-                choice = sChoice.getSelectedItem().toString();
-                if (choice.equals("all") || choice == null)
-                    theFilter.setText(theTrip.getSource());
-                else
-                    theFilter.setText(strFilterText);
                 name.setText(theTrip.getName());
                 from.setText(theTrip.getSource());
                 to.setText(theTrip.getDestination());
@@ -248,7 +279,7 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    case R.id.expand_button:
+                    /*case R.id.expand_button:
                         ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
                         if (holder != null) {
                             holder.expandButton.setSelected(false);
@@ -262,7 +293,7 @@ public class FirstFragment extends Fragment {
                             expandableLayout.expand();
                             selectedItem = position;
                         }
-                        break;
+                        break;*/
                     case R.id.confirmButton:
                         confirmDialog();
                         Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
@@ -289,13 +320,13 @@ public class FirstFragment extends Fragment {
                 }
             }
 
-            @Override
+            /*@Override
             public void onExpansionUpdate(float expansionFraction, int state) {
                 Log.d("ExpandableLayout", "State: " + state);
                 if (state == ExpandableLayout.State.EXPANDING) {
                     recyclerView.smoothScrollToPosition(getAdapterPosition());
                 }
-            }
+            }*/
 
             private void confirmDialog() {
                 AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
@@ -427,259 +458,5 @@ public class FirstFragment extends Fragment {
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
-
     }
-/*
-
-        recyclerView = (RecyclerView)findViewById(R.id.card_recycler_view);
-//fetch data and on ExpandableRecyclerAdapter
-        recyclerView.setAdapter(new ExpandableRecyclerAdapter(availTripList));
-
-        ExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ExpandableRecyclerViewAdapter(getApplicationContext(), parentList,
-                        childListHolder);
-
-
-
-        expanderRecyclerView.setAdapter(expandableCategoryRecyclerViewAdapter);
-        if (tripsRecycleView.getAdapter() == null) {
-                    availTripList = be.getNotHandeledTrips();
-                    tripsRecycleView.setAdapter(new FirstFragment.TripsRecyclerViewAdapter());
-                } else tripsRecycleView.getAdapter().notifyDataSetChanged();
-        return view;
-    }
-    public class TripExpandableRecyclerViewAdapter extends RecyclerView.Adapter<TripExpandableRecyclerViewAdapter.ViewHolder> {
-
-        ArrayList<String> nameList = new ArrayList<String>();
-        ArrayList<String> image = new ArrayList<String>();
-        ArrayList<Integer> counter = new ArrayList<Integer>();
-        ArrayList<ArrayList> itemNameList = new ArrayList<ArrayList>();
-        Context context;
-
-        public TripExpandableRecyclerViewAdapter(Context context,
-                                             ArrayList<String> nameList,
-                                             ArrayList<ArrayList> itemNameList) {
-            this.nameList = nameList;
-            this.itemNameList = itemNameList;
-            this.context = context;
-
-            Log.d("namelist", nameList.toString());
-
-            for (int i = 0; i < nameList.size(); i++) {
-                counter.add(0);
-            }
-
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView name;
-            ImageButton dropBtn;
-            RecyclerView cardRecyclerView;
-            CardView cardView;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                name = itemView.findViewById(R.id.categoryTitle);
-                dropBtn = itemView.findViewById(R.id.categoryExpandBtn);
-                cardRecyclerView = itemView.findViewById(R.id.innerRecyclerView);
-                cardView = itemView.findViewById(R.id.cardView);
-            }
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.card_collapseview, parent, false);
-
-            ExpandableRecyclerViewAdapter.ViewHolder vh = new ExpandableRecyclerViewAdapter.ViewHolder(v);
-
-            return vh;
-
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-            holder.name.setText(nameList.get(position));
-
-            InnerRecyclerViewAdapter itemInnerRecyclerView = new InnerRecyclerViewAdapter(itemNameList.get(position));
-
-
-            holder.cardRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-
-
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (counter.get(position) % 2 == 0) {
-                        holder.cardRecyclerView.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.cardRecyclerView.setVisibility(View.GONE);
-                    }
-
-                    counter.set(position, counter.get(position) + 1);
-
-
-                }
-            });
-            holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return availTripList.size();
-        }
-    }
-
-    public class ExpandableRecyclerAdapter extends RecyclerView.Adapter<ExpandableRecyclerAdapter.ViewHolder> {
-
-        private List<Repo> repos;
-        private SparseBooleanArray expandState = new SparseBooleanArray();
-        private Context context;
-
-        public ExpandableRecyclerAdapter(List<Repo> repos) {
-            this.repos = repos;
-            //set initial expanded state to false
-            for (int i = 0; i < repos.size(); i++) {
-                expandState.append(i, false);
-            }
-        }
-
-        @Override
-        public ExpandableRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            this.context = viewGroup.getContext();
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.expandable_card_row, viewGroup, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ExpandableRecyclerAdapter.ViewHolder viewHolder, final  int i) {
-
-            viewHolder.setIsRecyclable(false);
-
-            viewHolder.tvName.setText(repos.get(i).getName());
-
-            viewHolder.tvOwnerLogin.setText("Owner: " +repos.get(i).getOwner().getLogin());
-            viewHolder.tvOwnerUrl.setText(repos.get(i).getOwner().getUrl());
-
-            Picasso.with(context)
-                    .load(repos.get(i).getOwner().getImageUrl())
-                    .resize(500, 500)
-                    .centerCrop()
-                    .into(viewHolder.ivOwner);
-
-            //check if view is expanded
-            final boolean isExpanded = expandState.get(i);
-            viewHolder.expandableLayout.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-
-            viewHolder.buttonLayout.setRotation(expandState.get(i) ? 180f : 0f);
-            viewHolder.buttonLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    onClickButton(viewHolder.expandableLayout, viewHolder.buttonLayout,  i);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return repos.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder{
-
-            private TextView tvName,tvOwnerLogin, tvOwnerUrl;
-            private ImageView ivOwner;
-            public RelativeLayout buttonLayout;
-            public LinearLayout expandableLayout;
-
-            public ViewHolder(View view) {
-                super(view);
-
-                tvName = (TextView)view.findViewById(R.id.textView_name);
-                tvId = (TextView)view.findViewById(R.id.textView_id);
-                tvUrl = (TextView)view.findViewById(R.id.textView_url);
-                tvOwnerLogin = (TextView)view.findViewById(R.id.textView_Owner);
-                tvOwnerUrl = (TextView)view.findViewById(R.id.textView_OwnerUrl);
-                ivOwner = (ImageView) view.findViewById(R.id.imageView_Owner);
-
-                buttonLayout = (RelativeLayout) view.findViewById(R.id.button);
-                expandableLayout = (LinearLayout) view.findViewById(R.id.expandableLayout);
-            }
-        }
-
-        private void onClickButton(final LinearLayout expandableLayout, final RelativeLayout buttonLayout, final  int i) {
-
-            //Simply set View to Gone if not expanded
-            //Not necessary but I put simple rotation on button layout
-            if (expandableLayout.getVisibility() == View.VISIBLE){
-                createRotateAnimator(buttonLayout, 180f, 0f).start();
-                expandableLayout.setVisibility(View.GONE);
-                expandState.put(i, false);
-            }else{
-                createRotateAnimator(buttonLayout, 0f, 180f).start();
-                expandableLayout.setVisibility(View.VISIBLE);
-                expandState.put(i, true);
-            }
-        }
-
-        //Code to rotate button
-        private ObjectAnimator createRotateAnimator(final View target, final float from, final float to) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(target, "rotation", from, to);
-            animator.setDuration(300);
-            animator.setInterpolator(new LinearInterpolator());
-            return animator;
-        }
-    }
-    public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
-
-        @Override
-        public TripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(getActivity().getBaseContext()).inflate(R.layout.trip_view_holder, parent, false);
-            return new TripViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(TripViewHolder holder, int position) {
-            Trip t = availTripList.get(position);
-            holder.idTextView.setText(t.get_id());
-
-            final boolean isExpanded = position==mExpandedPosition;
-            holder.details.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-            holder.itemView.setActivated(isExpanded);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mExpandedPosition = isExpanded ? -1:position;
-                    TransitionManager.beginDelayedTransition(recyclerView);
-                    notifyDataSetChanged();
-                }
-            });
-        }
-
-
-
-        public class TripViewHolder extends RecyclerView.ViewHolder {
-            TextView idTextView;
-
-            TripViewHolder(View itemView) {
-                super(itemView);
-                idTextView = itemView.findViewById(R.id.idTextView);
-            }
-        }
-/*
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    return null;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                }
-            };
-        }*/
 }
