@@ -185,7 +185,6 @@ public class FirstFragment extends Fragment {
             private TextView to;
             private TextView start;
             private TextView finish;
-            private TextView status;
             private AppCompatButton driveNow;
             private AppCompatButton finishTrip;
             Trip theTrip;
@@ -211,7 +210,6 @@ public class FirstFragment extends Fragment {
                 phone = (TextView) itemView.findViewById(R.id.phoneTextView);
                 start = (TextView) itemView.findViewById(R.id.startTimeTextView);
                 finish = (TextView) itemView.findViewById(R.id.endTimeTextView);
-                status = (TextView) itemView.findViewById(R.id.statusTextView);
                 driveNow = (AppCompatButton) itemView.findViewById(R.id.confirmButton);
                 finishTrip = (AppCompatButton) itemView.findViewById(R.id.doneButton);
                 expandableLayout = itemView.findViewById(R.id.expandable_layout);
@@ -234,13 +232,11 @@ public class FirstFragment extends Fragment {
                 to.setText(theTrip.getDestination());
                 email.setText(theTrip.getEmailAddress());
                 phone.setText(theTrip.getPhoneNumber());
-                //start.setText(theTrip.getStart().getHours() + ":" + theTrip.getStart().getMinutes());
-                start.setText("hi");
+                start.setText(theTrip.getStart().toString());
                 if (theTrip.getState().equals(Trip.TripState.finished))
-                    finish.setText(String.format("%d:%d", theTrip.getFinish().getHours(), theTrip.getFinish().getMinutes()));
+                    finish.setText(theTrip.getFinish().toString());
                 else
                     finish.setText(R.string.finishTime);
-                status.setText(theTrip.getState().toString());
             }
 
             @Override
@@ -377,17 +373,11 @@ public class FirstFragment extends Fragment {
             }
 
             private void sendEmail(final String theEmail, final String driverName) {
-                new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... params) {
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                                "mailto", theEmail, null));
-                        intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
-                        intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
-                        a.getBaseContext().startActivity(Intent.createChooser(intent, "Choose an Email client :"));
-                        return null;
-                    }
-                }.execute();
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", theEmail, null));
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
+                intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
+                a.getBaseContext().startActivity(Intent.createChooser(intent, "Choose an Email client :"));
             }
         }
 

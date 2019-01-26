@@ -307,13 +307,14 @@ public class TripApp extends Activity {
                 String cityName = addresses.get(0).getAddressLine(0);
                 String stateName = addresses.get(0).getAddressLine(1);
                 String countryName = addresses.get(0).getAddressLine(2);
-                if (cityName == null)
-                    return stateName + "\n" + countryName;
-                if (countryName == null)
-                    return stateName + "\n" + cityName;
-                if (stateName == null)
-                    return cityName + "\n" + countryName;
-                return stateName + "\n" + cityName + "\n" + countryName;
+                String loc="";
+                if (cityName != null)
+                    loc+=cityName;
+                if (countryName != null)
+                    loc+=(" , "+countryName);
+                if (stateName != null)
+                    loc+=(" , "+stateName);
+                return loc;
             }
             return "no place: \n (" + location.getLongitude() + " , " + location.getLatitude() + ")";
         } catch (IOException e) {

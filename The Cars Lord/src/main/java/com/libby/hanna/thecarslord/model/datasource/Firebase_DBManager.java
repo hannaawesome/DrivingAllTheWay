@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -32,6 +34,8 @@ import com.libby.hanna.thecarslord.model.entities.Trip;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -322,6 +326,15 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
+                    SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+                        try {
+                            java.util.Date d1 = (java.util.Date) format.parse(dataSnapshot.child("start").getValue().toString());
+                            t.setStart(new Time(d1.getTime()));
+                            d1 = (java.util.Date) format.parse(dataSnapshot.child("finish").getValue().toString());
+                            t.setStart(new Time(d1.getTime()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     tripList.add(t);
                     notifyDataChange.OnDataChanged(tripList);
                 }
@@ -362,7 +375,7 @@ public class Firebase_DBManager implements DB_manager {
     }
     //endregion
 
-    public void changeNow(Trip t, Driver d, final Trip.TripState status,final Action<Void> action) {
+    public void changeNow(Trip t, Driver d, final Trip.TripState status, final Action<Void> action) {
         t.setDriver(d.get_id());
         t.setState(status);
         TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -377,7 +390,8 @@ public class Firebase_DBManager implements DB_manager {
             }
         });
     }
-    public void changeFinish(Trip t, final Trip.TripState status, final Time fTime,final Action<Void> action) {
+
+    public void changeFinish(Trip t, final Trip.TripState status, final Time fTime, final Action<Void> action) {
         t.setState(status);
         t.setFinish(fTime);
         TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -392,6 +406,7 @@ public class Firebase_DBManager implements DB_manager {
             }
         });
     }
+
     public Driver loadDataOnCurrentDriver(Context c) {
         userAuth = FirebaseAuth.getInstance();
         currentUser = userAuth.getCurrentUser();
@@ -401,12 +416,11 @@ public class Firebase_DBManager implements DB_manager {
             for (Driver i : driverList)
                 if (email.equals(i.getEmailAddress()))
                     d = i;
-                else
-                    throw new Exception("ERROR");
-
+            if (d == null)
+                throw new Exception("ERROR");
             return d;
         } catch (Exception ex) {
-            Toast.makeText(c,"what?"+ ex.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(c,ex.toString(), Toast.LENGTH_LONG).show();
             return null;
         }
 

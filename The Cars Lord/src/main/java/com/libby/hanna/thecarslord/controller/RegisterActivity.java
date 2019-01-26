@@ -114,7 +114,8 @@ public class RegisterActivity extends AppCompatActivity {
         userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {                         // Sign in success, update UI with the signed-in user's information
+                if (task.isSuccessful()) {
+                    sendEmailVerification();
                     be.addDriver(d, new DB_manager.Action<Long>() {
                         @Override
                         public void onSuccess(Long obj) {
@@ -129,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                 } else {                         // If sign in fails, display a message to the user.
-                    Toast.makeText(getBaseContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Authentication failed, maybe your email is already in use", Toast.LENGTH_SHORT).show();
                 }
             }
         });
