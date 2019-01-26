@@ -36,6 +36,7 @@ import com.libby.hanna.thecarslord.model.entities.Driver;
 import com.libby.hanna.thecarslord.model.entities.Trip;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,8 +69,10 @@ public class FirstFragment extends Fragment {
                 if (!filterFirstChoice.getSelectedItem().toString().equals("all")) {
                     FilterDialog();
                     changeFilter.setEnabled(true);
-                } else
+                } else {
+                    adapter.getFilter().filter("");
                     changeFilter.setEnabled(false);
+                }
             }
 
             public void onNothingSelected(AdapterView arg0) {
@@ -85,7 +88,7 @@ public class FirstFragment extends Fragment {
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
             registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
-            adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, (String) filterFirstChoice.getSelectedItem(), getActivity());
+            adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, filterFirstChoice, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
         return view;
@@ -134,10 +137,11 @@ public class FirstFragment extends Fragment {
         private DB_manager be;
         private RecyclerView recyclerView;
         private List<Trip> tripList;
-        private List<Trip> filteredTripList;
+        private List<Trip> origTripList;
         private Filter tripFilter;
         private int selectedItem = UNSELECTED;
         private String strFilterText;
+        Spinner sChoice;
         String choice;
         Activity a;
         private AppCompatButton smsConfirm;
@@ -145,11 +149,12 @@ public class FirstFragment extends Fragment {
         private AppCompatButton phoneConfirm;
         Driver theDriver;
 
-        public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, String choice, Activity c) {
+        public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Spinner sChoice, Activity c) {
             this.recyclerView = recyclerView;
-            this.choice = choice;
+            this.sChoice = sChoice;
+            this.choice = this.sChoice.getSelectedItem().toString();
             this.tripList = t;
-            this.filteredTripList = tripList;
+            this.origTripList = tripList;
             be = DBManagerFactory.GetFactory();
             this.a = c;
             theDriver = d;
@@ -170,7 +175,7 @@ public class FirstFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return filteredTripList.size();
+            return tripList.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
@@ -223,6 +228,7 @@ public class FirstFragment extends Fragment {
                 expandableLayout.setExpanded(isSelected, false);
                 theTrip = tripList.get(position);
                 destination.setText(theTrip.getDestination());
+                choice = sChoice.getSelectedItem().toString();
                 if (choice.equals("all") || choice == null)
                     theFilter.setText(theTrip.getSource());
                 else
@@ -393,33 +399,32 @@ public class FirstFragment extends Fragment {
             protected FilterResults performFiltering(CharSequence constraint) {
                 strFilterText = constraint.toString();
                 FilterResults results = new FilterResults();
+                List<Trip> filteredList;
                 // We implement here the filter logic
+                choice = sChoice.getSelectedItem().toString();
                 if (constraint == null || constraint.length() == 0 || choice.equals("all")) {
                     // No filter implemented we return all the list
-                    results.values = tripList;
-                    results.count = tripList.size();
+                    filteredList = origTripList;
                 }
                 // We perform filtering operation
                 else {
                     if (choice.equals("by city")) {
-                        List<Trip> cTrip = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
-                        results.values = cTrip;
-                        results.count = cTrip.size();
+                        filteredList = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
                     } else {
-
-                        List<Trip> dTrip = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a);
-                        results.values = dTrip;
-                        results.count = dTrip.size();
+                        filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a);
                     }
                 }
+                results.values = filteredList;
+                results.count = filteredList.size();
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint,
                                           FilterResults results) {
-                filteredTripList = (List<Trip>) results.values;
-                notifyDataSetChanged();
+                tripList.removeAll(tripList);
+                tripList.addAll((List<Trip>) results.values);
+                recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
 

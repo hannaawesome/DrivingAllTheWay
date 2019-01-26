@@ -331,7 +331,7 @@ public class Firebase_DBManager implements DB_manager {
                             java.util.Date d1 = (java.util.Date) format.parse(dataSnapshot.child("start").getValue().toString());
                             t.setStart(new Time(d1.getTime()));
                             d1 = (java.util.Date) format.parse(dataSnapshot.child("finish").getValue().toString());
-                            t.setStart(new Time(d1.getTime()));
+                            t.setFinish(new Time(d1.getTime()));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
