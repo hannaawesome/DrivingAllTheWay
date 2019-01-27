@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         // create a FragmentTransaction to begin the transaction and replace the Fragment
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         // replace the FrameLayout with new Fragment
-        //fragmentTransaction.replace(R.id.descriptionLayout, fragment);
+        fragmentTransaction.replace(R.id.relativeMain, fragment);
         fragmentTransaction.commit(); // save the changes
     }
 
