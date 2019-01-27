@@ -21,6 +21,15 @@
 
     </style>
 
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--buttons color-->
+        <item name="colorAccent">@color/primary_darker</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@color/jet</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@color/accent</item>
+    </style>
+
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>

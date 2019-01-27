@@ -168,7 +168,7 @@ public class FirstFragment extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.trip_title_cards, parent, false);
+                    .inflate(R.layout.trip_view_holder, parent, false);
 
             return new ViewHolder(itemView);
         }
