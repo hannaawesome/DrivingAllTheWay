@@ -341,6 +341,7 @@ public class Firebase_DBManager implements DB_manager {
                         t.setStart(new Time(d1.getTime()));
                         d1 = (java.util.Date) format.parse(dataSnapshot.child("finish").getValue().toString());
                         t.setFinish(new Time(d1.getTime()));
+                        t.set_id(dataSnapshot.getKey());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -351,8 +352,8 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
-                    Long id = Long.parseLong(dataSnapshot.getKey());
-                    // student.setId(id);
+                    String id =dataSnapshot.getKey();
+                     t.set_id(id);
                     for (int i = 0; i < tripList.size(); i++) {
                         if (tripList.get(i).get_id().equals(id)) {
                             tripList.set(i, t);
@@ -384,9 +385,14 @@ public class Firebase_DBManager implements DB_manager {
     }
     //endregion
 
-    public void changeNow(Trip t, Driver d, final Trip.TripState status, final Action<Void> action) {
+    /**
+     * @param t the trip to change
+     * @param d the driver that took this trip
+     * @param action returns data weather the trip has changed to now or failed
+     */
+    public void changeNow(Trip t, Driver d, final Action<Void> action) {
         t.setDriver(d.get_id());
-        t.setState(status);
+        t.setState(Trip.TripState.inProcess);
         TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -422,8 +428,13 @@ public class Firebase_DBManager implements DB_manager {
         });
     }
 
-    public void changeFinish(Trip t, final Trip.TripState status, final Time fTime, final Action<Void> action) {
-        t.setState(status);
+    /**
+     * @param t the trip to change to finish
+     * @param fTime the finish time
+     * @param action returns data weather the trip has changed to finished or failed
+     */
+    public void changeFinish(Trip t, final Time fTime, final Action<Void> action) {
+        t.setState(Trip.TripState.finished);
         t.setFinish(fTime);
         TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -460,17 +471,21 @@ public class Firebase_DBManager implements DB_manager {
         });
     }
 
+    /**
+     * @param c for the toast
+     * @return the full data on current user
+     */
     public Driver loadDataOnCurrentDriver(Context c) {
         userAuth = FirebaseAuth.getInstance();
         currentUser = userAuth.getCurrentUser();
         String email = currentUser.getEmail();
         Driver d = null;
         try {
-            for (Driver i : driverList)
-                if (email.equals(i.getEmailAddress()))
-                    d = i;
-            if (d == null)
-                throw new Exception("ERROR");
+            while (d==null) {//if driverList has not been fully loaded yet
+                for (Driver i : driverList)
+                    if (email.equals(i.getEmailAddress()))
+                        d = i;
+            }
             return d;
         } catch (Exception ex) {
             Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();

@@ -21,6 +21,7 @@ import java.util.List;
 
 public class CheckNewTrips extends Service {
     private DB_manager be;
+    private List<Trip> tripList;
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
@@ -29,6 +30,7 @@ public class CheckNewTrips extends Service {
             Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
                 @Override
                 public void OnDataChanged(List<Trip> obj) {
+                    tripList = obj;
                     if (be.distanceCalc(obj.get(obj.size() - 1), getBaseContext()) < 5)
                         sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
                 }
@@ -38,6 +40,14 @@ public class CheckNewTrips extends Service {
 
                 }
             });
+            while (true) {
+                Thread.sleep(10000);
+                for (Trip i : tripList)
+                    if (be.distanceCalc(i, getBaseContext()) < 5) {
+                        sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
+                        break;
+                    }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,6 +58,12 @@ public class CheckNewTrips extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Firebase_DBManager.stopNotifyToDriversList();
     }
 }
 

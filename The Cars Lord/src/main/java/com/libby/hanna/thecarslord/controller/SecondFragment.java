@@ -243,10 +243,12 @@ public class SecondFragment extends Fragment {
                         // Asking the Contact provider to create a new contact
                         try {
                             a.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                            Toast.makeText(a.getBaseContext(), "Contact added successfully!", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(a.getBaseContext(), "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
 

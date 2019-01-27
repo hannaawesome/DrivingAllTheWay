@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
-        d=be.loadDataOnCurrentDriver(this);
+        //d=be.loadDataOnCurrentDriver(this);
         startService(new Intent(getBaseContext(), CheckNewTrips.class));
     }
 

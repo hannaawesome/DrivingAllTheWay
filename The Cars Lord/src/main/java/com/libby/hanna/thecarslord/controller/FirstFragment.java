@@ -288,7 +288,7 @@ public class FirstFragment extends Fragment {
                     case R.id.doneButton:
                         Date d = new Date();
                         Time time = new Time(d.getTime());
-                        be.changeFinish(theTrip, Trip.TripState.finished, time, new DB_manager.Action<Void>() {
+                        be.changeFinish(theTrip, time, new DB_manager.Action<Void>() {
                             @Override
                             public void onSuccess(Void d) {
                                 Toast.makeText(a.getBaseContext(), "The trip has been finished successfully!", Toast.LENGTH_LONG).show();
@@ -328,7 +328,7 @@ public class FirstFragment extends Fragment {
                 phoneConfirm = dialogView.findViewById(R.id.byPhoneCall);
                 emailConfirm = dialogView.findViewById(R.id.byEmail);
                 alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
-                final AlertDialog dialog=alertDialogBuilder.create();
+                final AlertDialog dialog = alertDialogBuilder.create();
                 dialog.show();
 
                 smsConfirm.setOnClickListener(new View.OnClickListener() {
@@ -347,7 +347,7 @@ public class FirstFragment extends Fragment {
                             }
                             SmsManager smsManager = SmsManager.getDefault();
                             smsManager.sendTextMessage(theTrip.getPhoneNumber(), theDriver.getPhoneNumber(), "A driver is ready for your trip!", null, null);
-                            changeNow();
+                            //changeNow();
                             dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
@@ -361,7 +361,7 @@ public class FirstFragment extends Fragment {
                     public void onClick(View view) {
                         try {
                             dialContactPhone(theTrip.getPhoneNumber());
-                            changeNow();
+                            //changeNow();
                             dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not make a call, must be something wrong", Toast.LENGTH_LONG).show();
@@ -374,7 +374,7 @@ public class FirstFragment extends Fragment {
                     public void onClick(View view) {
                         try {
                             sendEmail(theTrip.getEmailAddress(), theDriver.getEmailAddress());
-                            changeNow();
+                            //changeNow();
                             dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not send email, must be something wrong", Toast.LENGTH_LONG).show();
@@ -389,11 +389,27 @@ public class FirstFragment extends Fragment {
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     a.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 5);
                 }
-                a.getBaseContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                callIntent.setData(Uri.parse("tel:"+phoneNumber));
+                a.startActivity(callIntent);
+            }
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            private void sendEmail(final String theEmail, final String driverName) {
+                if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                        Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                    a.requestPermissions(new String[]{Manifest.permission.INTERNET}, 5);
+                }
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", theEmail, null));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
+                intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
+                a.startActivity(Intent.createChooser(intent, "Choose an Email client :"));
             }
 
             private void changeNow() {
-                be.changeNow(theTrip, theDriver, Trip.TripState.inProcess, new DB_manager.Action<Void>() {
+                be.changeNow(theTrip, theDriver, new DB_manager.Action<Void>() {
                     @Override
                     public void onSuccess(Void d) {
                         Toast.makeText(a.getBaseContext(), "The trip is now in process!", Toast.LENGTH_LONG).show();
@@ -408,18 +424,6 @@ public class FirstFragment extends Fragment {
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            private void sendEmail(final String theEmail, final String driverName) {
-                if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
-                        Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                    a.requestPermissions(new String[]{Manifest.permission.INTERNET}, 5);
-                }
-                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", theEmail, null));
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
-                intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
-                a.getBaseContext().startActivity(Intent.createChooser(intent, "Choose an Email client :"));
-            }
         }
 
         @Override
