@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private DB_manager be;
     private List<Trip> tripList;
     private List<Driver> driverList;
+    private Driver d;
     private FirebaseAuth userAuth;
     public static Location thisLoca;
     // Acquire a reference to the system Location Manager
@@ -128,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
+        d=be.loadDataOnCurrentDriver(this);
         startService(new Intent(getBaseContext(), CheckNewTrips.class));
+
     }
 
 

@@ -74,28 +74,11 @@ public class SecondFragment extends Fragment {
             }
         });
 
-        tripsRecycleView = view.findViewById(R.id.firstRecycleView);
+        tripsRecycleView = view.findViewById(R.id.secondRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         if (tripsRecycleView.getAdapter() == null) {
-
-            try {
-                new AsyncTask<Void, Void, Driver>() {
-                    @Override
-                    protected void onPostExecute(Driver idResult) {
-                        super.onPostExecute(idResult);
-                        if (idResult == null)
-                            Toast.makeText(getActivity().getBaseContext(), "could not load data", Toast.LENGTH_LONG).show();
-                        tripByDriver = be.getSpecificDriverTrips(idResult.get_id());
-                    }
-
-                    @Override
-                    protected Driver doInBackground(Void... params) {
-                        return registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
-                    }
-                }.execute();
-            } catch (Exception ex) {
-                Toast.makeText(getActivity().getBaseContext(), "could not load data " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+             registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
+            tripByDriver = be.getSpecificDriverTrips(registeredDriver.get_id());
             adapter = new ATripAdapter(tripByDriver, registeredDriver, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();

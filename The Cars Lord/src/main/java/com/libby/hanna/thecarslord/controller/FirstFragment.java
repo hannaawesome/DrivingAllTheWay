@@ -441,6 +441,7 @@ public class FirstFragment extends Fragment {
                 tripList.addAll((List<Trip>) results.values);
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
+
         }
     }
    /* private class GetCurrentLocation extends AsyncTask<Void, Void, Location> {

@@ -116,9 +116,9 @@ public class Firebase_DBManager implements DB_manager {
 
     @Override
     public List<Trip> getSpecificDriverTrips(Long _id) {
-        //Query q=TripRef.orderByChild("driver").equalTo(_id);
         List<Trip> trips = new ArrayList<>();
         for (Trip i : tripList) {
+            if(i.getDriver()!=null)
             if (i.getDriver().equals(_id))
                 trips.add(i);
         }
