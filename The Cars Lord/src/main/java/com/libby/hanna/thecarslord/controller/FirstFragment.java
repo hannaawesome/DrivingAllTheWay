@@ -1,25 +1,30 @@
 package com.libby.hanna.thecarslord.controller;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -40,16 +45,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.libby.hanna.thecarslord.controller.MainActivity.thisLoca;
+
 public class FirstFragment extends Fragment {
     View view;
     private RecyclerView tripsRecycleView;
     private List<Trip> availTripList;
-    private Spinner filterFirstChoice;
+    public static Spinner filterFirstChoice;
     private DB_manager be;
     private EditText filterText;
     private ATripAdapter adapter;
     private AppCompatButton changeFilter;
     private Driver registeredDriver;
+
 
 
     @SuppressLint("StaticFieldLeak")
@@ -58,6 +66,9 @@ public class FirstFragment extends Fragment {
         // Inflate the layout for this fragment
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_first, container, false);
+        //GetCurrentLocation g=new GetCurrentLocation(getActivity());
+        //g.execute();
+
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter1);
         changeFilter = (AppCompatButton) view.findViewById(R.id.filterButton);
         tripsRecycleView = view.findViewById(R.id.firstRecycleView);
@@ -102,7 +113,7 @@ public class FirstFragment extends Fragment {
             } catch (Exception ex) {
                 Toast.makeText(getActivity().getBaseContext(), "could not load data " + ex.getMessage(), Toast.LENGTH_LONG).show();
             }
-            adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, filterFirstChoice, getActivity());
+            adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
         return view;
@@ -147,29 +158,26 @@ public class FirstFragment extends Fragment {
 
 
     private static class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder> implements Filterable {
-        private static final int UNSELECTED = -1;
         private DB_manager be;
         private RecyclerView recyclerView;
         private List<Trip> tripList;
         private List<Trip> origTripList;
         private Filter tripFilter;
-        // private int selectedItem = UNSELECTED;
         private String strFilterText;
-        Spinner sChoice;
-        String choice;
+        //Spinner sChoice;
+        //String choice;
         Activity a;
         private AppCompatButton smsConfirm;
         private AppCompatButton emailConfirm;
         private AppCompatButton phoneConfirm;
         Driver theDriver;
-
         private ArrayList<Integer> counter;
 
 
-        public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Spinner sChoice, Activity c) {
+        public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Activity c) {
             this.recyclerView = recyclerView;
-            this.sChoice = sChoice;
-            this.choice = this.sChoice.getSelectedItem().toString();
+            //this.sChoice = sChoice;
+           // this.choice = FirstFragment.filterFirstChoice.getSelectedItem().toString();
             this.tripList = t;
             this.origTripList = new ArrayList<Trip>(tripList);
             be = DBManagerFactory.GetFactory();
@@ -178,6 +186,7 @@ public class FirstFragment extends Fragment {
             counter = new ArrayList<Integer>();
             for (int i = 0; i < tripList.size(); i++)
                 counter.add(0);
+
         }
 
         @Override
@@ -191,8 +200,8 @@ public class FirstFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.destination.setText(tripList.get(position).getDestination());
-            choice = sChoice.getSelectedItem().toString();
-            if (choice.equals("all") || choice == null)
+            //choice = sChoice.getSelectedItem().toString();
+            if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all") || FirstFragment.filterFirstChoice.getSelectedItem().toString() == null)
                 holder.theFilter.setText(tripList.get(position).getSource());
             else
                 holder.theFilter.setText(strFilterText);
@@ -408,26 +417,28 @@ public class FirstFragment extends Fragment {
                 FilterResults results = new FilterResults();
                 List<Trip> filteredList;
                 // We implement here the filter logic
-                choice = sChoice.getSelectedItem().toString();
-                if ((String) constraint == null || constraint.length() == 0 || choice.equals("all")) {
+                //choice = sChoice.getSelectedItem().toString();
+                if ((String) constraint == null || constraint.length() == 0 || FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all")) {
                     // No filter implemented we return all the list
                     filteredList = new ArrayList<Trip>(origTripList);
                 }
                 // We perform filtering operation
                 else {
-                    if (choice.equals("by city")) {
+                    if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("by city")) {
                         filteredList = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
                     } else {
-                        filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a);
+                        while (thisLoca==null);
+                        filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a,thisLoca);
                     }
                 }
-                if (filteredList != null) {
-                    results.values = filteredList;
-                    results.count = filteredList.size();
-                } else {
+                if (filteredList == null)
+                    filteredList = new ArrayList<Trip>();
+                results.values = filteredList;
+                results.count = filteredList.size();
+                /*} else {
                     results.values = new ArrayList<Trip>();
                     results.count = 0;
-                }
+                }*/
                 return results;
             }
 
@@ -441,4 +452,19 @@ public class FirstFragment extends Fragment {
             }
         }
     }
+   /* private class GetCurrentLocation extends AsyncTask<Void, Void, Location> {
+
+        private Activity a;
+
+        GetCurrentLocation(Activity a)
+        {
+            this.a=a;
+        }
+        @Override
+        protected Location doInBackground(Void... params) {
+
+            return thisLocation;
+        }
+    }*/
+
 }
