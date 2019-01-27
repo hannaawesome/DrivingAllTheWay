@@ -6,54 +6,37 @@
         tools:context=".controller.MainActivity">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:text="This is Second Fragment"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/secondButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/green"
-            android:text="Second Fragment"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/filter2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_margin="12dp"
-                android:layout_weight="5"
-                android:entries="@array/FilterSpinner2"
-                android:padding="12dp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/filterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:padding="12dp"
-                android:text="Change Filter" />
+                <Spinner
+                    android:id="@+id/filter2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:entries="@array/FilterSpinner2"
+                    android:padding="12dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/secondRecycleView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
+
+
         </LinearLayout>
 
-    </RelativeLayout>
+</RelativeLayout>
