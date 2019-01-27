@@ -185,9 +185,9 @@ public class FirstFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (counter.get(position) % 2 == 0) {
-                        holder.dono.setVisibility(View.VISIBLE);
+                        holder.innerView.setVisibility(View.VISIBLE);
                     } else {
-                        holder.dono.setVisibility(View.GONE);
+                        holder.innerView.setVisibility(View.GONE);
                     }
                     counter.set(position, counter.get(position) + 1);
                 }
@@ -215,21 +215,19 @@ public class FirstFragment extends Fragment {
             private AppCompatButton driveNow;
             private AppCompatButton finishTrip;
             Trip theTrip;
-            View dono;
             private TextView destination;
             private TextView theFilter;
             private CardView cardView;
-            //View innerView;
+            View innerView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 cardView = (CardView)itemView.findViewById(R.id.cardView);
                 destination = (TextView) itemView.findViewById(R.id.destinationTextView);
                 theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
-                dono = LayoutInflater.from(a.getBaseContext())
-                        .inflate(R.layout.trip_view_holder,null);
-                //innerView=dono.findViewById(R.id.allDetails);
-                getViews(dono);
+                //dono = LayoutInflater.from(a.getBaseContext()).inflate(R.layout.trip_view_holder,null);
+                innerView=itemView.findViewById(R.id.allDetails);
+                getViews(itemView);
                 //expandableLayout.setInterpolator(new OvershootInterpolator());
                 //expandableLayout.setOnExpansionUpdateListener(this);
                 //expandButton.setOnClickListener(this);
