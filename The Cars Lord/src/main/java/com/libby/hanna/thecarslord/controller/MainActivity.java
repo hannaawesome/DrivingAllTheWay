@@ -6,18 +6,23 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.IntentService;
+import android.app.Notification;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         be = DBManagerFactory.GetFactory();
         dl = (DrawerLayout) findViewById(R.id.activity_main);
+        userAuth = FirebaseAuth.getInstance();
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
         getLocation(this);
         //get driver's location
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
+        startService(new Intent(getBaseContext(), CheckNewTrips.class));
     }
 
 
@@ -148,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
         Firebase_DBManager.stopNotifyToDriversList();
+        //stopService(new Intent(getBaseContext(), CheckNewTrips.class));
         super.onDestroy();
     }
 
@@ -167,5 +175,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
             Toast.makeText(a, "must be something wrong with getting your location", Toast.LENGTH_LONG).show();
         }
-    }
+
+ }
 }

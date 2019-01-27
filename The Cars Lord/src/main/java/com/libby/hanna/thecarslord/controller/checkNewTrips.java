@@ -2,41 +2,54 @@ package com.libby.hanna.thecarslord.controller;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 
+import com.google.firebase.database.DataSnapshot;
 import com.libby.hanna.thecarslord.R;
+import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
+import com.libby.hanna.thecarslord.model.backend.DB_manager;
+import com.libby.hanna.thecarslord.model.datasource.Firebase_DBManager;
+import com.libby.hanna.thecarslord.model.entities.Trip;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
-public class checkNewTrips extends IntentService {
-
-    public checkNewTrips() {
-        super("checkNewTrips");
-    }
+import java.util.List;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Notification.Builder nBuilder = new Notification.Builder(getBaseContext());
-        nBuilder.setSmallIcon(R.drawable.ic_local_taxi);
-        nBuilder.setContentTitle("New route found!");
-        nBuilder.setContentText("here is a new route waiting for you");
-        Notification notification = nBuilder.build();
-        startForeground(1234, notification);
-    }
+public class CheckNewTrips extends Service {
+    private DB_manager be;
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+        be = DBManagerFactory.GetFactory();
+        try {
+            Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
+                @Override
+                public void OnDataChanged(List<Trip> obj) {
+                    if (be.distanceCalc(obj.get(obj.size() - 1), getBaseContext()) < 5)
+                        sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
+                }
 
+                @Override
+                public void onFailure(Exception exception) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return START_REDELIVER_INTENT;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }
+
+
+
