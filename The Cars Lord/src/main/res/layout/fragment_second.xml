@@ -3,7 +3,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".controller.MainActivity">
+    android:theme="@style/AppTheme.Dark"
+    tools:context=".controller.MainActivity">
 
 
         <LinearLayout
@@ -20,12 +21,13 @@
 
                 <Spinner
                     android:id="@+id/filter2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"
                     android:entries="@array/FilterSpinner2"
                     android:padding="12dp"
+                    android:spinnerMode="dropdown"
                     android:textStyle="bold" />
+
 
             </LinearLayout>
 

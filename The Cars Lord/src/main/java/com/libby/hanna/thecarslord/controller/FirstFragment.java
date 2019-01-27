@@ -147,7 +147,7 @@ public class FirstFragment extends Fragment {
             filterText.setHint("e.g. Jerusalem");
         else
             filterText.setHint("e.g. 10");
-        alertDialogBuilder.setPositiveButton("Ok", onClickListener);
+        alertDialogBuilder.setPositiveButton("Ok" , onClickListener);
         alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
         alertDialogBuilder.show();
 
@@ -318,7 +318,7 @@ public class FirstFragment extends Fragment {
                         }
                     }
                 };
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(a);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(a, R.style.MyDialogTheme);
                 alertDialogBuilder.setTitle("Confirm by:");
                 // Get the layout inflater
                 LayoutInflater inflater = LayoutInflater.from(a.getBaseContext());

@@ -42,6 +42,8 @@
             <item name="android:textAppearance">@color/iconDarkGrey</item>
         <item name="android:textColor">@color/iconDarkGrey</item>
         <item name="editTextColor">@color/iconDarkGrey</item>
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
@@ -61,9 +63,10 @@
 
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Light">
 
+        <item name="android:textColorPrimary">@color/iconVeryDarkGrey</item>
         <item name="colorPrimary">@color/iron</item>
         <item name="colorPrimaryDark">@color/primary_darker</item>
-        <item name="colorAccent">@color/iron</item>
+        <item name="colorAccent">@color/primary_darker</item>
 
     </style>
 

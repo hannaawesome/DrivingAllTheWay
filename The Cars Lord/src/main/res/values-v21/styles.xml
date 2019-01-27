@@ -42,4 +42,21 @@
         <item name="android:colorButtonNormal">@color/primary_darker</item>
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--buttons color-->
+        <item name="colorAccent">@color/primary_darker</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@color/jet</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@drawable/dialog_drawable</item>
+
+        <!--dialog text-->
+        <item name="android:textAppearance">@color/iconDarkGrey</item>
+        <item name="android:textColor">@color/iconDarkGrey</item>
+        <item name="editTextColor">@color/iconDarkGrey</item>
+        <item name="android:statusBarColor">@color/primary_darker</item>
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_darker</item>
+    </style>
+
 </resources>
