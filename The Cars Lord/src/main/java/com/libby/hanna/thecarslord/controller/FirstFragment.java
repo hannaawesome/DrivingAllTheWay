@@ -1,14 +1,20 @@
 package com.libby.hanna.thecarslord.controller;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -167,8 +173,6 @@ public class FirstFragment extends Fragment {
 
         public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Activity c) {
             this.recyclerView = recyclerView;
-            //this.sChoice = sChoice;
-           // this.choice = FirstFragment.filterFirstChoice.getSelectedItem().toString();
             this.tripList = t;
             this.origTripList = new ArrayList<Trip>(tripList);
             be = DBManagerFactory.GetFactory();
@@ -328,9 +332,19 @@ public class FirstFragment extends Fragment {
                 dialog.show();
 
                 smsConfirm.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
                         try {
+                            if (ContextCompat.checkSelfPermission(a.getBaseContext(),
+                                    Manifest.permission.SEND_SMS)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(a.getParent(),
+                                        Manifest.permission.SEND_SMS)) {
+                                } else {
+                                    a.requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 5);
+                                }
+                            }
                             SmsManager smsManager = SmsManager.getDefault();
                             smsManager.sendTextMessage(theTrip.getPhoneNumber(), theDriver.getPhoneNumber(), "A driver is ready for your trip!", null, null);
                             changeNow();
@@ -342,6 +356,7 @@ public class FirstFragment extends Fragment {
                     }
                 });
                 phoneConfirm.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
                         try {
@@ -354,6 +369,7 @@ public class FirstFragment extends Fragment {
                     }
                 });
                 emailConfirm.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
                         try {
@@ -367,7 +383,12 @@ public class FirstFragment extends Fragment {
                 });
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.M)
             private void dialContactPhone(final String phoneNumber) {
+                if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    a.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 5);;
+                }
                 a.getBaseContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
             }
 
@@ -387,7 +408,12 @@ public class FirstFragment extends Fragment {
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.M)
             private void sendEmail(final String theEmail, final String driverName) {
+                if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                        Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                    a.requestPermissions(new String[]{Manifest.permission.INTERNET}, 5);
+                }
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", theEmail, null));
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");

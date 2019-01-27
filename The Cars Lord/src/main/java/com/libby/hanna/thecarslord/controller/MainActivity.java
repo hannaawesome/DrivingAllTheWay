@@ -2,30 +2,31 @@ package com.libby.hanna.thecarslord.controller;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.IntentService;
-import android.app.Notification;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.libby.hanna.thecarslord.R;
 import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     // Define a listener that responds to location updates
     private LocationListener locationListener;
-
+    private FusedLocationProviderClient mFusedLocationClient;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         return true;
                 }
-
             }
         });
         Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
@@ -131,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         });
         d=be.loadDataOnCurrentDriver(this);
         startService(new Intent(getBaseContext(), CheckNewTrips.class));
-
     }
 
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         Firebase_DBManager.stopNotifyToTripList();
         Firebase_DBManager.stopNotifyToDriversList();
-        //stopService(new Intent(getBaseContext(), CheckNewTrips.class));
+        stopService(new Intent(getBaseContext(), CheckNewTrips.class));
         super.onDestroy();
     }
 
@@ -166,14 +166,29 @@ public class MainActivity extends AppCompatActivity {
         userAuth.signOut();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void getLocation(Activity a) {
         try {
             //     Check the SDK version and whether the permission is already granted or not.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
-            else {
-                // Android version is lesser than 6.0 or the permission is already granted.
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            if ( a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED&& a.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                a.requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            if(thisLoca==null) {   //get Provider location from the user location services
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getBaseContext());
+                //run the function on the background and add onSuccess listener
+                mFusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(a, new OnSuccessListener<Location>() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onSuccess(Location _location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (_location != null) {
+                                    //save the location
+                                    thisLoca = _location;
+                                } else {
+                                    Toast.makeText(getBaseContext(), "can't find your location", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
             }
         } catch (Exception ex) {
             Toast.makeText(a, "must be something wrong with getting your location", Toast.LENGTH_LONG).show();

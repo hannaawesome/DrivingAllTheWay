@@ -398,6 +398,28 @@ public class Firebase_DBManager implements DB_manager {
                 action.onFailure(e);
             }
         });
+        TripRef.child(t.get_id()).child("start").setValue(t.getStart().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                action.onSuccess(aVoid);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
+        TripRef.child(t.get_id()).child("finish").setValue(t.getFinish().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                action.onSuccess(aVoid);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
     }
 
     public void changeFinish(Trip t, final Trip.TripState status, final Time fTime, final Action<Void> action) {
@@ -407,6 +429,28 @@ public class Firebase_DBManager implements DB_manager {
             @Override
             public void onSuccess(Void v) {
                 action.onSuccess(v);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
+        TripRef.child(t.get_id()).child("start").setValue(t.getStart().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                action.onSuccess(aVoid);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                action.onFailure(e);
+            }
+        });
+        TripRef.child(t.get_id()).child("finish").setValue(t.getFinish().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                action.onSuccess(aVoid);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
