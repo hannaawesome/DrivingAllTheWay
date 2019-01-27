@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.libby.hanna.thecarslord.R;
+import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
+import com.libby.hanna.thecarslord.model.backend.DB_manager;
 import com.libby.hanna.thecarslord.model.entities.Driver;
 
 import static android.content.ContentValues.TAG;

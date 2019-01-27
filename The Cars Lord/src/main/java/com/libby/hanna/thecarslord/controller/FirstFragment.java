@@ -1,10 +1,9 @@
 package com.libby.hanna.thecarslord.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,7 +44,6 @@ public class FirstFragment extends Fragment {
     View view;
     private RecyclerView tripsRecycleView;
     private List<Trip> availTripList;
-    private List<Driver> driverList;
     private Spinner filterFirstChoice;
     private DB_manager be;
     private EditText filterText;
@@ -54,6 +52,7 @@ public class FirstFragment extends Fragment {
     private Driver registeredDriver;
 
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -69,7 +68,7 @@ public class FirstFragment extends Fragment {
                     FilterDialog();
                     changeFilter.setEnabled(true);
                 } else {
-                    //adapter.getFilter().filter("");
+                    adapter.getFilter().filter("whatever");
                     changeFilter.setEnabled(false);
                 }
             }
@@ -86,7 +85,23 @@ public class FirstFragment extends Fragment {
         });
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
-            registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
+            try {
+                new AsyncTask<Void, Void, Driver>() {
+                    @Override
+                    protected void onPostExecute(Driver idResult) {
+                        super.onPostExecute(idResult);
+                        if (idResult == null)
+                            Toast.makeText(getActivity().getBaseContext(), "could not load data", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    protected Driver doInBackground(Void... params) {
+                        return registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
+                    }
+                }.execute();
+            } catch (Exception ex) {
+                Toast.makeText(getActivity().getBaseContext(), "could not load data " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
             adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, filterFirstChoice, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
@@ -138,7 +153,7 @@ public class FirstFragment extends Fragment {
         private List<Trip> tripList;
         private List<Trip> origTripList;
         private Filter tripFilter;
-       // private int selectedItem = UNSELECTED;
+        // private int selectedItem = UNSELECTED;
         private String strFilterText;
         Spinner sChoice;
         String choice;
@@ -156,7 +171,7 @@ public class FirstFragment extends Fragment {
             this.sChoice = sChoice;
             this.choice = this.sChoice.getSelectedItem().toString();
             this.tripList = t;
-            this.origTripList = tripList;
+            this.origTripList = new ArrayList<Trip>(tripList);
             be = DBManagerFactory.GetFactory();
             this.a = c;
             theDriver = d;
@@ -186,8 +201,10 @@ public class FirstFragment extends Fragment {
                 public void onClick(View view) {
                     if (counter.get(position) % 2 == 0) {
                         holder.innerView.setVisibility(View.VISIBLE);
+                        holder.title.setVisibility(View.INVISIBLE);
                     } else {
                         holder.innerView.setVisibility(View.GONE);
+                        holder.title.setVisibility(View.VISIBLE);
                     }
                     counter.set(position, counter.get(position) + 1);
                 }
@@ -202,9 +219,6 @@ public class FirstFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            //private ExpandableLayout expandableLayout;
-            //private AppCompatButton expandButton;
-
             private TextView email;
             private TextView phone;
             private TextView name;
@@ -219,18 +233,16 @@ public class FirstFragment extends Fragment {
             private TextView theFilter;
             private CardView cardView;
             View innerView;
+            View title;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                cardView = (CardView)itemView.findViewById(R.id.cardView);
+                cardView = (CardView) itemView.findViewById(R.id.cardView);
                 destination = (TextView) itemView.findViewById(R.id.destinationTextView);
                 theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
-                //dono = LayoutInflater.from(a.getBaseContext()).inflate(R.layout.trip_view_holder,null);
-                innerView=itemView.findViewById(R.id.allDetails);
+                title = itemView.findViewById(R.id.titleLayout);
+                innerView = itemView.findViewById(R.id.allDetails);
                 getViews(itemView);
-                //expandableLayout.setInterpolator(new OvershootInterpolator());
-                //expandableLayout.setOnExpansionUpdateListener(this);
-                //expandButton.setOnClickListener(this);
                 driveNow.setOnClickListener(this);
                 finishTrip.setOnClickListener(this);
 
@@ -246,16 +258,10 @@ public class FirstFragment extends Fragment {
                 finish = (TextView) itemView.findViewById(R.id.endTimeTextView);
                 driveNow = (AppCompatButton) itemView.findViewById(R.id.confirmButton);
                 finishTrip = (AppCompatButton) itemView.findViewById(R.id.doneButton);
-                //expandableLayout = itemView.findViewById(R.id.expandable_layout);
-                //expandButton = itemView.findViewById(R.id.expand_button);
             }
 
             public void bind() {
-                 int position = getAdapterPosition();
-                //boolean isSelected = position == selectedItem;
-                //expandButton.setSelected(isSelected);
-                //expandableLayout.setExpanded(isSelected, false);
-
+                int position = getAdapterPosition();
                 theTrip = tripList.get(position);
                 name.setText(theTrip.getName());
                 from.setText(theTrip.getSource());
@@ -272,21 +278,6 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    /*case R.id.expand_button:
-                        ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
-                        if (holder != null) {
-                            holder.expandButton.setSelected(false);
-                            holder.expandableLayout.collapse();
-                        }
-                        int position = getAdapterPosition();
-                        if (position == selectedItem) {
-                            selectedItem = UNSELECTED;
-                        } else {
-                            expandButton.setSelected(true);
-                            expandableLayout.expand();
-                            selectedItem = position;
-                        }
-                        break;*/
                     case R.id.confirmButton:
                         confirmDialog();
                         Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
@@ -312,14 +303,6 @@ public class FirstFragment extends Fragment {
                         break;
                 }
             }
-
-            /*@Override
-            public void onExpansionUpdate(float expansionFraction, int state) {
-                Log.d("ExpandableLayout", "State: " + state);
-                if (state == ExpandableLayout.State.EXPANDING) {
-                    recyclerView.smoothScrollToPosition(getAdapterPosition());
-                }
-            }*/
 
             private void confirmDialog() {
                 AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
@@ -426,9 +409,9 @@ public class FirstFragment extends Fragment {
                 List<Trip> filteredList;
                 // We implement here the filter logic
                 choice = sChoice.getSelectedItem().toString();
-                if (constraint == null || constraint.length() == 0 || choice.equals("all")) {
+                if ((String) constraint == null || constraint.length() == 0 || choice.equals("all")) {
                     // No filter implemented we return all the list
-                    filteredList = origTripList;
+                    filteredList = new ArrayList<Trip>(origTripList);
                 }
                 // We perform filtering operation
                 else {
@@ -438,14 +421,20 @@ public class FirstFragment extends Fragment {
                         filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a);
                     }
                 }
-                results.values = filteredList;
-                results.count = filteredList.size();
+                if (filteredList != null) {
+                    results.values = filteredList;
+                    results.count = filteredList.size();
+                } else {
+                    results.values = new ArrayList<Trip>();
+                    results.count = 0;
+                }
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint,
                                           FilterResults results) {
+
                 tripList.removeAll(tripList);
                 tripList.addAll((List<Trip>) results.values);
                 recyclerView.getAdapter().notifyDataSetChanged();

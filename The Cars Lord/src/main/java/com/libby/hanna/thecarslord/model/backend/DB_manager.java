@@ -44,4 +44,5 @@ public interface DB_manager {
     void changeNow(Trip t, Driver d, final Trip.TripState status,final Action<Void> action);
     void changeFinish(Trip t, final Trip.TripState status, final Time fTime,final Action<Void> action);
     Driver loadDataOnCurrentDriver(Context c);
-}
+    void getLocation(Activity a);
+    }

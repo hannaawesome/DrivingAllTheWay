@@ -1,6 +1,7 @@
 package com.libby.hanna.thecarslord.controller;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -101,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
+        GetCurrentLocation g=new GetCurrentLocation(this);
+        //g.execute();
     }
 
 
@@ -133,5 +137,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut() {
         userAuth.signOut();
+    }
+    private class GetCurrentLocation extends AsyncTask<Void, Void, String> {
+
+        private Activity a;
+        GetCurrentLocation(Activity a)
+        {
+            this.a=a;
+        }
+        @Override
+        protected String doInBackground(Void... params) {
+             be.getLocation(a);
+             return "done";
+        }
     }
 }

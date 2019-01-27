@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,6 +61,7 @@ public class Firebase_DBManager implements DB_manager {
         driverList = new ArrayList<Driver>();//change to query
         TripRef = database.getReference("trips");
         tripList = new ArrayList<Trip>();
+
 
     }
 
@@ -140,21 +142,26 @@ public class Firebase_DBManager implements DB_manager {
         for (Trip i : notHandeledTrips) {
             l = fromStringToLocation(c, i.getSource());
             myCity = fromStringToLocation(c, city);
-            try {
-                addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
-                myCityAddresses = geocoder.getFromLocation(myCity.getLatitude(), myCity.getLongitude(), 1);
-                if (addresses.size() > 0) {
-                    {
-                        String cityName = addresses.get(0).getAddressLine(0);
-                        String otherCityName = myCityAddresses.get(0).getAddressLine(0);
-                        if (cityName.equals(otherCityName))
-                            trips.add(i);
+            if(myCity!=null) {
+                try {
+                    addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
+                    myCityAddresses = geocoder.getFromLocation(myCity.getLatitude(), myCity.getLongitude(), 1);
+                    if (addresses.size() > 0) {
+                        {
+                            String cityName = addresses.get(0).getAddressLine(0);
+                            String otherCityName = myCityAddresses.get(0).getAddressLine(0);
+                            if (cityName.equals(otherCityName))
+                                trips.add(i);
+                        }
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(c, "failed to get location", Toast.LENGTH_SHORT).show();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(c, "failed to get location", Toast.LENGTH_SHORT).show();
+
             }
+            else
+                return null;
         }
         return trips;
     }
@@ -167,7 +174,6 @@ public class Firebase_DBManager implements DB_manager {
      */
     @Override
     public List<Trip> getNotHandeledTripsInDistance(int distance, Activity a) {
-        getLocation(a);//i wanna do it in asynctask
         List<Trip> notHandeledTrips = getNotHandeledTrips();
         List<Trip> trips = new ArrayList<>();
         for (Trip i : notHandeledTrips) {
@@ -196,7 +202,7 @@ public class Firebase_DBManager implements DB_manager {
         return trips;
     }
 
-    private void getLocation(Activity a) {
+    public void getLocation(Activity a) {
         try {
             //     Check the SDK version and whether the permission is already granted or not.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -206,7 +212,7 @@ public class Firebase_DBManager implements DB_manager {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             }
         } catch (Exception ex) {
-            Toast.makeText(a, "must be something wrong with getting your location\n" + ex.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(a, "must be something wrong with getting your location", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -227,13 +233,18 @@ public class Firebase_DBManager implements DB_manager {
         try {
             if (gc.isPresent()) {
                 List<Address> list = gc.getFromLocationName(str, 1);
-                Address address = list.get(0);
-                double lat = address.getLatitude();
-                double lng = address.getLongitude();
-                Location location = new Location(str);
-                location.setLatitude(lat);
-                location.setLongitude(lng);
-                return location;
+                if (list == null) {
+                    Toast.makeText(c, "your location does not exist", Toast.LENGTH_LONG).show();
+                    return null;
+                } else {
+                    Address address = list.get(0);
+                    double lat = address.getLatitude();
+                    double lng = address.getLongitude();
+                    Location location = new Location(str);
+                    location.setLatitude(lat);
+                    location.setLongitude(lng);
+                    return location;
+                }
             }
             return null;
         } catch (Exception exception) {
@@ -327,14 +338,14 @@ public class Firebase_DBManager implements DB_manager {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
                     SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
-                        try {
-                            java.util.Date d1 = (java.util.Date) format.parse(dataSnapshot.child("start").getValue().toString());
-                            t.setStart(new Time(d1.getTime()));
-                            d1 = (java.util.Date) format.parse(dataSnapshot.child("finish").getValue().toString());
-                            t.setFinish(new Time(d1.getTime()));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        java.util.Date d1 = (java.util.Date) format.parse(dataSnapshot.child("start").getValue().toString());
+                        t.setStart(new Time(d1.getTime()));
+                        d1 = (java.util.Date) format.parse(dataSnapshot.child("finish").getValue().toString());
+                        t.setFinish(new Time(d1.getTime()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     tripList.add(t);
                     notifyDataChange.OnDataChanged(tripList);
                 }
@@ -420,7 +431,7 @@ public class Firebase_DBManager implements DB_manager {
                 throw new Exception("ERROR");
             return d;
         } catch (Exception ex) {
-            Toast.makeText(c,ex.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();
             return null;
         }
 
