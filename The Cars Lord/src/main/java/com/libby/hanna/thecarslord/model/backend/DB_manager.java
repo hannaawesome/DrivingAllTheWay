@@ -2,6 +2,7 @@ package com.libby.hanna.thecarslord.model.backend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 
 import com.libby.hanna.thecarslord.model.entities.*;
 
@@ -36,7 +37,7 @@ public interface DB_manager {
 
     List<Trip> getNotHandeledTripsInCity(String city,Context c);
 
-    List<Trip> getNotHandeledTripsInDistance(int distance,Activity c);
+    List<Trip> getNotHandeledTripsInDistance(int distance,Activity c,Location thisLocation);
 
     List<Trip> getTripsByTime(Time t);
 
@@ -44,5 +45,4 @@ public interface DB_manager {
     void changeNow(Trip t, Driver d, final Trip.TripState status,final Action<Void> action);
     void changeFinish(Trip t, final Trip.TripState status, final Time fTime,final Action<Void> action);
     Driver loadDataOnCurrentDriver(Context c);
-    void getLocation(Activity a);
     }

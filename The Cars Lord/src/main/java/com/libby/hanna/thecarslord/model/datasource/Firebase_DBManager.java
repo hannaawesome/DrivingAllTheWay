@@ -49,11 +49,11 @@ public class Firebase_DBManager implements DB_manager {
     static Location thisLocation;
     private FirebaseAuth userAuth;
     private FirebaseUser currentUser;
-    // Acquire a reference to the system Location Manager
+    /*// Acquire a reference to the system Location Manager
     private LocationManager locationManager;
     // Define a listener that responds to location updates
     private LocationListener locationListener;
-
+*/
     static {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -173,21 +173,23 @@ public class Firebase_DBManager implements DB_manager {
      * @return all the trips that are available and the distance from source to the driver is distance
      */
     @Override
-    public List<Trip> getNotHandeledTripsInDistance(int distance, Activity a) {
-        List<Trip> notHandeledTrips = getNotHandeledTrips();
-        List<Trip> trips = new ArrayList<>();
-        for (Trip i : notHandeledTrips) {
-            if (Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000) == distance)
-                trips.add(i);
-        }
+    public List<Trip> getNotHandeledTripsInDistance(final int distance, final Activity a,Location thisLocation) {
+       // getLocation(a);
+       final List<Trip> notHandeledTrips = getNotHandeledTrips();
+        final List<Trip> trips = new ArrayList<>();
 
         //get driver's location
-        locationManager = (LocationManager) a.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                thisLocation = location;
+        //locationManager = (LocationManager) a.getSystemService(Context.LOCATION_SERVICE);
+        //locationListener = new LocationListener() {
+            //public void onLocationChanged(Location location) {
+                //thisLocation = location;
+                for (Trip i : notHandeledTrips) {
+                    int temp=Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000);
+                    if (temp == distance)
+                        trips.add(i);
+                }
                 // Remove the listener you previously added
-                locationManager.removeUpdates(locationListener);
+             /*  locationManager.removeUpdates(locationListener);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -198,23 +200,14 @@ public class Firebase_DBManager implements DB_manager {
 
             public void onProviderDisabled(String provider) {
             }
-        };
+        };*/
+
+
+
         return trips;
     }
 
-    public void getLocation(Activity a) {
-        try {
-            //     Check the SDK version and whether the permission is already granted or not.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
-            else {
-                // Android version is lesser than 6.0 or the permission is already granted.
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            }
-        } catch (Exception ex) {
-            Toast.makeText(a, "must be something wrong with getting your location", Toast.LENGTH_LONG).show();
-        }
-    }
+
 
 
     @Override

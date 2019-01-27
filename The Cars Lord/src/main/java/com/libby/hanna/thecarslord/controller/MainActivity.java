@@ -1,31 +1,28 @@
 package com.libby.hanna.thecarslord.controller;
 
 
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
+import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.libby.hanna.thecarslord.R;
 import com.libby.hanna.thecarslord.model.backend.DBManagerFactory;
 import com.libby.hanna.thecarslord.model.backend.DB_manager;
@@ -44,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private List<Trip> tripList;
     private List<Driver> driverList;
     private FirebaseAuth userAuth;
+public static Location thisLoca;
+    // Acquire a reference to the system Location Manager
+    private LocationManager locationManager;
+    // Define a listener that responds to location updates
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,25 @@ public class MainActivity extends AppCompatActivity {
         be = DBManagerFactory.GetFactory();
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
+        getLocation(this);
+        //get driver's location
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                thisLoca = location;
+                // Remove the listener you previously added
+                locationManager.removeUpdates(locationListener);
+            }
 
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
         dl.addDrawerListener(t);
         t.syncState();
 
@@ -103,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
-        GetCurrentLocation g=new GetCurrentLocation(this);
-        //g.execute();
+
     }
 
 
@@ -138,17 +157,17 @@ public class MainActivity extends AppCompatActivity {
     private void signOut() {
         userAuth.signOut();
     }
-    private class GetCurrentLocation extends AsyncTask<Void, Void, String> {
-
-        private Activity a;
-        GetCurrentLocation(Activity a)
-        {
-            this.a=a;
-        }
-        @Override
-        protected String doInBackground(Void... params) {
-             be.getLocation(a);
-             return "done";
+    public void getLocation(Activity a) {
+        try {
+            //     Check the SDK version and whether the permission is already granted or not.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && a.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                a.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
+            else {
+                // Android version is lesser than 6.0 or the permission is already granted.
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(a, "must be something wrong with getting your location", Toast.LENGTH_LONG).show();
         }
     }
 }
