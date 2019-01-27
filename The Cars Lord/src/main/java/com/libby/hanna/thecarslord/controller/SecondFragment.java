@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,11 +66,11 @@ public class SecondFragment extends Fragment {
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_second, container, false);
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter2);
+        filterFirstChoice.setSelection(0);
        filterFirstChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView parent, View v, int position, long id) {
                     sortTheList();
             }
-
             public void onNothingSelected(AdapterView arg0) {
                 filterFirstChoice.setSelection(0);
             }
@@ -103,7 +105,6 @@ public class SecondFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
     private static class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder>  {
-        private DB_manager be;
         private List<Trip> tripList;
         Activity a;
         Driver theDriver;
@@ -112,7 +113,6 @@ public class SecondFragment extends Fragment {
 
         public ATripAdapter( List<Trip> t, Driver d, Activity c) {
             this.tripList = t;
-            be = DBManagerFactory.GetFactory();
             this.a = c;
             theDriver = d;
             counter = new ArrayList<Integer>();
@@ -123,17 +123,18 @@ public class SecondFragment extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.trip_view_holder, parent, false);
+                    .inflate(R.layout.second_view_holder, parent, false);
             return new ViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.destination.setText(tripList.get(position).getDestination());
-            if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all") || FirstFragment.filterFirstChoice.getSelectedItem().toString() == null)
-                holder.theFilter.setText(tripList.get(position).getSource());
-            else
+            if (FirstFragment.filterFirstChoice.getSelectedItemPosition()!=0&&!FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all"))
                 holder.theFilter.setText(FirstFragment.filterFirstChoice.getSelectedItem().toString());
+           else
+                holder.theFilter.setText(tripList.get(position).getSource());
+
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -184,11 +185,16 @@ public class SecondFragment extends Fragment {
                 innerView = itemView.findViewById(R.id.allDetails);
                 getViews(itemView);
                 addToContact.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
                         String DisplayName = theTrip.getName();
                         String MobileNumber = theTrip.getPhoneNumber();
                         String emailID = theTrip.getEmailAddress();
+                        if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED||ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                                Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+                            a.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS}, 5);
 
                         ArrayList <ContentProviderOperation> ops = new ArrayList < ContentProviderOperation > ();
 
@@ -261,6 +267,7 @@ public class SecondFragment extends Fragment {
             public void bind() {
                 int position = getAdapterPosition();
                 theTrip = tripList.get(position);
+                status.setText(theTrip.getState().toString());
                 name.setText(theTrip.getName());
                 from.setText(theTrip.getSource());
                 to.setText(theTrip.getDestination());

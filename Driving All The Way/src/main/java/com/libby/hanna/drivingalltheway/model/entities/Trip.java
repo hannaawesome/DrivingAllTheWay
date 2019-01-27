@@ -52,8 +52,6 @@ public class Trip {
     public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress, Long driver) {
         Date date = new Date();
-        this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
-                String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
         this.state = state;
         this.source = source;
         this.destination = destination;
@@ -71,8 +69,6 @@ public class Trip {
      */
     public Trip() {
         Date date = new Date();
-        this._id = (String.valueOf(date.getYear()) + String.valueOf(date.getMonth()) + String.valueOf(date.getDay()) +
-                String.valueOf(date.getHours()) + String.valueOf(date.getMinutes()) + String.valueOf(date.getSeconds()));
     }
 
     /**
@@ -100,7 +96,9 @@ public class Trip {
     public String get_id() {
         return _id;
     }
-
+    public void set_id(String id) {
+         _id=id;
+    }
     public Long getDriver() {
         return driver;
     }

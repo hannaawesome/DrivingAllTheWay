@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.libby.hanna.drivingalltheway.R;
 import com.libby.hanna.drivingalltheway.model.backend.*;
+import com.libby.hanna.drivingalltheway.model.datasource.Firebase_DBManager;
 import com.libby.hanna.drivingalltheway.model.entities.Trip;
 
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class TripApp extends Activity {
     private EditText when1;
     private EditText when2;
     private Trip t;
+    private List<Trip> tripList;
 
     // Acquire a reference to the system Location Manager
     private LocationManager locationManager;
@@ -62,12 +64,13 @@ public class TripApp extends Activity {
     private LocationListener locationListener;
     //endregion
 
-    DB_manager be = DBManagerFactory.GetFactory();
+    DB_manager be;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_app);
+        be = DBManagerFactory.GetFactory();
         done = (ImageButton) findViewById(R.id.DoneButton);
         here = (ImageButton) findViewById(R.id.imageButton3);
         nowTime = (ImageButton) findViewById(R.id.imageButton_nowTime);
@@ -93,7 +96,17 @@ public class TripApp extends Activity {
             public void onProviderDisabled(String provider) {
             }
         };
+        Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
+            @Override
+            public void OnDataChanged(List<Trip> obj) {
+                tripList = obj;
+            }
 
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(getBaseContext(), "error to get trips list\n" + exception.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
         nowTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //gets the current time and put it in the when
@@ -128,6 +141,7 @@ public class TripApp extends Activity {
                 }
             }
         });
+
     }
 
     private void getLocation() {
@@ -321,5 +335,11 @@ public class TripApp extends Activity {
             e.printStackTrace();
         }
         return "IOException ...";
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Firebase_DBManager.stopNotifyToTripList();
     }
 }

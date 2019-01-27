@@ -387,7 +387,7 @@ public class FirstFragment extends Fragment {
             private void dialContactPhone(final String phoneNumber) {
                 if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    a.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 5);;
+                    a.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 5);
                 }
                 a.getBaseContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
             }

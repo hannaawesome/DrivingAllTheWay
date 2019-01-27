@@ -18,7 +18,10 @@ public interface DB_manager {
 
         void onFailure(Exception exception);
     }
-
+    /**
+     * @param <T>
+     *     Interface in order to provide data when T is changed
+     */
     public interface NotifyDataChange<T> {
         void OnDataChanged(T obj);
 

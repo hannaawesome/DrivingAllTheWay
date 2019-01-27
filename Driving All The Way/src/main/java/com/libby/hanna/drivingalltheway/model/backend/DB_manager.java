@@ -21,6 +21,15 @@ public interface DB_manager
         }
 
     /**
+     * @param <T>
+     *     Interface in order to provide data when T is changed
+     */
+    public interface NotifyDataChange<T> {
+        void OnDataChanged(T obj);
+
+        void onFailure(Exception exception);
+    }
+    /**
      * to add new trip to the list of trips
      * @param t
      * @param action
