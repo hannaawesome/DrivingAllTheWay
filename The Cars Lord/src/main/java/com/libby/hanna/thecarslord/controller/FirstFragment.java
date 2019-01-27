@@ -280,7 +280,6 @@ public class FirstFragment extends Fragment {
                 switch (view.getId()) {
                     case R.id.confirmButton:
                         confirmDialog();
-                        Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.doneButton:
                         Date d = new Date();
@@ -315,26 +314,27 @@ public class FirstFragment extends Fragment {
                         }
                     }
                 };
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(a);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(a);
                 alertDialogBuilder.setTitle("Confirm by:");
                 // Get the layout inflater
                 LayoutInflater inflater = LayoutInflater.from(a.getBaseContext());
-                View dialogView = inflater.inflate(R.layout.confirmation_dialog_layout, null);
+                final View dialogView = inflater.inflate(R.layout.confirmation_dialog_layout, null);
                 alertDialogBuilder.setView(dialogView.findViewById(R.id.buttonLayout));
                 smsConfirm = dialogView.findViewById(R.id.bySMS);
                 phoneConfirm = dialogView.findViewById(R.id.byPhoneCall);
                 emailConfirm = dialogView.findViewById(R.id.byEmail);
                 alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
-                alertDialogBuilder.show();
+                final AlertDialog dialog=alertDialogBuilder.create();
+                dialog.show();
 
                 smsConfirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         try {
                             SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage(theTrip.getPhoneNumber(), null, "A driver is ready for your trip!", null, null);
+                            smsManager.sendTextMessage(theTrip.getPhoneNumber(), theDriver.getPhoneNumber(), "A driver is ready for your trip!", null, null);
                             changeNow();
-
+                            dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
 
@@ -347,6 +347,7 @@ public class FirstFragment extends Fragment {
                         try {
                             dialContactPhone(theTrip.getPhoneNumber());
                             changeNow();
+                            dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not make a call, must be something wrong", Toast.LENGTH_LONG).show();
                         }
@@ -358,6 +359,7 @@ public class FirstFragment extends Fragment {
                         try {
                             sendEmail(theTrip.getEmailAddress(), theDriver.getEmailAddress());
                             changeNow();
+                            dialog.cancel();
                         } catch (Exception ex) {
                             Toast.makeText(a.getBaseContext(), "Could not send email, must be something wrong", Toast.LENGTH_LONG).show();
                         }
