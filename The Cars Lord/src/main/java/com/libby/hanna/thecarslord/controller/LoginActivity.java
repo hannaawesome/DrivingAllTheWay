@@ -151,9 +151,9 @@ public class LoginActivity extends Activity {
                     startActivity(i);
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(getBaseContext(), "Email or Password are incorrect", Toast.LENGTH_SHORT).show();
-                    name.setError("Email or Password are incorrect");
-                    password.setError("Email or Password are incorrect");
+                    Toast.makeText(getBaseContext(), "Email or Password are incorrect or poor connection", Toast.LENGTH_SHORT).show();
+                    name.setError("Email or Password are incorrect or poor connection");
+                    password.setError("Email or Password are incorrect or poor connection");
                 }
             }
         });

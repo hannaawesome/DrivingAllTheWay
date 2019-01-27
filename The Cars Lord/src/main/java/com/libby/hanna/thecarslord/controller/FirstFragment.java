@@ -138,7 +138,7 @@ public class FirstFragment extends Fragment {
         private List<Trip> tripList;
         private List<Trip> origTripList;
         private Filter tripFilter;
-        private int selectedItem = UNSELECTED;
+       // private int selectedItem = UNSELECTED;
         private String strFilterText;
         Spinner sChoice;
         String choice;
@@ -147,9 +147,7 @@ public class FirstFragment extends Fragment {
         private AppCompatButton emailConfirm;
         private AppCompatButton phoneConfirm;
         Driver theDriver;
-        private TextView destination;
-        private TextView theFilter;
-        private CardView cardView;
+
         private ArrayList<Integer> counter;
 
 
@@ -171,31 +169,30 @@ public class FirstFragment extends Fragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.trip_title_cards, parent, false);
-            cardView = itemView.findViewById(R.id.cardView);
-            destination = (TextView) itemView.findViewById(R.id.destinationTextView);
-            theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
-            View innerView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.trip_view_holder, parent, false);
-            return new ViewHolder(innerView);
+
+            return new ViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            destination.setText(tripList.get(position).getDestination());
+            holder.destination.setText(tripList.get(position).getDestination());
             choice = sChoice.getSelectedItem().toString();
             if (choice.equals("all") || choice == null)
-                theFilter.setText(tripList.get(position).getSource());
+                holder.theFilter.setText(tripList.get(position).getSource());
             else
-                theFilter.setText(strFilterText);
+                holder.theFilter.setText(strFilterText);
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (counter.get(position) % 2 == 0) {
+                        holder.dono.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.dono.setVisibility(View.GONE);
+                    }
+                    counter.set(position, counter.get(position) + 1);
+                }
+            });
 
-            //InnerRecyclerViewAdapter itemInnerRecyclerView = new InnerRecyclerViewAdapter(itemNameList.get(position));
-
-
-            // holder.cardRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-
-
-
-            //holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
             holder.bind();
         }
 
@@ -218,20 +215,27 @@ public class FirstFragment extends Fragment {
             private AppCompatButton driveNow;
             private AppCompatButton finishTrip;
             Trip theTrip;
-
-            View innerView;
+            View dono;
+            private TextView destination;
+            private TextView theFilter;
+            private CardView cardView;
+            //View innerView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                innerView=itemView.findViewById(R.id.allDetails);
-                getViews(innerView);
+                cardView = (CardView)itemView.findViewById(R.id.cardView);
+                destination = (TextView) itemView.findViewById(R.id.destinationTextView);
+                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
+                dono = LayoutInflater.from(a.getBaseContext())
+                        .inflate(R.layout.trip_view_holder,null);
+                //innerView=dono.findViewById(R.id.allDetails);
+                getViews(dono);
                 //expandableLayout.setInterpolator(new OvershootInterpolator());
                 //expandableLayout.setOnExpansionUpdateListener(this);
                 //expandButton.setOnClickListener(this);
                 driveNow.setOnClickListener(this);
                 finishTrip.setOnClickListener(this);
-                final int position = getAdapterPosition();
-                cardView.setOnClickListener(this);
+
             }
 
             public void getViews(View itemView) {
@@ -285,15 +289,6 @@ public class FirstFragment extends Fragment {
                             selectedItem = position;
                         }
                         break;*/
-                    case R.id.cardView:
-                        int position = getAdapterPosition();
-                        if (counter.get(position) % 2 == 0) {
-                            innerView.setVisibility(View.VISIBLE);
-                        } else {
-                            innerView.setVisibility(View.GONE);
-                        }
-                        counter.set(position, counter.get(position) + 1);
-                        break;
                     case R.id.confirmButton:
                         confirmDialog();
                         Toast.makeText(a.getBaseContext(), "Could not send sms, must be something wrong", Toast.LENGTH_LONG).show();
