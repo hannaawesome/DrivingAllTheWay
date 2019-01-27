@@ -10,7 +10,8 @@
     <ScrollView
         style="@style/AppTheme.Dark"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/whatever">
 
         <LinearLayout
             android:id="@+id/descriptionLayout"

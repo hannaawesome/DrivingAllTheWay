@@ -1,13 +1,15 @@
 package com.libby.hanna.thecarslord.controller;
 
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.IntentService;
+import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Trip> tripList;
     private List<Driver> driverList;
     private FirebaseAuth userAuth;
-public static Location thisLoca;
+    public static Location thisLoca;
     // Acquire a reference to the system Location Manager
     private LocationManager locationManager;
     // Define a listener that responds to location updates
@@ -123,7 +125,6 @@ public static Location thisLoca;
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
 
@@ -142,10 +143,9 @@ public static Location thisLoca;
         // create a FragmentTransaction to begin the transaction and replace the Fragment
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         // replace the FrameLayout with new Fragment
-        fragmentTransaction.replace(R.id.relativeLay, fragment);
+        fragmentTransaction.replace(R.id.whatever, fragment);
         fragmentTransaction.commit(); // save the changes
     }
-
 
 
     protected void onDestroy() {
@@ -157,6 +157,7 @@ public static Location thisLoca;
     private void signOut() {
         userAuth.signOut();
     }
+
     public void getLocation(Activity a) {
         try {
             //     Check the SDK version and whether the permission is already granted or not.

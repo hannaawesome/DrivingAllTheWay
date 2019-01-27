@@ -57,43 +57,22 @@ public class SecondFragment extends Fragment {
     private DB_manager be;
     private ATripAdapter adapter;
     private Driver registeredDriver;
-    public Location thisLocation;
-    // Acquire a reference to the system Location Manager
-    private LocationManager locationManager;
-    // Define a listener that responds to location updates
-    private LocationListener locationListener;
-
-
     @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_second, container, false);
-        //GetCurrentLocation g=new GetCurrentLocation(getActivity());
-        //g.execute();
-        getLocation(getActivity());
-        //get driver's location
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                Toast.makeText(getActivity().getBaseContext(), "calculating your location", Toast.LENGTH_LONG).show();
-                thisLocation = location;
-                // Remove the listener you previously added
-                locationManager.removeUpdates(locationListener);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter2);
-        filterFirstChoice.setSelection(0);
+       filterFirstChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView parent, View v, int position, long id) {
+                    sortTheList();
+            }
+
+            public void onNothingSelected(AdapterView arg0) {
+                filterFirstChoice.setSelection(0);
+            }
+        });
 
         tripsRecycleView = view.findViewById(R.id.firstRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
@@ -292,8 +271,8 @@ public class SecondFragment extends Fragment {
                 phone = (TextView) itemView.findViewById(R.id.phoneTextView);
                 start = (TextView) itemView.findViewById(R.id.startTimeTextView);
                 finish = (TextView) itemView.findViewById(R.id.endTimeTextView);
-                inStatus = (TextView) itemView.findViewById(R.id.inStatus);
-                addToContact = (AppCompatButton) itemView.findViewById(R.id.addcontact);
+                inStatus = (TextView) itemView.findViewById(R.id.status2);
+                addToContact = (AppCompatButton) itemView.findViewById(R.id.addContact);
             }
 
             public void bind() {
