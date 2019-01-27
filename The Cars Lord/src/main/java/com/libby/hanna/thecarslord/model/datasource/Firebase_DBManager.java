@@ -184,7 +184,7 @@ public class Firebase_DBManager implements DB_manager {
             //public void onLocationChanged(Location location) {
                 //thisLocation = location;
                 for (Trip i : notHandeledTrips) {
-                    int temp=Math.round(fromStringToLocation(a, i.getSource()).distanceTo(thisLocation) / 1000);
+                    int temp=distanceCalc(i,a.getBaseContext());
                     if (temp == distance)
                         trips.add(i);
                 }
@@ -259,12 +259,17 @@ public class Firebase_DBManager implements DB_manager {
         List<Trip> trips = new ArrayList<>();
         for (Trip i : t) {
             //2 dollars per km, the distance needs to be round or it will never be equal
-            if (Math.round(fromStringToLocation(c, i.getSource()).distanceTo(fromStringToLocation(c, i.getDestination())) / 1000) * 2 == price)
+            if ( priceCalc(i,c) == price)
                 trips.add(i);
         }
         return trips;
     }
-
+    public double priceCalc(Trip t,Context c){
+        return distanceCalc(t,c)*2;
+    }
+    public int distanceCalc(Trip t, Context c){
+        return Math.round(fromStringToLocation(c, t.getSource()).distanceTo(fromStringToLocation(c, t.getDestination())) / 1000);
+    }
     //endregion
 
     //region notify driver list
@@ -429,4 +434,5 @@ public class Firebase_DBManager implements DB_manager {
         }
 
     }
+
 }
