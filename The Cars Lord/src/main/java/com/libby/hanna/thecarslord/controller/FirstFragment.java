@@ -124,7 +124,7 @@ public class FirstFragment extends Fragment {
                 }
             }
         };
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.MyDialogTheme);
         alertDialogBuilder.setTitle("Filter");
         if (filterFirstChoice.getSelectedItem().toString().equals("by city"))
             alertDialogBuilder.setMessage("Enter City:");

@@ -88,9 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:contentDescription="TODO"
-                    app:srcCompat="@drawable/ic_right_arrow"
-                    />
+                    android:src="@drawable/ic_right_arrow" />
 
                 <TextView
                     android:id="@+id/destinationExTextView"
@@ -120,8 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:contentDescription="TODO"
-                    app:srcCompat="@drawable/ic_right_arrow" />
+                    android:src="@drawable/ic_right_arrow" />
 
                 <TextView
                     android:id="@+id/endTimeTextView"
