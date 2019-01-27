@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.cachapa.expandablelayout.ExpandableLayout;
-
 public class FirstFragment extends Fragment {
     View view;
     private RecyclerView tripsRecycleView;
