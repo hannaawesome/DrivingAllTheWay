@@ -46,28 +46,25 @@ public class Firebase_DBManager implements DB_manager {
     static DatabaseReference TripRef;
     static List<Driver> driverList;
     static List<Trip> tripList;
-    static Location thisLocation;
     private FirebaseAuth userAuth;
     private FirebaseUser currentUser;
-    /*// Acquire a reference to the system Location Manager
-    private LocationManager locationManager;
-    // Define a listener that responds to location updates
-    private LocationListener locationListener;
-*/
+
     static {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DriversRef = database.getReference("drivers");
-        driverList = new ArrayList<Driver>();//change to query
+        driverList = new ArrayList<Driver>();
         TripRef = database.getReference("trips");
         tripList = new ArrayList<Trip>();
-
-
     }
 
     public static ChildEventListener driverRefChildEventListener;
     public static ChildEventListener tripRefChildEventListener;
 
+    /**
+     * @param dr     the driver to add
+     * @param action details on success or fail of adding the driver to the firebase
+     */
     //region backend implementation
     @Override
     public void addDriver(final Driver dr, final Action<Long> action) {
@@ -85,6 +82,9 @@ public class Firebase_DBManager implements DB_manager {
         });
     }
 
+    /**
+     * @return the drivers' names
+     */
     @Override
     public List<String> getDriversNames() {
         List<String> names = new ArrayList<>();
@@ -94,6 +94,9 @@ public class Firebase_DBManager implements DB_manager {
         return names;
     }
 
+    /**
+     * @return the available trips
+     */
     @Override
     public List<Trip> getNotHandeledTrips() {
         List<Trip> trips = new ArrayList<>();
@@ -104,6 +107,9 @@ public class Firebase_DBManager implements DB_manager {
         return trips;
     }
 
+    /**
+     * @return the finished trips,
+     */
     @Override
     public List<Trip> getFinishedTrips() {
         List<Trip> trips = new ArrayList<>();
@@ -114,13 +120,17 @@ public class Firebase_DBManager implements DB_manager {
         return trips;
     }
 
+    /**
+     * @param _id the requested driver
+     * @return all the drivers' trips
+     */
     @Override
     public List<Trip> getSpecificDriverTrips(Long _id) {
         List<Trip> trips = new ArrayList<>();
         for (Trip i : tripList) {
-            if(i.getDriver()!=null)
-            if (i.getDriver().equals(_id))
-                trips.add(i);
+            if (i.getDriver() != null)
+                if (i.getDriver().equals(_id))
+                    trips.add(i);
         }
         return trips;
     }
@@ -142,7 +152,7 @@ public class Firebase_DBManager implements DB_manager {
         for (Trip i : notHandeledTrips) {
             l = fromStringToLocation(c, i.getSource());
             myCity = fromStringToLocation(c, city);
-            if(myCity!=null) {
+            if (myCity != null) {
                 try {
                     addresses = geocoder.getFromLocation(l.getLatitude(), l.getLongitude(), 1);
                     myCityAddresses = geocoder.getFromLocation(myCity.getLatitude(), myCity.getLongitude(), 1);
@@ -159,8 +169,7 @@ public class Firebase_DBManager implements DB_manager {
                     Toast.makeText(c, "failed to get location", Toast.LENGTH_SHORT).show();
                 }
 
-            }
-            else
+            } else
                 return null;
         }
         return trips;
@@ -173,43 +182,22 @@ public class Firebase_DBManager implements DB_manager {
      * @return all the trips that are available and the distance from source to the driver is distance
      */
     @Override
-    public List<Trip> getNotHandeledTripsInDistance(final int distance, final Activity a,Location thisLocation) {
-       // getLocation(a);
-       final List<Trip> notHandeledTrips = getNotHandeledTrips();
+    public List<Trip> getNotHandeledTripsInDistance(final int distance, final Activity a, Location thisLocation) {
+        // getLocation(a);
+        final List<Trip> notHandeledTrips = getNotHandeledTrips();
         final List<Trip> trips = new ArrayList<>();
-
-        //get driver's location
-        //locationManager = (LocationManager) a.getSystemService(Context.LOCATION_SERVICE);
-        //locationListener = new LocationListener() {
-            //public void onLocationChanged(Location location) {
-                //thisLocation = location;
-                for (Trip i : notHandeledTrips) {
-                    int temp=distanceCalc(i,a.getBaseContext());
-                    if (temp == distance)
-                        trips.add(i);
-                }
-                // Remove the listener you previously added
-             /*  locationManager.removeUpdates(locationListener);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };*/
-
-
-
+        for (Trip i : notHandeledTrips) {
+            int temp = distanceCalc(i, a.getBaseContext());
+            if (temp == distance)
+                trips.add(i);
+        }
         return trips;
     }
 
-
-
-
+    /**
+     * @param t the requested time
+     * @return all the trips that has been requested to t time.
+     */
     @Override
     public List<Trip> getTripsByTime(Time t) {
         List<Trip> trips = new ArrayList<>();
@@ -220,8 +208,12 @@ public class Firebase_DBManager implements DB_manager {
         return trips;
     }
 
+    /**
+     * @param c   for geocoder
+     * @param str the location in a string
+     * @return Location made from this string
+     */
     private Location fromStringToLocation(Context c, String str) {
-
         Geocoder gc = new Geocoder(c);
         try {
             if (gc.isPresent()) {
@@ -259,17 +251,29 @@ public class Firebase_DBManager implements DB_manager {
         List<Trip> trips = new ArrayList<>();
         for (Trip i : t) {
             //2 dollars per km, the distance needs to be round or it will never be equal
-            if ( priceCalc(i,c) == price)
+            if (priceCalc(i, c) == price)
                 trips.add(i);
         }
         return trips;
     }
-    private double priceCalc(Trip t,Context c){
-        return distanceCalc(t,c)*2;
-    }
-    public int distanceCalc(Trip t, Context c){
-        int temp=Math.round(fromStringToLocation(c, t.getSource()).distanceTo(fromStringToLocation(c, t.getDestination())) / 1000);
+
+    /**
+     * @param t the trip to calculate the distance
+     * @param c for calculating the location
+     * @return the distance in km
+     */
+    public int distanceCalc(Trip t, Context c) {
+        int temp = Math.round(fromStringToLocation(c, t.getSource()).distanceTo(fromStringToLocation(c, t.getDestination())) / 1000);
         return temp;
+    }
+
+    /**
+     * @param t the trip to calculate the price
+     * @param c for the function distanceCalc
+     * @return the price for the trip
+     */
+    private double priceCalc(Trip t, Context c) {
+        return distanceCalc(t, c) * 2;
     }
     //endregion
 
@@ -324,6 +328,9 @@ public class Firebase_DBManager implements DB_manager {
     }
 //endregion
 
+    /**
+     * @param notifyDataChange follows changes in the code
+     */
     //region notify trip list
     public static void NotifyToTripList(final NotifyDataChange<List<Trip>> notifyDataChange) {
         if (notifyDataChange != null) {
@@ -353,8 +360,8 @@ public class Firebase_DBManager implements DB_manager {
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
-                    String id =dataSnapshot.getKey();
-                     t.set_id(id);
+                    String id = dataSnapshot.getKey();
+                    t.set_id(id);
                     for (int i = 0; i < tripList.size(); i++) {
                         if (tripList.get(i).get_id().equals(id)) {
                             tripList.set(i, t);
@@ -378,6 +385,9 @@ public class Firebase_DBManager implements DB_manager {
         }
     }
 
+    /**
+     * to stop the listener
+     */
     public static void stopNotifyToTripList() {
         if (tripRefChildEventListener != null) {
             TripRef.removeEventListener(tripRefChildEventListener);
@@ -386,9 +396,11 @@ public class Firebase_DBManager implements DB_manager {
     }
     //endregion
 
+    //region status change
+
     /**
-     * @param t the trip to change
-     * @param d the driver that took this trip
+     * @param t      the trip to change
+     * @param d      the driver that took this trip
      * @param action returns data weather the trip has changed to now or failed
      */
     public void changeNow(Trip t, Driver d, final Action<Void> action) {
@@ -430,11 +442,11 @@ public class Firebase_DBManager implements DB_manager {
     }
 
     /**
-     * @param t the trip to change to finish
-     * @param fTime the finish time
+     * @param t      the trip to change to finish
+     * @param fTime  the finish time
      * @param action returns data weather the trip has changed to finished or failed
      */
-    public void changeFinish(Trip t,Driver d, final Time fTime, final Action<Void> action) {
+    public void changeFinish(Trip t, Driver d, final Time fTime, final Action<Void> action) {
         t.setState(Trip.TripState.finished);
         t.setFinish(fTime);
         t.setDriver(d.get_id());
@@ -472,6 +484,7 @@ public class Firebase_DBManager implements DB_manager {
             }
         });
     }
+    //endregion
 
     /**
      * @param c for the toast
@@ -483,11 +496,11 @@ public class Firebase_DBManager implements DB_manager {
         String email = currentUser.getEmail();
         Driver d = null;
         try {
-           // while (d==null) {//if driverList has not been fully loaded yet
-                for (Driver i : driverList)
-                    if (email.equals(i.getEmailAddress()))
-                        d = i;
-           // }
+             while (d==null) {//if driverList has not been fully loaded yet
+            for (Driver i : driverList)
+                if (email.equals(i.getEmailAddress()))
+                    d = i;
+             }
             return d;
         } catch (Exception ex) {
             Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();

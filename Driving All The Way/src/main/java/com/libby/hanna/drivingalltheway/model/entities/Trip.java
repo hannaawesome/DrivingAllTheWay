@@ -31,7 +31,7 @@ public class Trip {
     //region Fields
 
     /**
-     * cannot be changed by the user, it is defined serially by summing the date and time
+     * cannot be changed by the user, it is defined by the firebase
      */
     private String _id;
     private TripState state;

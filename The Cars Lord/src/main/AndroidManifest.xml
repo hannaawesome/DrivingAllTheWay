@@ -41,13 +41,9 @@ package="com.libby.hanna.thecarslord">
 
     <service
         android:name=".controller.CheckNewTrips"
-        android:exported="false" />
-    <receiver
-        android:name=".controller.NewTripsBroadcastReceiver"
-        android:exported="true"
-        android:enabled="true">
-
-    </receiver>
+        android:enabled="true"
+        android:exported="true" />
+    <receiver android:name=".controller.NewTripsBroadcastReceiver" />
 </application>
 
 </manifest>

@@ -23,11 +23,12 @@ import java.util.List;
 public class CheckNewTrips extends Service {
     private DB_manager be;
     private List<Trip> tripList = new ArrayList<Trip>();
-    boolean isRun=false;
+    boolean isRun = false;
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         be = DBManagerFactory.GetFactory();
+        final List<String> tripsId = new ArrayList<String>();
         isRun = true;
         try {
             final Thread thread = new Thread() {
@@ -35,41 +36,29 @@ public class CheckNewTrips extends Service {
                 public void run() {
                     while (isRun) {
                         try {
-                            Thread.sleep(10000);
+                            Thread.sleep(1200000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        tripList = be.getNotHandeledTrips();
                         for (Trip i : tripList)
-                            if (be.distanceCalc(i, getBaseContext()) < 50) {
-                                sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
-                                break;
-                            }
+                            if (!tripsId.contains(i.get_id()))
+                                if (be.distanceCalc(i, getBaseContext()) < 50) {
+                                    {
+                                        sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
+                                        tripsId.add(i.get_id());
+                                    }
+                                }
                     }
                 }
             };
-            Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
-                @Override
-                public void OnDataChanged(List<Trip> obj) {
-                    tripList.addAll(obj);
-                    if (be.distanceCalc(obj.get(obj.size() - 1), getBaseContext()) < 5)
-                        sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
-                    thread.start();
-                }
-
-                @Override
-                public void onFailure(Exception exception) {
-
-                }
-            });
-
+            thread.start();
         } catch (
                 Exception e)
 
         {
             e.printStackTrace();
         }
-
-
         return START_REDELIVER_INTENT;
     }
 
@@ -77,11 +66,10 @@ public class CheckNewTrips extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isRun=false;
+        isRun = false;
         Firebase_DBManager.stopNotifyToDriversList();
     }
 }

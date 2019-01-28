@@ -63,24 +63,6 @@ public class MainActivity extends AppCompatActivity {
         userAuth = FirebaseAuth.getInstance();
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
         getLocation(this);
-        //get driver's location
-        /*locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                thisLoca = location;
-                // Remove the listener you previously added
-                locationManager.removeUpdates(locationListener);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };*/
         dl.addDrawerListener(t);
         t.syncState();
 
