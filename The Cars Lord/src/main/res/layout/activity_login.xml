@@ -33,7 +33,7 @@
                 android:id="@+id/editTextUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +50,7 @@
                 android:id="@+id/editTextUserPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
@@ -61,13 +61,13 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Login" />
+            android:text="@string/login" />
 
         <CheckBox
             android:id="@+id/saveLoginCheckBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Remember me" />
+            android:text="@string/remember_me" />
 
         <TextView
             android:id="@+id/link_signup"
@@ -76,7 +76,7 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:padding="24dp"
-            android:text="@string/no_account_yet_create_one_here"
+            android:text="@string/no_account_yet"
             android:textSize="16sp" />
     </LinearLayout>
 </ScrollView>

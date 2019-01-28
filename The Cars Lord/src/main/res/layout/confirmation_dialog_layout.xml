@@ -16,9 +16,12 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@color/primary_darker"
+
+            android:foreground="@drawable/ic_email"
+            android:foregroundGravity="center"
             android:padding="12dp"
-            android:text="Email"
             android:textColor="@color/accent" />
+        <!--android:text="Email"-->
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/byPhoneCall"
@@ -27,8 +30,9 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@color/primary_darker"
+            android:foreground="@drawable/ic_phone"
+            android:foregroundGravity="center"
             android:padding="12dp"
-            android:text="Phone Call"
             android:textColor="@color/accent" />
 
         <android.support.v7.widget.AppCompatButton
@@ -38,8 +42,9 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@color/primary_darker"
+            android:foreground="@drawable/ic_sms"
+            android:foregroundGravity="center"
             android:padding="12dp"
-            android:text="SMS"
             android:textColor="@color/accent" />
 
 

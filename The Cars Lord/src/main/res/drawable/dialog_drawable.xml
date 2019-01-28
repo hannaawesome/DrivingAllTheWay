@@ -6,6 +6,8 @@
     android:insetRight="16dp"
     android:insetBottom="16dp">
 
+    <!--this is the dialog background color-->
+
     <shape android:shape="rectangle">
         <corners android:radius="2dp" />
         <solid android:color="@color/iron" />
