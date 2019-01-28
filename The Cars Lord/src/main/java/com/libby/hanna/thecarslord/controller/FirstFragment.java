@@ -44,6 +44,9 @@ import java.util.List;
 
 import static com.libby.hanna.thecarslord.controller.MainActivity.thisLoca;
 
+/**
+ * contains all the available trips, filter by city or distance, start and finish trips
+ */
 public class FirstFragment extends Fragment {
     View view;
     private RecyclerView tripsRecycleView;
@@ -88,6 +91,7 @@ public class FirstFragment extends Fragment {
                 FilterDialog();
             }
         });
+        //set the reccylerview adapter
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
             try {
@@ -113,6 +117,9 @@ public class FirstFragment extends Fragment {
         return view;
     }
 
+    /**
+     * creates dialog to enter the required filter
+     */
     private void FilterDialog() {
         AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -150,7 +157,9 @@ public class FirstFragment extends Fragment {
 
     }
 
-
+    /**
+     * the recyclerview adapter for the first fragment, works like expandable-recyclerview
+     */
     private class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder> implements Filterable {
         private DB_manager be;
         private RecyclerView recyclerView;
@@ -163,7 +172,7 @@ public class FirstFragment extends Fragment {
         private AppCompatButton emailConfirm;
         private AppCompatButton phoneConfirm;
         Driver theDriver;
-        private ArrayList<Integer> counter;
+        private ArrayList<Integer> counter;//for the collapse and expand
 
 
         public ATripAdapter(RecyclerView recyclerView, List<Trip> t, Driver d, Activity c) {
@@ -194,6 +203,7 @@ public class FirstFragment extends Fragment {
                 holder.theFilter.setText(tripList.get(position).getSource());
             else
                 holder.theFilter.setText(strFilterText);
+            //collapse and expand
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -301,6 +311,9 @@ public class FirstFragment extends Fragment {
                 }
             }
 
+            /**
+             * creates dialog to choose which way to confirm starting drive
+             */
             private void confirmDialog() {
                 AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -377,6 +390,9 @@ public class FirstFragment extends Fragment {
                 });
             }
 
+            /**
+             * @param phoneNumber to confirm trip
+             */
             @RequiresApi(api = Build.VERSION_CODES.M)
             private void dialContactPhone(final String phoneNumber) {
                 if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
@@ -388,6 +404,11 @@ public class FirstFragment extends Fragment {
                 callIntent.setData(Uri.parse("tel:"+phoneNumber));
                 a.startActivity(callIntent);
             }
+
+            /**
+             * @param theEmail to confirm trip
+             * @param driverName that will be automatically written in the email
+             */
             @RequiresApi(api = Build.VERSION_CODES.M)
             private void sendEmail(final String theEmail, final String driverName) {
                 if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
@@ -432,6 +453,9 @@ public class FirstFragment extends Fragment {
             return tripFilter;
         }
 
+        /**
+         * filter by city or distance
+         */
         private class TripFilter extends Filter {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
@@ -448,7 +472,7 @@ public class FirstFragment extends Fragment {
                     if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("by city")) {
                         filteredList = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
                     } else {
-                        while (thisLoca==null);
+                        while (thisLoca==null);//makes sure the location was found
                         filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a,thisLoca);
                     }
                 }

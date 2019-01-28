@@ -139,6 +139,7 @@ public class SecondFragment extends Fragment {
             //the title of each card
             holder.destination.setText(tripList.get(position).getDestination());
             holder.source.setText(tripList.get(position).getSource());
+            //collapse and expand
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
