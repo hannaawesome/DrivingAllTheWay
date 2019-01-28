@@ -59,6 +59,7 @@ public class LoginActivity extends Activity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
         userAuth = FirebaseAuth.getInstance();
+
         if (!loadSharedPreferences())
             Toast.makeText(this, "unable to load previous data", Toast.LENGTH_SHORT).show();
         log = (AppCompatButton) findViewById(R.id.login);
@@ -111,6 +112,9 @@ public class LoginActivity extends Activity {
         return check;
     }
 
+    /**
+     * @return the saved username only if remember me is checked
+     */
     private boolean loadSharedPreferences() {
         if (sharedPreferences.contains("SavePass")) {
             if (!sharedPreferences.getBoolean("SavePass", false))
@@ -126,6 +130,9 @@ public class LoginActivity extends Activity {
         return true;
     }
 
+    /**
+     * saves the current logged driver
+     */
     private void saveSharedPrefences() {
         if (remember.isChecked()) {
             try {
@@ -143,6 +150,10 @@ public class LoginActivity extends Activity {
         }
     }
 
+    /**
+     * @param email email to log in to firebase
+     * @param pass password to log in to firebase
+     */
     private void logIn(String email, String pass) {
         userAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override

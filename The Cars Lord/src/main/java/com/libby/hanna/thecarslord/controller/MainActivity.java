@@ -42,32 +42,26 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
-    private DB_manager be;
     private List<Trip> tripList;
     private List<Driver> driverList;
     private Driver d;
     private FirebaseAuth userAuth;
     public static Location thisLoca;
-    // Acquire a reference to the system Location Manager
-    private LocationManager locationManager;
-    // Define a listener that responds to location updates
-    private LocationListener locationListener;
+    //to get current location
     private FusedLocationProviderClient mFusedLocationClient;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        be = DBManagerFactory.GetFactory();
         dl = (DrawerLayout) findViewById(R.id.activity_main);
         userAuth = FirebaseAuth.getInstance();
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
         getLocation(this);
         dl.addDrawerListener(t);
         t.syncState();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        //navigation drawer
         nv = (NavigationView) findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -90,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        //notify
         Firebase_DBManager.NotifyToTripList(new Firebase_DBManager.NotifyDataChange<List<Trip>>() {
             @Override
             public void OnDataChanged(List<Trip> obj) {
@@ -147,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
         userAuth.signOut();
     }
 
+    /**
+     * @param a to get current location
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void getLocation(Activity a) {
         try {

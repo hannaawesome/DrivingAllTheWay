@@ -63,9 +63,6 @@ public class FirstFragment extends Fragment {
         // Inflate the layout for this fragment
         be = DBManagerFactory.GetFactory();
         view = inflater.inflate(R.layout.fragment_first, container, false);
-        //GetCurrentLocation g=new GetCurrentLocation(getActivity());
-        //g.execute();
-
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter1);
         changeFilter = (AppCompatButton) view.findViewById(R.id.filterButton);
         tripsRecycleView = view.findViewById(R.id.firstRecycleView);
@@ -161,8 +158,6 @@ public class FirstFragment extends Fragment {
         private List<Trip> origTripList;
         private Filter tripFilter;
         private String strFilterText;
-        //Spinner sChoice;
-        //String choice;
         Activity a;
         private AppCompatButton smsConfirm;
         private AppCompatButton emailConfirm;
@@ -195,7 +190,6 @@ public class FirstFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.destination.setText(tripList.get(position).getDestination());
-            //choice = sChoice.getSelectedItem().toString();
             if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all") || FirstFragment.filterFirstChoice.getSelectedItem().toString() == null)
                 holder.theFilter.setText(tripList.get(position).getSource());
             else
@@ -445,7 +439,6 @@ public class FirstFragment extends Fragment {
                 FilterResults results = new FilterResults();
                 List<Trip> filteredList;
                 // We implement here the filter logic
-                //choice = sChoice.getSelectedItem().toString();
                 if ((String) constraint == null || constraint.length() == 0 || FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all")) {
                     // No filter implemented we return all the list
                     filteredList = new ArrayList<Trip>(origTripList);

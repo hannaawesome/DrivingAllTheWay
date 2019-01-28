@@ -16,19 +16,17 @@ import android.widget.Toast;
 
 import com.libby.hanna.thecarslord.R;
 
+/**
+ * catches the intents that the service sent him when finds new trips
+ */
 public class NewTripsBroadcastReceiver extends BroadcastReceiver {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onReceive(Context context, Intent intent) {
 
-           /* Notification.Builder nBuilder = new Notification.Builder(context);
-            nBuilder.setSmallIcon(R.drawable.ic_local_taxi);
-            nBuilder.setContentTitle("New route found!");
-            nBuilder.setContentText("here is a new route waiting for you");*/
             Object obj = context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationManager notificationManager = (NotificationManager) obj;
-            //notificationManager.notify(1234, nBuilder.build());
         String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                 new Intent(context,LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);

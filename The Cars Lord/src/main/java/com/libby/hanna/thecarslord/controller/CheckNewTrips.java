@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * creates the service that checks every 2 minutes if there's a new trip
+ * that is under 20 km far from the driver
+ */
 public class CheckNewTrips extends Service {
     private DB_manager be;
     private List<Trip> tripList = new ArrayList<Trip>();
@@ -28,7 +32,7 @@ public class CheckNewTrips extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         be = DBManagerFactory.GetFactory();
-        final List<String> tripsId = new ArrayList<String>();
+        final List<String> tripsId = new ArrayList<String>();//keeps all the trips that has been notified in this play
         isRun = true;
         try {
             final Thread thread = new Thread() {
@@ -40,11 +44,12 @@ public class CheckNewTrips extends Service {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        tripList = be.getNotHandeledTrips();
+                        tripList = be.getNotHandeledTrips();//all the available trips
                         for (Trip i : tripList)
-                            if (!tripsId.contains(i.get_id()))
-                                if (be.distanceCalc(i, getBaseContext()) < 50) {
+                            if (!tripsId.contains(i.get_id()))//if not notified yet
+                                if (be.distanceCalc(i, getBaseContext()) < 20) {
                                     {
+                                        //send to the broadcast receiver
                                         sendBroadcast(new Intent(getBaseContext(), NewTripsBroadcastReceiver.class));
                                         tripsId.add(i.get_id());
                                     }
@@ -70,7 +75,6 @@ public class CheckNewTrips extends Service {
     public void onDestroy() {
         super.onDestroy();
         isRun = false;
-        Firebase_DBManager.stopNotifyToDriversList();
     }
 }
 

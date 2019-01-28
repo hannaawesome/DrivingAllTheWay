@@ -51,11 +51,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * contains all the driver's trips, sort by distance, add to contacts
+ */
 public class SecondFragment extends Fragment {
     View view;
     private RecyclerView tripsRecycleView;
     private List<Trip> tripByDriver;
-    public static Spinner filterFirstChoice;
+    public Spinner filterFirstChoice;
     private DB_manager be;
     private ATripAdapter adapter;
     private Driver registeredDriver;
@@ -73,11 +76,12 @@ public class SecondFragment extends Fragment {
                 sortTheList();
                 adapter.notifyDataSetChanged();
             }
+
             public void onNothingSelected(AdapterView arg0) {
                 filterFirstChoice.setSelection(0);
             }
         });
-
+        //set the reccylerview adapter
         tripsRecycleView = view.findViewById(R.id.secondRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         if (tripsRecycleView.getAdapter() == null) {
@@ -88,8 +92,12 @@ public class SecondFragment extends Fragment {
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
         return view;
     }
+
+    /**
+     * if chose to sort by distance, then it will be sorted by distance
+     */
     private void sortTheList() {
-       if (filterFirstChoice.getSelectedItem().toString().equals("by distance"))
+        if (filterFirstChoice.getSelectedItem().toString().equals("by distance"))
             Collections.sort(tripByDriver, new Comparator<Trip>() {
                 @Override
                 public int compare(Trip lhs, Trip rhs) {
@@ -99,11 +107,14 @@ public class SecondFragment extends Fragment {
 
     }
 
+    /**
+     * the recyclerview adapter for the second fragment, works like expandable-recyclerview
+     */
     private static class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder> {
         private List<Trip> tripList;
         Activity a;
         Driver theDriver;
-        private ArrayList<Integer> counter;
+        private ArrayList<Integer> counter;//for the collapse and expand
         private DB_manager be;
 
         public ATripAdapter(List<Trip> t, Driver d, Activity c) {
@@ -125,6 +136,7 @@ public class SecondFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
+            //the title of each card
             holder.destination.setText(tripList.get(position).getDestination());
             holder.source.setText(tripList.get(position).getSource());
             holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +187,7 @@ public class SecondFragment extends Fragment {
                 title = itemView.findViewById(R.id.titleLayout);
                 innerView = itemView.findViewById(R.id.allDetails);
                 getViews(itemView);
+                //when wants to add to own contacts
                 addToContact.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
@@ -259,8 +272,9 @@ public class SecondFragment extends Fragment {
 
             public void bind() {
                 int position = getAdapterPosition();
-                theTrip = tripList.get(position);
                 status.setText(theTrip.getState().toString());
+                //the inside of the cards
+                theTrip = tripList.get(position);
                 name.setText(theTrip.getName());
                 from.setText(theTrip.getSource());
                 to.setText(theTrip.getDestination());
