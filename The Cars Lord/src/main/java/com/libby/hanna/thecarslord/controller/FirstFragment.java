@@ -59,7 +59,6 @@ public class FirstFragment extends Fragment {
     private Driver registeredDriver;
 
 
-
     @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,23 +93,8 @@ public class FirstFragment extends Fragment {
         //set the reccylerview adapter
         if (tripsRecycleView.getAdapter() == null) {
             availTripList = be.getNotHandeledTrips();
-            try {
-                new AsyncTask<Void, Void, Driver>() {
-                    @Override
-                    protected void onPostExecute(Driver idResult) {
-                        super.onPostExecute(idResult);
-                        if (idResult == null)
-                            Toast.makeText(getActivity().getBaseContext(), "could not load data", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    protected Driver doInBackground(Void... params) {
-                        return registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
-                    }
-                }.execute();
-            } catch (Exception ex) {
-                Toast.makeText(getActivity().getBaseContext(), "could not load data " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            while (registeredDriver == null)
+                registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
             adapter = new ATripAdapter(tripsRecycleView, availTripList, registeredDriver, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
@@ -134,7 +118,7 @@ public class FirstFragment extends Fragment {
                 }
             }
         };
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.MyDialogTheme);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
         alertDialogBuilder.setTitle("Filter");
         if (filterFirstChoice.getSelectedItem().toString().equals("by city"))
             alertDialogBuilder.setMessage("Enter City:");
@@ -151,7 +135,7 @@ public class FirstFragment extends Fragment {
             filterText.setHint("e.g. Jerusalem");
         else
             filterText.setHint("e.g. 10");
-        alertDialogBuilder.setPositiveButton("Ok" , onClickListener);
+        alertDialogBuilder.setPositiveButton("Ok", onClickListener);
         alertDialogBuilder.setNegativeButton("Cancel ", onClickListener);
         alertDialogBuilder.show();
 
@@ -292,7 +276,7 @@ public class FirstFragment extends Fragment {
                     case R.id.doneButton:
                         Date d = new Date();
                         Time time = new Time(d.getTime());
-                        be.changeFinish(theTrip,theDriver, time, new DB_manager.Action<Void>() {
+                        be.changeFinish(theTrip, theDriver, time, new DB_manager.Action<Void>() {
                             @Override
                             public void onSuccess(Void d) {
                                 Toast.makeText(a.getBaseContext(), "The trip has been finished successfully!", Toast.LENGTH_LONG).show();
@@ -380,7 +364,7 @@ public class FirstFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         try {
-                            sendEmail(theTrip.getEmailAddress(), theDriver.getFirstName()+" "+theDriver.getLastName());
+                            sendEmail(theTrip.getEmailAddress(), theDriver.getFirstName() + " " + theDriver.getLastName());
                             changeNow();
                             dialog.cancel();
                         } catch (Exception ex) {
@@ -401,12 +385,12 @@ public class FirstFragment extends Fragment {
                 }
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                callIntent.setData(Uri.parse("tel:"+phoneNumber));
+                callIntent.setData(Uri.parse("tel:" + phoneNumber));
                 a.startActivity(callIntent);
             }
 
             /**
-             * @param theEmail to confirm trip
+             * @param theEmail   to confirm trip
              * @param driverName that will be automatically written in the email
              */
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -418,7 +402,7 @@ public class FirstFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{ theEmail});
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{theEmail});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Trip Status");
                 intent.putExtra(Intent.EXTRA_TEXT, "Your trip had been chosen by " + driverName + "!");
                 try {
@@ -472,8 +456,8 @@ public class FirstFragment extends Fragment {
                     if (FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("by city")) {
                         filteredList = be.getNotHandeledTripsInCity(constraint.toString(), a.getBaseContext());
                     } else {
-                        while (thisLoca==null);//makes sure the location was found
-                        filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a,thisLoca);
+                        while (thisLoca == null) ;//makes sure the location was found
+                        filteredList = be.getNotHandeledTripsInDistance(Integer.parseInt(constraint.toString()), a, thisLoca);
                     }
                 }
                 if (filteredList == null)

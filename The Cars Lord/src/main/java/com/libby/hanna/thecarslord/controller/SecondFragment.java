@@ -115,7 +115,6 @@ public class SecondFragment extends Fragment {
         Activity a;
         Driver theDriver;
         private ArrayList<Integer> counter;//for the collapse and expand
-        private DB_manager be;
 
         public ATripAdapter(List<Trip> t, Driver d, Activity c) {
             this.tripList = t;
@@ -124,7 +123,6 @@ public class SecondFragment extends Fragment {
             counter = new ArrayList<Integer>();
             for (int i = 0; i < tripList.size(); i++)
                 counter.add(0);
-            be = DBManagerFactory.GetFactory();
         }
 
         @Override
@@ -273,9 +271,9 @@ public class SecondFragment extends Fragment {
 
             public void bind() {
                 int position = getAdapterPosition();
+                theTrip = tripList.get(position);
                 status.setText(theTrip.getState().toString());
                 //the inside of the cards
-                theTrip = tripList.get(position);
                 name.setText(theTrip.getName());
                 from.setText(theTrip.getSource());
                 to.setText(theTrip.getDestination());

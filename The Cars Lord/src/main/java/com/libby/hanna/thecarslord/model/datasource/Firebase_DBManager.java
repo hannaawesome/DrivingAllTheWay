@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Firebase_DBManager implements DB_manager {
     static DatabaseReference DriversRef;
@@ -357,11 +359,13 @@ public class Firebase_DBManager implements DB_manager {
                     notifyDataChange.OnDataChanged(tripList);
                 }
 
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
                     String id = dataSnapshot.getKey();
-                    t.set_id(id);
+                    SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
+                        t.set_id(id);
                     for (int i = 0; i < tripList.size(); i++) {
                         if (tripList.get(i).get_id().equals(id)) {
                             tripList.set(i, t);
