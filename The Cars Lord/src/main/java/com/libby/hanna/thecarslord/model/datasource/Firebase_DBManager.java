@@ -50,6 +50,7 @@ public class Firebase_DBManager implements DB_manager {
     static List<Trip> tripList;
     private FirebaseAuth userAuth;
     private FirebaseUser currentUser;
+    static Trip trip;
 
     static {
 
@@ -62,7 +63,6 @@ public class Firebase_DBManager implements DB_manager {
 
     public static ChildEventListener driverRefChildEventListener;
     public static ChildEventListener tripRefChildEventListener;
-
     /**
      * @param dr     the driver to add
      * @param action details on success or fail of adding the driver to the firebase
@@ -185,7 +185,6 @@ public class Firebase_DBManager implements DB_manager {
      */
     @Override
     public List<Trip> getNotHandeledTripsInDistance(final int distance, final Activity a, Location thisLocation) {
-        // getLocation(a);
         final List<Trip> notHandeledTrips = getNotHandeledTrips();
         final List<Trip> trips = new ArrayList<>();
         for (Trip i : notHandeledTrips) {
@@ -359,15 +358,14 @@ public class Firebase_DBManager implements DB_manager {
                     notifyDataChange.OnDataChanged(tripList);
                 }
 
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Trip t = dataSnapshot.getValue(Trip.class);
                     String id = dataSnapshot.getKey();
-                    SimpleDateFormat format = new SimpleDateFormat("HH:mm"); // 12 hour format
-                        t.set_id(id);
+                    t.set_id(id);
                     for (int i = 0; i < tripList.size(); i++) {
                         if (tripList.get(i).get_id().equals(id)) {
+                            trip = tripList.get(i);
                             tripList.set(i, t);
                             break;
                         }
