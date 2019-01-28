@@ -23,7 +23,6 @@
     </string-array>
     <string-array name="FilterSpinner2">
         <item>all</item>
-        <item>by price</item>
         <item>by distance</item>
     </string-array>
     <string name="expand_button_text">Expand</string>

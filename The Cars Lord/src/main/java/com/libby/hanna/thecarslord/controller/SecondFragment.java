@@ -59,6 +59,7 @@ public class SecondFragment extends Fragment {
     private DB_manager be;
     private ATripAdapter adapter;
     private Driver registeredDriver;
+
     @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,9 +68,10 @@ public class SecondFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_second, container, false);
         filterFirstChoice = (Spinner) view.findViewById(R.id.filter2);
         filterFirstChoice.setSelection(0);
-       filterFirstChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        filterFirstChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView parent, View v, int position, long id) {
-                    sortTheList();
+                sortTheList();
+                adapter.notifyDataSetChanged();
             }
             public void onNothingSelected(AdapterView arg0) {
                 filterFirstChoice.setSelection(0);
@@ -79,45 +81,39 @@ public class SecondFragment extends Fragment {
         tripsRecycleView = view.findViewById(R.id.secondRecycleView);
         tripsRecycleView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         if (tripsRecycleView.getAdapter() == null) {
-             registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
+            registeredDriver = be.loadDataOnCurrentDriver(getActivity().getBaseContext());
             tripByDriver = be.getSpecificDriverTrips(registeredDriver.get_id());
             adapter = new ATripAdapter(tripByDriver, registeredDriver, getActivity());
             tripsRecycleView.setAdapter(adapter);
         } else tripsRecycleView.getAdapter().notifyDataSetChanged();
         return view;
     }
-
     private void sortTheList() {
-        if (filterFirstChoice.getSelectedItem().toString().equals("by price"))
+       if (filterFirstChoice.getSelectedItem().toString().equals("by distance"))
             Collections.sort(tripByDriver, new Comparator<Trip>() {
                 @Override
                 public int compare(Trip lhs, Trip rhs) {
-                    return Double.compare(be.priceCalc(rhs, getActivity().getBaseContext()), be.priceCalc(lhs, getActivity().getBaseContext()));
+                    return be.distanceCalc(lhs, getActivity().getBaseContext()) < be.distanceCalc(rhs, getActivity().getBaseContext()) ? -1 : (be.distanceCalc(lhs, getActivity().getBaseContext()) > be.distanceCalc(lhs, getActivity().getBaseContext())) ? 1 : 0;
                 }
             });
-        else if (filterFirstChoice.getSelectedItem().toString().equals("by distance"))
-            Collections.sort(tripByDriver, new Comparator<Trip>() {
-                @Override
-                public int compare(Trip lhs, Trip rhs) {
-                    return be.distanceCalc(lhs, getActivity().getBaseContext()) > be.priceCalc(rhs, getActivity().getBaseContext()) ? -1 : (be.priceCalc(lhs, getActivity().getBaseContext()) < be.distanceCalc(lhs, getActivity().getBaseContext())) ? 1 : 0;
-                }
-            });
-        adapter.notifyDataSetChanged();
+
     }
-    private static class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder>  {
+
+    private static class ATripAdapter extends RecyclerView.Adapter<ATripAdapter.ViewHolder> {
         private List<Trip> tripList;
         Activity a;
         Driver theDriver;
         private ArrayList<Integer> counter;
+        private DB_manager be;
 
-
-        public ATripAdapter( List<Trip> t, Driver d, Activity c) {
+        public ATripAdapter(List<Trip> t, Driver d, Activity c) {
             this.tripList = t;
             this.a = c;
             theDriver = d;
             counter = new ArrayList<Integer>();
             for (int i = 0; i < tripList.size(); i++)
                 counter.add(0);
+            be = DBManagerFactory.GetFactory();
         }
 
         @Override
@@ -130,11 +126,7 @@ public class SecondFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.destination.setText(tripList.get(position).getDestination());
-            if (FirstFragment.filterFirstChoice.getSelectedItemPosition()!=0&&!FirstFragment.filterFirstChoice.getSelectedItem().toString().equals("all"))
-                holder.theFilter.setText(FirstFragment.filterFirstChoice.getSelectedItem().toString());
-           else
-                holder.theFilter.setText(tripList.get(position).getSource());
-
+            holder.source.setText(tripList.get(position).getSource());
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -148,7 +140,6 @@ public class SecondFragment extends Fragment {
                     counter.set(position, counter.get(position) + 1);
                 }
             });
-
             holder.bind();
         }
 
@@ -168,7 +159,7 @@ public class SecondFragment extends Fragment {
             private TextView inStatus;
             Trip theTrip;
             private TextView destination;
-            private TextView theFilter;
+            private TextView source;
             private TextView status;
             private AppCompatButton addToContact;
             private CardView cardView;
@@ -179,7 +170,7 @@ public class SecondFragment extends Fragment {
                 super(itemView);
                 cardView = (CardView) itemView.findViewById(R.id.cardView);
                 destination = (TextView) itemView.findViewById(R.id.destinationTextView);
-                theFilter = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
+                source = (TextView) itemView.findViewById(R.id.chosenFilterTextView);
                 status = (TextView) itemView.findViewById(R.id.status);
                 title = itemView.findViewById(R.id.titleLayout);
                 innerView = itemView.findViewById(R.id.allDetails);
@@ -192,11 +183,11 @@ public class SecondFragment extends Fragment {
                         String MobileNumber = theTrip.getPhoneNumber();
                         String emailID = theTrip.getEmailAddress();
                         if (ActivityCompat.checkSelfPermission(a.getBaseContext(),
-                                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED||ActivityCompat.checkSelfPermission(a.getBaseContext(),
+                                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(a.getBaseContext(),
                                 Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-                            a.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS}, 5);
+                            a.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS}, 5);
 
-                        ArrayList <ContentProviderOperation> ops = new ArrayList < ContentProviderOperation > ();
+                        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
                         ops.add(ContentProviderOperation.newInsert(
                                 ContactsContract.RawContacts.CONTENT_URI)
@@ -282,7 +273,6 @@ public class SecondFragment extends Fragment {
                 else
                     finish.setText(R.string.finishTime);
             }
-
 
 
         }

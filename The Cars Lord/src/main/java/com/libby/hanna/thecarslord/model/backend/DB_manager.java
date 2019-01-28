@@ -46,8 +46,7 @@ public interface DB_manager {
 
     List<Trip> getTripsByPrice(double price,List<Trip> t,Context c);
     void changeNow(Trip t, Driver d, final Action<Void> action);
-    void changeFinish(Trip t, final Time fTime,final Action<Void> action);
+    void changeFinish(Trip t, Driver d,final Time fTime,final Action<Void> action);
     Driver loadDataOnCurrentDriver(Context c);
-    double priceCalc(Trip t,Context c);
     int distanceCalc(Trip t,Context c);
     }

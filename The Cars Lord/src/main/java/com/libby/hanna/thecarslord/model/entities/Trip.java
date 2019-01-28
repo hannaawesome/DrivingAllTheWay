@@ -49,9 +49,10 @@ public class Trip {
     //endregion
 
     //region Constructors
-    public Trip(TripState state, String source, String destination, Time start, Time finish, String name,
+    public Trip(String id,TripState state, String source, String destination, Time start, Time finish, String name,
                 String phoneNumber, String emailAddress, Long driver) {
         Date date = new Date();
+        this._id=id;
         this.state = state;
         this.source = source;
         this.destination = destination;

@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         t = new ActionBarDrawerToggle(this, dl, 0, R.string.app_name);
         getLocation(this);
         //get driver's location
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        /*locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 thisLoca = location;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
             public void onProviderDisabled(String provider) {
             }
-        };
+        };*/
         dl.addDrawerListener(t);
         t.syncState();
 
@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "error to get Drivers list\n" + exception.toString(), Toast.LENGTH_LONG).show();
             }
         });
-        //d=be.loadDataOnCurrentDriver(this);
         startService(new Intent(getBaseContext(), CheckNewTrips.class));
     }
 

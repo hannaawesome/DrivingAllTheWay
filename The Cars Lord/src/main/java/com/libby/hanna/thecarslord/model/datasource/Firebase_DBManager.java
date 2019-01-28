@@ -264,11 +264,12 @@ public class Firebase_DBManager implements DB_manager {
         }
         return trips;
     }
-    public double priceCalc(Trip t,Context c){
+    private double priceCalc(Trip t,Context c){
         return distanceCalc(t,c)*2;
     }
     public int distanceCalc(Trip t, Context c){
-        return Math.round(fromStringToLocation(c, t.getSource()).distanceTo(fromStringToLocation(c, t.getDestination())) / 1000);
+        int temp=Math.round(fromStringToLocation(c, t.getSource()).distanceTo(fromStringToLocation(c, t.getDestination())) / 1000);
+        return temp;
     }
     //endregion
 
@@ -433,9 +434,10 @@ public class Firebase_DBManager implements DB_manager {
      * @param fTime the finish time
      * @param action returns data weather the trip has changed to finished or failed
      */
-    public void changeFinish(Trip t, final Time fTime, final Action<Void> action) {
+    public void changeFinish(Trip t,Driver d, final Time fTime, final Action<Void> action) {
         t.setState(Trip.TripState.finished);
         t.setFinish(fTime);
+        t.setDriver(d.get_id());
         TripRef.child(t.get_id()).setValue(t).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void v) {
@@ -481,11 +483,11 @@ public class Firebase_DBManager implements DB_manager {
         String email = currentUser.getEmail();
         Driver d = null;
         try {
-            while (d==null) {//if driverList has not been fully loaded yet
+           // while (d==null) {//if driverList has not been fully loaded yet
                 for (Driver i : driverList)
                     if (email.equals(i.getEmailAddress()))
                         d = i;
-            }
+           // }
             return d;
         } catch (Exception ex) {
             Toast.makeText(c, ex.toString(), Toast.LENGTH_LONG).show();
